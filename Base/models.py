@@ -1,15 +1,13 @@
 from django.db import models
 from fontawesome_5.fields import IconField
-from ckeditor.fields import RichTextField
-
 # Create your models here.
 
 class Topic(models.Model):
     title_ENG = models.CharField(max_length=300, unique = True)
     title_AMH = models.CharField(max_length=300, null = True)
-    icon = IconField()
     is_dashboard = models.BooleanField(default = False)
     rank = models.IntegerField(null=True, blank=True)
+    icon = IconField()
     updated =  models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
@@ -24,7 +22,6 @@ class Document(models.Model):
     title_ENG = models.CharField(max_length=300, unique = True)
     title_AMH = models.CharField(max_length=300, null = True)
     topic = models.ForeignKey(Topic, null=True, blank=True, on_delete=models.SET_NULL)
-    content = RichTextField()
     file= models.FileField(upload_to='documents/')
 
     def __str__(self):
