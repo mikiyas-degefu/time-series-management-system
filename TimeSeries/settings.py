@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Base',
     'fontawesome_5',
-    'ckeditor'
+    'ckeditor',
+    'import_export'
 
 ]
 

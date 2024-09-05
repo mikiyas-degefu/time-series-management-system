@@ -16,6 +16,8 @@ class Topic(models.Model):
 
     def __str__(self):
         return self.title_ENG
+    class Meta:
+        ordering = ['rank'] #Oldest First    
 
 class Document(models.Model):
     # Responsible to store file documents

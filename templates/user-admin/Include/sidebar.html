@@ -94,7 +94,7 @@ rel="stylesheet"
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link {% if request.path == '/user-admin/topic/' %}active{% endif %}">
+              <a href="{% url "topic" %}" class="nav-link {% if request.path == '/user-admin/topic/' %}active{% endif %}">
                 <i class="bi bi-person-video3 ml-1"></i>
                 <p>Topic</p>
               </a>
