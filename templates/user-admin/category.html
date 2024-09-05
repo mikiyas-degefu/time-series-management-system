@@ -194,39 +194,42 @@
         $("#id_name_ENG").val(buttonData.name_eng)
         $("#id_name_AMH").val(buttonData.name_amh)
         $("#id_topic").val(buttonData.topic)
-        $("#id_is_dashboard").prop('checked', buttonData.is_dashboard) 
+        let is_dashboard = buttonData.is_dashboard == "True" ? true : false
+        $("#id_is_dashboard_visible").prop('checked', is_dashboard) 
         $("#id_id").val(buttonData.id)
 
         $("#modalFormAddEdit").on('submit', function(e) {
         e.preventDefault()
-      })
-      $('#editSectorForm').on('submit', function(e){
-        e.preventDefault()
+        console.log("done")
         let nameEng = $("#id_name_ENG").val()
         let nameAmh = $("#id_name_AMH").val()
         let topic = $("#id_topic").val()
-        let is_dashboard = $("#id_is_dashboard").prop('checked')
+        let is_dashboard = $("#id_is_dashboard_visible").val()
         let id = $("#id_id").val()
 
-      
-        $.ajax({
-          type: 'PATCH',
-          url : `{% url "category" '${id}' %}`,
+        console.log("is_dashboard", is_dashboard)
+
+           $.ajax({
+          type: 'POST',
+          url : `{% url "update_category" %}`,
           data: {
               'id' : id,
-              'name' : name,
+              'name_ENG' : nameEng,
+              'name_AMH' : nameAmh,
+              'topic' : topic,
+              'is_dashboard_visible' : is_dashboard == "on" ? true : false,
               csrfmiddlewaretoken: '{{csrf_token}}'
             },
-            beforeSend: function() {
-              $('#saveSector').hide()
-               $("#btnLoadding").show();
-             },
+            // beforeSend: function() {
+            //   $('#saveSector').hide()
+            //    $("#btnLoadding").show();
+            //  },
              // hides the loader after completion of request, whether successfull or failor.             
-             complete: function() {
-              //Show save button finished 
-               $('#saveSector').show()
-               $("#btnLoadding").hide();
-             },
+            //  complete: function() {
+            //   //Show save button finished 
+            //    $('#saveSector').show()
+            //    $("#btnLoadding").hide();
+            //  },
           success: function(response){
             if(response.success){
 
@@ -253,6 +256,8 @@
             showToast('&#128532 Hello User', 'Failed to update Sector.', 'error' )
           }
         })
+
+
         
       })
       })

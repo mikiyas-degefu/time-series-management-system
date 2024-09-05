@@ -9,6 +9,6 @@ urlpatterns = [
 
     #Category
     path('categories/', categories, name='categories'),
-    path('category/<str:id>', category, name='category'),
+    path('edit_category/', update_category, name='update_category'),
 
 ]

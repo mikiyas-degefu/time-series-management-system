@@ -140,16 +140,24 @@ def categories(request):
     return render(request, 'user-admin/category.html', context)   
 
 
-def category(request,id):
+def update_category(request):
+    id = request.POST['id']
+    name_ENG = request.POST['name_ENG']
+    name_AMH = request.POST['name_AMH']
+    topic_id = request.POST['topic']
+    is_dashboard = True if request.POST['is_dashboard_visible'] == "true" else False
     try:
-        category = Category.objects.get(pk=id)
-    except category.DoesNotExist:
-        return HttpResponse(status=404)
-    
-    if request.method == 'PATCH':
-        data = JSONParser().parse(request)
-        serializer = CategorySerializers(category, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=400)
+        category = Category.objects.get(id = id)
+        category.name_ENG = name_ENG
+        category.name_AMH = name_AMH
+        try:
+           topic = Topic.objects.get(id = topic_id)
+           category.topic = topic
+        except:
+           category.topic = None
+        category.is_dashboard_visible = is_dashboard
+        category.save()
+        response = {'success' : True}
+    except:
+        response = {'success' : False}
+    return JsonResponse( response)
