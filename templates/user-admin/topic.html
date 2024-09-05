@@ -36,8 +36,7 @@
                 data-bs-target="#AddTopic"
                 data-bs-whatever="@mdo"><i class="fas fa-plus"></i> Add Topic</button>
                 <button class="btn btn-primary float-end m-2" 
-                data-bs-toggle="modal"
-                data-bs-target="#AddJob"
+                
                 data-bs-whatever="@mdo"><i class="fas fa-file"></i> Import Topic</button>
             </div>
                     
@@ -47,13 +46,15 @@
             {% include 'includes/messages.html' %}
            </div>
        
-            <div class="table-responsive m-3 border p-3 bg-white">
-                <table class="table table-sm p-3 table-hover gap-5 bg-white">
+            <div class="table-responsive m-3 border p-3">
+                <table class="table table-striped p-3 table-hover gap-5 bg-white">
                     <thead  >
                         <tr>
+                            <th>#</th>
                             <th>Name English</th>
                             <th>Name Amharic</th>
                             <th>Created Date</th>
+                            <th>Rank</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -61,12 +62,37 @@
                       {% if topics %}
                         {% for topic in topics %}
                         <tr >
+                            <td>{{forloop.counter}}</td>
                             <td class="p-2">{{topic.title_ENG}}</td>
                             <td>{{topic.title_AMH}}</td>
                             <td>{{topic.created|date:"M d, Y" }}</td>
+                            <td>{{topic.rank}}</td>
                             <td>
-                                <a> <i class="fas ms-3  text-info fa-edit"></i> </a>
-                                <a> <i class="fas ms-3  text-danger fa-trash"></i> </a>
+    
+                            <button 
+                              class="btn btn-outline-info mt-2 btn-sm btn-update"  
+                              data-bs-toggle="modal" 
+                              data-bs-target="#UpdateTopicModal"
+                              data-bs-whatever="@mdo"
+                              data-id = {{topic.id}}
+                              data-title_ENG = {{topic.title_ENG}}
+                              data-title_AMH = {{topic.title_AMH}}
+                              data-is_dashboard = {{topic.is_dashboard}}
+                              data-icon = {{topic.icon}}
+                              data-rank = {{topic.rank}}
+                              >
+                              <i class="fa fa-edit"></i> 
+                            </button>
+                            <button 
+                              class="btn btn-outline-danger mt-2 btn-sm btn-delete"  
+                              data-bs-toggle="modal" 
+                              data-bs-target="#deleteTopicModal"
+                              data-bs-whatever="@mdo"
+                              data-id = {{topic.id}}
+                              data-name = {{topic.title_ENG}}
+                              >
+                              <i class="fa fa-trash"></i> 
+                            </button>
                             </td>
                         </tr>
                       {% endfor %}
@@ -129,7 +155,7 @@
     
 
     
-    <!--Add Company Modal-->
+    <!--Add  Modal-->
       <!-- Modal -->
     <div class="modal fade" id="AddTopic" tabindex="-1" aria-labelledby="AddTopicLabel"
       aria-hidden="true">
@@ -171,21 +197,21 @@
     
     <!--Delete  Modal-->
       <!-- Modal -->
-      <div class="modal fade" id="deletetopicModal" tabindex="-1" aria-labelledby="deletetopicModalLabel"
+      <div class="modal fade" id="deleteTopicModal" tabindex="-1" aria-labelledby="deleteTopicModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="deletetopicModalLabel">Delete Topic</h5>
+              <h5 class="modal-title" id="deleteTopicModalLabel">Delete Topic</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <p class="h4 fw-normal" id="deletetopic"></p>
+              <p class="h4 fw-normal" id="deleteTopic"></p>
             </div> 
               
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <a href="#" id="deletetopicAnchor" type="submit" class="btn btn-danger">Delete</a>
+              <a href="#" id="deleteTopicAnchor" type="submit" class="btn btn-danger">Delete</a>
             </div>
             
           </div>
@@ -193,6 +219,35 @@
       </div>
       <!--End Modal -->
     
+        <!--Update Modal-->
+      <!-- Modal -->
+      <div class="modal fade" id="EditTopicModal" tabindex="-1" aria-labelledby="EditTopicModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-text" id="EditTopicModalLabel">Edit faq</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+            <form  id="editfaqForm" method="post" enctype="multipart/form-data">
+              <div id="detailModalBody" class="modal-body">
+                <input type="hidden" value="" id="id_id">
+                {{form.as_p}}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button  id="saveSector" type="submit" class="btn btn-primary">Save changes</button>
+                <button style="display: none;" id="btnLoadding" class="btn btn-primary" type="button" disabled>
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  Loading...
+                </button>
+              </div>
+    
+            </form>
+        </div>
+      </div>
+    </div>
+  <!--End Modal -->
     
     
     </div>
@@ -221,42 +276,85 @@
         // Start Detail Data
     
         //Event handler that handle button on Click
-        $(".btn-detail").on('click', function(){
-              const buttonData = $(this).data()
-              console.log(buttonData)
-              //Open Modal
-             handleDetailModalJob(
-                buttonData.company, 
-                buttonData.title, 
-                buttonData.sector,
-                buttonData.description,
-                buttonData.vacancies,
-                buttonData.experience,
-                buttonData.skills,
-                buttonData.location,
-                buttonData.salary_range_start,
-                buttonData.salary_range_final,
-                buttonData.type,
-                buttonData.compensation_type,
-                buttonData.date_posted,
-                buttonData.date_closed,
-                )
-        });
-    
-    
+        
     
          //Event handler that handle on Click to delete
          $(".btn-delete").on('click', function(){
+            
               const buttonData = $(this).data()
-              $("#deleteJobAnchor").attr("href", `/user-admin/delete-job_posting/${buttonData.id}`)
-              $("#deleteJob").html(`Are you sure you want to delete <div> <code> ${buttonData.name}</code>? </div> `)
-            })
-    
-    
-        
-             // Edit Data Detail 
-    
+              $("#deleteTopicAnchor").attr("href", `/user-admin/delete_topic/${buttonData.id}`)
+              $("#deleteTopic").html(`Are you sure you want to delete <div> <code> ${buttonData.name}</code>? </div> `)
+            })   
+            
+            
+
+
+
+
+
+    $('#editTopicForm').on('submit', function(e){
+        e.preventDefault()
+        let id = $('#id_id').val()
+        let title_ENG = $('#id_title_ENG').val()
+        let title_AMH = $('#id_title_AMH').val()
+        let icon = $('id_icon').val()
+        let is_dashboard = $('#id_is_dashboard')
+        let rank = $('#id_rank').val()
+
+       
+        $.ajax({
+          type: 'POST',
+          url : '{% url "edit_topic" %}',
+          data: {
+              'id' : id,
+              'title_ENG' : title_ENG,
+              'title_AMH' : title_AMH,
+              'icon' : icon,
+              'is_dashboard' : is_dashboard,
+              'rank' : rank,
+              csrfmiddlewaretoken: '{{csrf_token}}'
+            },
+            beforeSend: function() {
+              $('#saveSector').hide()
+               $("#btnLoadding").show();
+             },
+             // hides the loader after completion of request, whether successfull or failor.             
+             complete: function() {
+              //Show save button finished 
+               $('#saveSector').show()
+               $("#btnLoadding").hide();
+             },
+          success: function(response){
+            if(response.success){
+
+              //show succuss message
+              showToast('&#128515 Hello, User', 'Successfully Updated', 'success' )
+              $('#EditfaqModal').modal('hide'); //Hide Modal
+
+
+              let htmlName = $('#faq_name_'+id)
+              let buttonHtml = $('#faqButton_'+id) 
+              //Update Table Value
+              htmlName.text(text)
+
+              //update Button Value
+              buttonHtml.data("text", text)
+
+
+
+            }else{
+               //show succuss message
+               showToast('&#128532 Hello User', 'Failed to update faq.', 'error' )
+            }
+          },
+          error: function(){
+            //show succuss message
+            showToast('&#128532 Hello User', 'Failed to update faq.', 'error' )
+          }
         })
+      })
+
+    })
     
     </script>
 </html>
