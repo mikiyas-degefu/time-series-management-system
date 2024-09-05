@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'UserAdmin',
     'import_export',
     'fontawesome_5',
+    'rest_framework',
 
 ]
 

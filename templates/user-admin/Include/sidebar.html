@@ -100,7 +100,7 @@ rel="stylesheet"
               </a>
             </li>
             <li class="nav-item ">
-              <a href="#" class="nav-link {% if request.path == '/user-admin/category/' %}active{% endif %}">
+              <a href="{% url 'categories'%}" class="nav-link {% if request.path == '/user-admin/category/' %}active{% endif %}">
                 <i class="bi bi-list-nested ml-1"></i>
                 <p>Categories</p>
               </a>
