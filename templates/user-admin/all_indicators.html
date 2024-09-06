@@ -1,0 +1,235 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DPMEs</title>
+    <link />
+    <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/js/multi-select-tag.js"></script> 
+<link 
+rel="stylesheet" 
+href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-select-tag.css" 
+/>
+    {% include 'user-admin/include/head.html' %}
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    {% include 'user-admin/include/navbar.html'%}
+    <div>{% include 'user-admin/include/sidebar.html' %}</div>
+
+    <div class="content-wrapper">
+        <div class="col-lg-7 mx-auto d-block mt-3">
+            {% include 'includes/messages.html' %}
+        </div>
+        <!-- TItle Start-->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="table-responsive m-3 border p-3">
+                    <div class="row p-3">
+                        <div class="col-lg-8">
+                            <form>
+                                <div class="col-12 d-flex align-items-center">
+                                    <input type="text" name="q" class="form-control ps-5 pe-5 m-3 d-block"
+                                        placeholder="Enter Key Word" />
+                                    <button class="btn btn-primary">
+                                        <i class="fas fa-search ms-2"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col flot-right">
+                            <button class="btn btn-primary float-end m-2" data-bs-toggle="modal"
+                                data-bs-target="#AddIndicator" data-bs-whatever="@mdo">
+                                <i class="fas fa-plus"></i> Add Year
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-sm table-hover caption-top">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Title (English)</th>
+                                <th>Title (Amharic)</th>
+                                <th>Composite Key</th>
+                                <th>For Category</th>
+                                <th>Meas Units</th>
+                                <th>KPI Char</th>
+                                <th>Dashboard Visibility</th>
+                                <th>Public</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="p-5">
+
+                            {% if all_indicators %}
+                             {% for indicator in all_indicators %}
+                            <tr>
+                                <td>{{count | add:forloop.counter}}</td>
+                                <td>{{indicator.title_ENG}}</td>
+                                <td>{{indicator.title_AMH}}</td>
+                                <td>{{indicator.composite_key}}</td>
+                                <td>
+                                    {% if indicator.for_category.all.count > 0 %} {{ indicator.for_category.all.0 }}{% endif %} 
+                                    {% if indicator.for_category.all.count > 1 %}, {{ indicator.for_category.all.1 }}{% endif %} 
+                                    {% if indicator.for_category.all.count > 2 %} ... {% endif %}
+                                </td>
+                                <td>{{indicator.measurement_units}}</td>
+                                <td>{{indicator.kpi_characteristics}}</td>
+                                <td>
+                                    {% if indicator.is_dashboard_visible %}
+                                    <i class="fa fa-check text-success"></i>
+                                    {% else %}
+                                    <i class="fa fa-times text-danger"></i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if indicator.is_public %}
+                                    <i class="fa fa-check text-success"></i>
+                                    {% else %}
+                                    <i class="fa fa-times text-danger"></i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                        <button class="btn btn-outline-info mt-2 btn-sm btn-edit" id="btnEditTable{{topic.id}}"
+                                          data-bs-toggle="modal" data-bs-target="#editTopic" data-bs-whatever="@mdo" data-id={{topic.id}}
+                                          data-title_ENG={{topic.title_ENG}} data-title_AMH={{topic.title_AMH}}
+                                          data-is_dashboard={{topic.is_dashboard}} data-icon={{topic.icon}} data-rank={{topic.rank}}>
+                                          <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger mt-2 btn-sm btn-delete" data-bs-toggle="modal"
+                                          data-bs-target="#deleteTopicModal" data-bs-whatever="@mdo" data-id={{topic.id}}
+                                          data-name={{topic.title_ENG}}>
+                                          <i class="fa fa-trash"></i>
+                                        </button>
+                                        <button class="btn btn-outline-warning mt-2 btn-sm btn-view" data-bs-toggle="modal"
+                                        data-bs-target="#deleteTopicModal" data-bs-whatever="@mdo" data-id={{topic.id}}
+                                        data-name={{topic.title_ENG}}>
+                                        <i class="fa fa-eye"></i>
+                                      </button>
+                                      
+                                </td>
+                            </tr>
+                            {% endfor %} {% else %}
+                            <tr>
+                                <td class="text-center text-danger" colspan="9">
+                                    No Data Found
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination -->
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination pagination-circle pagination-outline justify-content-center">
+                            {% if all_indicators.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ all_indicators.previous_page_number }}">Previous</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Previous</a>
+                            </li>
+                            {% endif %} {% if all_indicators.number|add:'-4' > 1 %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ all_indicators.number|add:'-5' }}">&hellip;</a>
+                            </li>
+                            {% endif %} {% for i in all_indicators.paginator.page_range %}
+                            {% if all_indicators.number == i %}
+                            <li class="page-item active" aria-current="page">
+                                <span class="page-link">
+                                    {{ i }}
+                                    <span class="sr-only">(current)</span>
+                                </span>
+                            </li>
+                            {% elif i > all_indicators.number|add:'-5' and i < all_indicators.number|add:'5' %} <li
+                                class="page-item">
+                                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                </li>
+                                {% endif %} {% endfor %} {% if all_indicators.paginator.num_pages > all_indicators.number|add:'4' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ all_indicators.number|add:'5' }}">&hellip;</a>
+                                </li>
+                                {% endif %} {% if all_indicators.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ all_indicators.next_page_number }}">Next</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Next</a>
+                                </li>
+                                {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!--Title End-->
+    </div>
+
+
+
+        <!--Add  Modal-->
+    <!-- Modal -->
+    <div class="modal fade" id="AddIndicator" tabindex="-1" aria-labelledby="AddIndicatorLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="AddIndicatorLabel">Indicator Information</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                <div id="detailModalBody" class="modal-body">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="form-group">
+                            <label for="id_{{ field.name }}">{{ field.label }}:</label>
+                            <p>{{ field }}</p>
+                        </div>
+                    {% endfor %}
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!--End Modal -->
+  
+
+
+    {% include 'user-admin/include/footer.html'%}
+
+    <!--Chart -->
+    <script src="{% static 'assets/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/chart.js/Chart.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/jquery-knob/jquery.knob.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/moment/moment.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/summernote/summernote-bs4.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+
+    {% include 'user-admin/include/footer_js.html'%}
+</body>
+
+<script>
+    new MultiSelectTag("id_for_category", {
+      rounded: true, // default true
+      shadow: true, // default false
+      placeholder: "Search", // default Search...
+      onChange: function (values) {
+        console.log(values);
+      },
+    });
+  </script>
+
+</html>

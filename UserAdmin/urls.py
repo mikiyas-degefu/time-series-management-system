@@ -17,4 +17,18 @@ urlpatterns = [
     path('indicator_details/<str:id>', indicator_details, name='indicators_detail'),
     path('indicator_delete/<str:id>', delete_indicator, name='delete_indicator'),
 
+
+    #Users
+    path('users/', users, name='users'),
+    path('user_activate/<str:id>', user_activate, name='user_activate'),
+
+
+
+    #Years
+    path('years/', years, name='years'),
+
+
+    #all_indicators
+    path('all_indicators/', all_indicators, name='all_indicators'),
+
 ]
