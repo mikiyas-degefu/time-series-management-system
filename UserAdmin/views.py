@@ -178,17 +178,27 @@ def indicators(request, id):
     form = IndicatorForm(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
-            form.save()
-            messages.success(request, '😀 Hello User, Indicator Successfully Added')
+            obj = form.save(commit=False)
+            if 'subIndicatorId' in request.POST:
+                parent_id = request.POST['subIndicatorId']
+                try:
+                    parent = Indicator.objects.get(id = parent_id)
+                    obj.parent = parent
+                    obj.save()
+                    form.save_m2m()
+                    messages.success(request, '😀 Hello User, Indicator Successfully Added')
+                except:
+                    messages.error(request, '😞 Hello User , An error occurred while Adding Indicator')
+            else:
+                obj.save()
+                messages.success(request, '😀 Hello User, Indicator Successfully Added')
             return redirect('indicators', id)
         else:
             messages.error(request, '😞 Hello User , An error occurred while Adding Indicator')
-
     context = {
         'form' : form,
     }
     return render(request, 'user-admin/indicator.html', context=context)
-
 
 def indicator_details(request, id):
     try:
@@ -212,3 +222,13 @@ def indicator_details(request, id):
         'form' : form,
     }
     return render(request, 'user-admin/indicator_detail.html', context=context)
+
+def delete_indicator(request, id):
+    try:
+        indicator = Indicator.objects.get(id=id)    
+        indicator.is_deleted = True
+        indicator.save()
+        messages.success(request, '😀 Hello User, Indicator Successfully Deleted')
+    except:
+        messages.error(request, '😞 Hello User , An error occurred while Deleting Indicator')
+    return redirect(request.META.get('HTTP_REFERER'))

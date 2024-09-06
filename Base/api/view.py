@@ -11,7 +11,7 @@ def get_indicators(request,id):
    filter Indicator by category id with children
    '''
    indicators_list = []
-   indicators = Indicator.objects.filter(for_category__id = id).select_related()
+   indicators = Indicator.objects.filter(for_category__id = id, is_deleted = False).select_related()
    for i in indicators:
       indicators_list.append({
          'id' : i.id,

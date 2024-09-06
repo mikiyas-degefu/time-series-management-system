@@ -39,7 +39,7 @@
 
             <caption class="text-muted">List of Indicators</caption>
            <div class="table-responsive">
-            <table class="table  table-sm  table-hover caption-top">
+            <table class="table table-sm  table-hover caption-top">
               <thead>
                 <tr>
                   <th scope="col">#</th>
@@ -47,7 +47,6 @@
                   <th scope="col">ስም</th>
                   <th scope="col">Composite key</th>
                   <th scope="col">Categories</th>
-                  <th scope="col">Measurement units</th>
                   <th scope="col">Kpi characteristics</th>
                   <th scope="col">Is Dashboard</th>
                   <th scope="col">Public</th>
@@ -65,7 +64,32 @@
     </div>
     <!--Body End-->
 
-    <!-- Modal add new category -->
+
+    <!-- Modal addSubIndicator  -->
+    <div class="modal fade" id="addSubIndicator" tabindex="-1" aria-labelledby="addSubIndicatorLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addSubIndicatorLabel">Add new Indicator</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form name="addSubIndicator" method="post" >
+            {% csrf_token %}
+            <div class="modal-body">
+              <input type="hidden" id="subIndicatorId" name="subIndicatorId">
+              {{form.as_p}}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button id="saveCategory"  type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    
+    <!-- Modal add  -->
 <div class="modal fade" id="addIndicator" tabindex="-1" aria-labelledby="addIndicatorLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -73,9 +97,10 @@
         <h5 class="modal-title" id="addIndicatorLabel">Add new Indicator</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form  method="post" >
+      <form name="addIndicator" method="post" >
         {% csrf_token %}
         <div class="modal-body">
+          
           {{form.as_p}}
         </div>
         <div class="modal-footer">
@@ -86,6 +111,31 @@
     </div>
   </div>
 </div>
+
+<!--Delete  Modal-->
+  <!-- Modal -->
+  <div class="modal fade" id="deleteIndicatorModal" tabindex="-1" aria-labelledby="deleteIndicatorModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteIndicatorModalLabel">Delete Indicator</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="h4 fw-normal" id="deleteMessageCategory"></p>
+        </div> 
+          
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a href="#" id="deleteCategoryAnchor" type="submit" class="btn btn-danger">Delete</a>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <!--End Modal -->
+
 
 
 
