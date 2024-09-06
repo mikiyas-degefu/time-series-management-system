@@ -2,7 +2,8 @@ from django.contrib import admin
 from .models import *
 from .resource import(
     TopicResource,
-    CategoryResource
+    CategoryResource,
+    IndicatorResource
 )
 
 
@@ -21,3 +22,9 @@ class CategoryAdmin(ImportExportModelAdmin):
 
 admin.site.register(Category, CategoryAdmin)
 
+
+class IndicatorAdmin(ImportExportModelAdmin):
+    resource_classes = [IndicatorResource]
+    list_display = ('title_ENG', 'title_AMH', 'parent')
+
+admin.site.register(Indicator, IndicatorAdmin)

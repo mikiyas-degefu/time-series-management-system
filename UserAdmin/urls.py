@@ -12,4 +12,7 @@ urlpatterns = [
     path('edit_category/', update_category, name='update_category'),
     path('delete_category/<str:id>', delete_category, name='delete_category'),
 
+    #Indicator
+    path('indicators/<str:id>', indicators, name='indicators'),
+
 ]

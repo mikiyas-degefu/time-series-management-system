@@ -1,8 +1,10 @@
 from import_export import resources, fields
-from import_export.widgets import ForeignKeyWidget 
+import datetime
+from import_export.widgets import ForeignKeyWidget, ManyToManyWidget
 from .models import (
     Topic,
     Category,
+    Indicator,
 )
 class TopicResource(resources.ModelResource):
 
@@ -36,3 +38,32 @@ class CategoryResource(resources.ModelResource):
         skip_unchanged = True
         exclude = ( 'id', 'created_at', 'is_deleted','is_dashboard_visible', )
         import_id_fields = ('name_ENG', 'name_AMH','topic')
+
+
+
+class IndicatorResource(resources.ModelResource):    
+    for_category = fields.Field(
+        column_name='for_category',
+        attribute='for_category',
+        widget=ManyToManyWidget(Category, field='name_ENG', separator='|'),
+        saves_null_values = True,
+    )
+
+    
+    parent = fields.Field(
+        column_name='parent',
+        attribute='parent',
+        widget=ForeignKeyWidget(Indicator, field='id'),
+        saves_null_values = True,
+    )
+
+    def before_save_instance(self, instance, using_transactions, dry_run):
+        instance.created_at =  datetime.datetime.now()
+
+
+
+    class Meta:
+        model = Indicator
+        report_skipped = True
+        skip_unchanged = True
+        exclude = ( 'created_at', 'is_deleted', 'composite_key','op_type' )

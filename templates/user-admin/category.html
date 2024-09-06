@@ -83,7 +83,7 @@
                       <button id="categoryTopic{{category.id}}" class="btn btn-block btn-sm btn-secondary">{{category.topic}}</button>
                     </td>
                     <td>
-                      <button class="btn btn-sm btn-info"> <i class="fa fa-eye"></i> </button>
+                      <a href="{% url 'indicators' category.id %}" class="btn btn-sm btn-info"> <i class="fa fa-eye"></i> </a>
                       <button 
                       id="btnEditTable{{category.id}}"
                       class="btn-edit btn btn-sm btn-warning"

@@ -94,7 +94,7 @@ def edit_topic(request):
 
 
 
-#### Category + Indicator 
+#### Category  
 
 def categories(request):
     category = Category.objects.filter(is_deleted = False)
@@ -170,3 +170,9 @@ def delete_category(request, id):
     except:
         messages.error(request, '😞 Hello User , An error occurred while Deleting Category')
     return redirect('categories')
+
+
+### Indicator
+def indicators(request, id):
+    indicator_lists = Indicator.objects.filter(is_deleted = False, for_category__id = id)
+    return render(request, 'user-admin/indicator.html')
