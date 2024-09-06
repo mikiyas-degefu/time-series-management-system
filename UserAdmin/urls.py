@@ -10,5 +10,6 @@ urlpatterns = [
     #Category
     path('categories/', categories, name='categories'),
     path('edit_category/', update_category, name='update_category'),
+    path('delete_category/<str:id>', delete_category, name='delete_category'),
 
 ]

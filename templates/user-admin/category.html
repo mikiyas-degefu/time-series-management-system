@@ -96,7 +96,15 @@
                       data-topic-name="{{category.topic.title_ENG}}"
                       data-is_dashboard="{{category.is_dashboard_visible}}"
                       > <i class="fa fa-edit"></i> </button>
-                      <button class="btn btn-sm btn-danger"> <i class="fa fa-trash"></i> </button>
+                      <button 
+                      class="btn btn-sm btn-danger btn-delete" 
+                      data-bs-toggle="modal" 
+                      data-bs-target="#deleteCategoryModal"
+                      data-bs-whatever="@mdo"
+                      data-id = {{category.id}}
+                      data-name_ENG = {{category.name_ENG}}
+                      data-name_AMH = {{category.name_AMH}}
+                      > <i class="fa fa-trash"></i> </button>
                     </td>
                   </tr>
                   {% endfor %}
@@ -213,6 +221,31 @@
 </div>
 
 
+<!--Delete  Modal-->
+  <!-- Modal -->
+  <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteCategoryModalLabel">Delete Sector</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="h4 fw-normal" id="deleteMessageCategory"></p>
+        </div> 
+          
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a href="#" id="deleteCategoryAnchor" type="submit" class="btn btn-danger">Delete</a>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <!--End Modal -->
+
+
 
     {% include 'user-admin/include/footer.html'%}
     <div>{% include 'user-admin/include/footer_js.html'%}</div>
@@ -244,6 +277,7 @@
         $("#id_id").val(buttonData.id)
       })
 
+      //Edit Category
       $("#modalFormAddEdit").on('submit', function(e) {
         e.preventDefault()
         let nameEng = $("#id_name_ENG").val()
@@ -311,7 +345,14 @@
         })
       })
 
-      
+      //Delete Category
+       //Event handler that handle on Click to delete
+     $(".btn-delete").on('click', function(){
+          const buttonData = $(this).data()
+          console.log(buttonData)
+          $("#deleteCategoryAnchor").attr("href", `/user-admin/delete_category/${buttonData.id}`)
+          $("#deleteMessageCategory").html(`Are you sure you want to delete <div> <code> ${buttonData.name_eng} / ${buttonData.name_amh}</code>? </div> `)
+        })
 
     })
   </script>

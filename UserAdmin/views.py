@@ -97,13 +97,13 @@ def edit_topic(request):
 #### Category + Indicator 
 
 def categories(request):
-    category = Category.objects.all()
+    category = Category.objects.filter(is_deleted = False)
     form = CategoryForm(request.POST or None)
     count = 20
 
     if 'q' in request.GET:
         q = request.GET['q']
-        category = Category.objects.filter( Q(name_ENG__contains=q) | Q(name_AMH__contains=q) | Q(topic__title_ENG__contains=q))
+        category = Category.objects.filter(is_deleted = False).filter(  Q(name_ENG__contains=q) | Q(name_AMH__contains=q) | Q(topic__title_ENG__contains=q))
 
     paginator = Paginator(category, 20) 
     page_number = request.GET.get('page')
@@ -139,7 +139,6 @@ def categories(request):
     
     return render(request, 'user-admin/category.html', context)   
 
-
 def update_category(request):
     id = request.POST['id']
     name_ENG = request.POST['name_ENG']
@@ -161,3 +160,13 @@ def update_category(request):
     except:
         response = {'success' : False}
     return JsonResponse( response)
+
+def delete_category(request, id):
+    try:
+        category = Category.objects.get(id=id)    
+        category.is_deleted = True
+        category.save()
+        messages.success(request, '😀 Hello User, Category Successfully Deleted')
+    except:
+        messages.error(request, '😞 Hello User , An error occurred while Deleting Category')
+    return redirect('categories')
