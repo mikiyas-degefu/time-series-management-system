@@ -96,15 +96,19 @@ $(document).ready(function () {
         let response = await useFetch(`http://127.0.0.1:8000/indicator-lists/${pathID}`)
 
         //Hide for category 
+        
+        $("#addIndicatorForm").parent().find("#id_for_category").hide()
         $("#id_for_category").parent().hide()
+
+
         //select default category
         $("#id_for_category").val(pathID)
+        $("#addIndicatorForm").parent().find("#id_for_category").val(pathID)
 
 
         table(response)
         $(".btn-add").on('click', function() {
             const buttonData = $(this).data()
-            console.log(buttonData)
             $("#subIndicatorId").val(buttonData.id)
           })
 

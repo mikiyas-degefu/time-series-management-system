@@ -191,6 +191,7 @@ def indicators(request, id):
                     messages.error(request, '😞 Hello User , An error occurred while Adding Indicator')
             else:
                 obj.save()
+                form.save_m2m()
                 messages.success(request, '😀 Hello User, Indicator Successfully Added')
             return redirect('indicators', id)
         else:
