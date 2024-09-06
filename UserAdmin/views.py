@@ -126,7 +126,7 @@ def categories(request):
         if form.is_valid():
             form.save()
             messages.success(request, '😀 Hello User, Category Successfully Added')
-            return redirect('category')
+            return redirect('categories')
         else:
             messages.error(request, '😞 Hello User , An error occurred while Adding Category')
 
