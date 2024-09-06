@@ -14,5 +14,6 @@ urlpatterns = [
 
     #Indicator
     path('indicators/<str:id>', indicators, name='indicators'),
+    path('indicator_details/<str:id>', indicator_details, name='indicators_detail'),
 
 ]

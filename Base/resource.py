@@ -57,8 +57,7 @@ class IndicatorResource(resources.ModelResource):
         saves_null_values = True,
     )
 
-    def before_save_instance(self, instance, using_transactions, dry_run):
-        instance.created_at =  datetime.datetime.now()
+
 
 
 
@@ -66,4 +65,4 @@ class IndicatorResource(resources.ModelResource):
         model = Indicator
         report_skipped = True
         skip_unchanged = True
-        exclude = ( 'created_at', 'is_deleted', 'composite_key','op_type' )
+        exclude = ( 'created_at', 'is_deleted', 'composite_key','op_type')

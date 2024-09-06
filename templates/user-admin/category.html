@@ -268,7 +268,6 @@
 
       $(".btn-edit").on('click', function() {
         const buttonData = $(this).data()
-        console.log(buttonData)
         $("#id_name_ENG").val(buttonData.name_eng)
         $("#id_name_AMH").val(buttonData.name_amh)
         $("#id_topic").val(buttonData.topic)
@@ -286,8 +285,6 @@
         let is_dashboard = $("#id_is_dashboard_visible").is(":checked")
         let id = $("#id_id").val()
         let topicName = $("#id_topic").find(":selected").text()
-
-        console.log(is_dashboard)
 
            $.ajax({
           type: 'POST',

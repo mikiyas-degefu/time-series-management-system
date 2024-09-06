@@ -7,6 +7,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .forms import(
     TopicForm,
     CategoryForm,
+    IndicatorForm
 )
 from django.contrib import messages
 from Base.models import (
@@ -174,5 +175,40 @@ def delete_category(request, id):
 
 ### Indicator
 def indicators(request, id):
-    indicator_lists = Indicator.objects.filter(is_deleted = False, for_category__id = id)
-    return render(request, 'user-admin/indicator.html')
+    form = IndicatorForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, '😀 Hello User, Indicator Successfully Added')
+            return redirect('indicators', id)
+        else:
+            messages.error(request, '😞 Hello User , An error occurred while Adding Indicator')
+
+    context = {
+        'form' : form,
+    }
+    return render(request, 'user-admin/indicator.html', context=context)
+
+
+def indicator_details(request, id):
+    try:
+        indicator = Indicator.objects.get(id=id)
+    except:
+        return HttpResponse("Bad Request!")
+    
+    form = IndicatorForm(request.POST or None, instance=indicator)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            print("Saved")
+            messages.success(request, '😀 Hello User, Indicator Successfully Updated')
+            return redirect('categories')
+        else:
+            messages.error(request, '😞 Hello User , An error occurred while Updating Indicator')
+            print("Error")
+
+    context = {
+        'form' : form,
+    }
+    return render(request, 'user-admin/indicator_detail.html', context=context)

@@ -50,12 +50,13 @@ class Indicator(models.Model):
     composite_key = models.CharField(max_length=300, unique = True)
     parent = models.ForeignKey('self', related_name='children', on_delete=models.CASCADE, blank=True, null=True)
     for_category = models.ManyToManyField(Category, related_name='indicators')
-    measurement_units = models.CharField(max_length=50, null=True, blank=True)
+    measurement_units = models.CharField(max_length=50, null=True, blank=True, default="")
     kpi_characteristics = models.CharField(
         max_length=10,
         choices=KPI_CHARACTERISTIC_CHOICES,
         null=True,
-        blank=True
+        blank=True,
+        default=""
     )
     is_dashboard_visible = models.BooleanField(default = False)
     is_public = models.BooleanField(default = True)
@@ -70,9 +71,7 @@ class Indicator(models.Model):
         return self.title_ENG 
 
     
-    def __str__(self):
-         return str(self.for_indicator.title_ENG ) +  " Actual: " + str(self.is_actual) + " Year: " + str(self.for_datapoint)
-
+   
 class DataPoint(models.Model):
     year_EC = models.CharField(max_length=50, null=True, blank=True, unique=True)
     year_GC = models.CharField(max_length=50, null=True, blank=True, unique = True)
