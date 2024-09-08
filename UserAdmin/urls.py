@@ -7,6 +7,11 @@ urlpatterns = [
     path('delete_topic/<int:id>', delete_topic, name='delete_topic'),
     path('edit_topic/', edit_topic, name='edit_topic'),
 
+
+    ##Data view 
+    path('data_view/', data_view, name='data_view'), 
+    path('data_view_indicator_detail/<str:id>/', data_view_indicator_detail, name='data_view_indicator_detail'),
+
     #Category
     path('categories/', categories, name='categories'),
     path('edit_category/', update_category, name='update_category'),

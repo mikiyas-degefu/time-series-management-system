@@ -1,8 +1,11 @@
 const useFetch = async (url) =>{
+    let loading = true
     let response = await axios.get(url)
     try{
-        return response.data
+        loading = false
+        return [loading, response.data]
     }catch(error){
-        return error
+        loading = false
+        return [loading, error]
     }
 }

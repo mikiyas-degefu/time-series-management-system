@@ -1,0 +1,197 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DPMEs</title>
+    <link />
+    {% include 'user-admin/include/head.html' %}
+  </head>
+
+  <body class="hold-transition sidebar-mini layout-fixed">
+    {% include 'user-admin/include/navbar.html'%}
+    <div>{% include 'user-admin/include/sidebar.html' %}</div>
+
+    <!--Body Start-->
+    <div class="content-wrapper">
+      <!-- TItle Start-->
+      <div class="content-header">
+        <div class="container-fluid">
+            <h1>{{indicator.title_ENG}}</h1>
+            <div class="col-lg-7 mt-3 mx-auto d-block">
+              {% include 'includes/messages.html' %}
+             </div>
+            <div class="card mt-5 shadow-sm border p-3">
+                <div class="table-responsive mt-3">
+                    <table class="table table-bordered"  style="table-layout: fixed;">
+                        <thead id="tableHead">
+                        </thead>
+                        <tbody id="tableBody">
+                         
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+        </div>
+      </div>
+      <!--Title End-->
+
+
+      <!--Indicator Edit Value-->
+      <!-- Modal -->
+        <div class="modal fade" id="indicatorEditValue" tabindex="-1" aria-labelledby="indicatorEditValueLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="indicatorEditValueLabel">Edit Indicator Value</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formEditValue" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" name="indicator_id" id="form_indicator_id">
+                        <input type="hidden" name="year_id" id="form_year_id">
+                        <label for="IndicatorFormValue" >Value</label>
+                        <input id="IndicatorFormValue" class="form-control" required type="number" name="" id="">
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button id="editValueForm"  type="submit" class="btn btn-primary">Save changes</button>
+                      <button id="editValueFormBtnLoading" style="display: none;" class="btn btn-primary" type="button" disabled>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Loading...
+                      </button>
+                    </div>
+                </form>
+              </div>
+            </div>
+        </div>
+        
+
+    <!--Modal Add Child Indicator-->
+    <div class="modal fade" id="modalAddNewIndicator" tabindex="-1" aria-labelledby="modalAddNewIndicatorLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalAddNewIndicatorLabel">Edit Indicator Value</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form name="addSubIndicator" method="post">
+                <div class="modal-body">
+                  {% csrf_token %}
+                  <input type="hidden" name="form_indicator_add_id" id="form_indicator_add_id">
+                    {{form.as_p}}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+          </div>
+        </div>
+    </div>
+
+
+    <!--Delete  Modal-->
+  <!-- Modal -->
+  <div class="modal fade" id="modalRemoveIndicator" tabindex="-1" aria-labelledby="modalRemoveIndicatorLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalRemoveIndicatorLabel">Delete Sector</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="h4 fw-normal" id="deleteMessageCategory"></p>
+      </div> 
+        
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <a href="#" id="deleteCategoryAnchor" type="submit" class="btn btn-danger">Delete</a>
+      </div>
+      
+    </div>
+  </div>
+</div>
+<!--End Modal -->
+
+  
+    </div>
+    <!--Body End-->
+
+    {% include 'user-admin/include/footer.html'%}
+    {% include 'user-admin/include/footer_js.html'%}
+
+    <script src="{% static 'assets/js/hooks/useFetch.js' %}"></script>
+    <script src="{% static 'assets/js/admin-data-view/indicatorDetail.js' %}"></script>
+   
+
+    
+  </body>
+
+  <script>
+    $(document).ready(function() {
+
+      showToast = (title, body, cssClass)=> {
+      $.toast({
+              heading: title,
+              text: body,
+              showHideTransition: 'slide',
+              icon: cssClass,
+              position: 'top-right',
+              })
+        }
+
+
+
+       //handle form edit value submit
+    $('#formEditValue').on('submit', function (e) {
+        e.preventDefault();
+        let indicator_id = $("#form_indicator_id").val()
+        let year_id = $("#form_year_id").val()
+        let value = $("#IndicatorFormValue").val()
+
+
+        $.ajax({
+            type: 'POST',
+            url: `/user-admin/data_view_indicator_detail/${indicator_id}/`,
+            data : {
+              'indicator_id' : indicator_id,
+              'year_id' : year_id,
+              'value' : value,
+              csrfmiddlewaretoken : '{{ csrf_token }}',
+            },
+            beforeSend: function() {
+               $('#editValueForm').hide()
+               $("#editValueFormBtnLoading").show();
+             },
+             // hides the loader after completion of request, whether successfull or failor.             
+             complete: function() {
+              //Show save button finished 
+               $('#editValueForm').show()
+               $("#editValueFormBtnLoading").hide();
+             },
+            
+            success : function (response) {
+              if (response.response) {
+                showToast('&#128515 Hello, User', 'Successfully Updated', 'success' )
+                $('#indicatorEditValue').modal('hide'); //Hide Modal
+
+                let buttonData = $(`#${indicator_id}-${year_id}`)
+                buttonData.text(value)
+                buttonData.data("value", value)
+
+              }else{
+                showToast('&#128532 Hello User', 'Failed to update Category.', 'error' )
+              }
+            },
+            error: function () {
+              showToast('&#128532 Hello User', 'Failed to update Category.', 'error' )
+            }
+        })
+    })
+    })
+  </script>
+</html>

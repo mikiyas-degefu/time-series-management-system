@@ -166,6 +166,8 @@ class AnnualData(models.Model):
     def __str__(self):
         if self.indicator:
             return self.indicator.title_ENG
+        else:
+            return str(self.performance)
     
 class Source(models.Model):
     title_ENG = models.CharField(max_length=50)

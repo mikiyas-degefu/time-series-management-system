@@ -10,25 +10,129 @@
     {% include 'user-admin/include/head.html' %}
   </head>
 
+
+
   <body class="hold-transition sidebar-mini layout-fixed">
     {% include 'user-admin/include/navbar.html'%}
     <div>{% include 'user-admin/include/sidebar.html' %}</div>
 
     <!--Body Start-->
     <div class="content-wrapper">
-      <!-- TItle Start-->
+     
       <div class="content-header">
-        <div class="container-fluid">
+        <div class="container-fluid mt-2">
+        
+        
+          <h6 class="text-secondary"> Dashboard </h6>
           <div class="row mb-2">
-            <div class="col-sm-6"></div>
+            <div class="col-lg-3">
+              <div class="card shadow" style="background-color:#b0e4ac">
+                <div class="card-body text-center text-primary">
+                 <h4>  <i class="bi bi-person-video3 ml-1"></i> Total Topic </h4>
+                 <h4> 16  </h4>
+                 <a class="text-primary" href="#"> More Info <i class="bi bi-arrow-down-circle-fill"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="card shadow" style="background-color:#b0e4ac">
+                <div class="card-body text-center text-success">
+                  <h4>  <i class="bi bi-list-nested ml-1"></i> Total Category </h4>
+                 <h4> 73  </h4>
+                 <a class="text-success" href="#"> More Info <i class="bi bi-arrow-down-circle-fill"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="card shadow" style="background-color:#b0e4ac">
+                <div class="card-body text-center text-info">
+                  <h4>   <i class="bi bi-app-indicator ml-1"></i> Total Indicator </h4>
+                  <h4> 73  </h4>
+                  <a class="text-info" href="#"> More Info <i class="bi bi-arrow-down-circle-fill"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="card shadow" style="background-color:#b0e4ac">
+                <div class="card-body text-center text-secondary">
+                  <h4>  <i class="bi bi-house-dash"></i> Total Dashbordtopic </h4>
+                  <h4> 73  </h4>
+                  <a class="text-secondary" href="#"> More Info <i class="bi bi-arrow-down-circle-fill"></i></a>
+                </div>
+              </div>
+            </div>
           </div>
+
+
+          
+        <!--Random month category-->
+         <div class="row justify-content-center">
+          <h6 class="text-secondary mt-4"> Random month category </h6>
+            <div class="col-lg-12">
+              <figure class="random_month_category">
+                <div id="random_month_category"></div>
+               
+            </figure>
+
+            </div>
+         </div>
+
+
+
+         <!-- Random year category-->
+         <div class="row justify-content-center">
+          <h6 class="text-secondary mt-4"> Random year category </h6>
+            <div class="col-lg-6">
+              <figure class="random_year_category">
+                <div id="random_year_category1"></div>
+                
+            </figure>
+
+            </div>
+            <div class="col-lg-6">
+              <figure class="random_year_category">
+                <div id="random_year_category2"></div>
+               
+            </figure>
+
+            </div>
+         </div>
+
+
+
+
+            <!--Topic category and indicator count  -->
+         <div class="row justify-content-center">
+          <h6 class="text-secondary mt-4"> Topic category and indicator count </h6>
+            <div class="col-lg-12">
+              <figure class="topic_category_indicator">
+                <div id="topic_category_indicator"></div>
+            </figure>
+
+            </div>
+         </div>
+         
+
+
+
+         <!--Random Category indicator Data -->
+         <div class="row justify-content-center">
+          <h6 class="text-secondary mt-4"> Random Category indicator Data </h6>
+            <div class="col-lg-10">
+
+            </div>
+         </div>
+
+
+
         </div>
       </div>
-      <!--Title End-->
+
     </div>
     <!--Body End-->
 
     {% include 'user-admin/include/footer.html'%}
+    {% include 'user-admin/include/highchart.html'%}
 
     <!--Chart -->
     <script src="{% static 'assets/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
@@ -39,6 +143,9 @@
     <script src="{% static 'assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
     <script src="{% static 'assets/plugins/summernote/summernote-bs4.min.js' %}"></script>
     <script src="{% static 'assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+
+
+    
 
     {% include 'user-admin/include/footer_js.html'%}
   </body>

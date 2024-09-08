@@ -3,7 +3,9 @@ from .models import *
 from .resource import(
     TopicResource,
     CategoryResource,
-    IndicatorResource
+    IndicatorResource,
+    AnnualDataResource,
+    DataPointResource
 )
 
 
@@ -24,9 +26,29 @@ class CategoryAdmin(ImportExportModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 
 
+
 class IndicatorAdmin(ImportExportModelAdmin):
     resource_classes = [IndicatorResource]
     list_display = ('title_ENG', 'title_AMH', 'kpi_characteristics', 'is_dashboard_visible', 'is_public')
     filter_horizontal = ('for_category', )
+    search_fields = ['title_ENG', 'title_AMH']
 
 admin.site.register(Indicator, IndicatorAdmin)
+
+
+
+class DataPointAdmin(ImportExportModelAdmin):
+    resource_classes = [DataPointResource]
+    list_display = ('year_EC', 'year_GC',)
+
+admin.site.register(DataPoint,  DataPointAdmin)
+
+
+
+class AnnualDataAdmin(ImportExportModelAdmin):
+    resource_classes = [AnnualDataResource]
+    list_display = ('performance','target' )
+
+admin.site.register(AnnualData,  AnnualDataAdmin)
+
+

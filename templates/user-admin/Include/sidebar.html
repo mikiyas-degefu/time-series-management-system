@@ -49,9 +49,8 @@ rel="stylesheet"
         data-accordion="false"
       >
         <li class="nav-item">
-          <a href="#" class="nav-link {% if request.path == '/user-admin/' %}active{% endif %}">
+          <a href="{% url "index" %}" class="nav-link {% if request.path == '/user-admin/' %}active{% endif %}">
             <i class="nav-icon bi bi-speedometer2"></i>
-            {% comment %} <i class="nav-icon bi bi-speedometer"></i> {% endcomment %}
             <p>Dashboard</p>
           </a>
         </li>
@@ -106,34 +105,34 @@ rel="stylesheet"
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link {% if request.path == '/user-admin/indicators/' %}active{% endif %}">
+              <a href="{% url "all_indicators" %}" class="nav-link {% if request.path == '/user-admin/all_indicators/' %}active{% endif %}">
                 <i class="bi bi-app-indicator ml-1"></i>
-                <p>Indicators</p>
+                <p>All Indicators</p>
               </a>
             </li>
-            <li class="nav-item">
+            {% comment %} <li class="nav-item">
               <a href="#" class="nav-link {% if request.path == '/user-admin/measurement/' %}active{% endif %}">
                 <i class="bi bi-cash-stack ml-1"></i>
                 <p>Measurements</p>
               </a>
-            </li>
+            </li> {% endcomment %}
             <li class="nav-item">
-              <a href="#" class="nav-link {% if request.path == '/user-admin/year/' %}active{% endif %}">
+              <a href="{% url "years" %}" class="nav-link {% if request.path == '/user-admin/years/' %}active{% endif %}">
                 <i class="bi bi-calendar-date ml-1"></i>
                 <p>Years</p>
               </a>
             </li>
-            <li class="nav-item">
+            {% comment %} <li class="nav-item">
               <a href="#" class="nav-link {% if request.path == '/user-admin/source/' %}active{% endif %}">
                 <i class="bi bi-buildings ml-1"></i>
                 <p>Sources</p>
               </a>
-            </li>           
+            </li>            {% endcomment %}
           </ul>
         </li>
         </li>
         <li class="nav-item ">
-          <a href="#" class="nav-link {% if request.path == '/user-admin/users/' %}active{% endif %}">
+          <a href="{% url "users" %}" class="nav-link {% if request.path == '/user-admin/users/' %}active{% endif %}">
             <i class="nav-icon fas fa-users"></i>
             <p>User Lists</p>
           </a>

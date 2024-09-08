@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'import_export',
     'fontawesome_5',
     'rest_framework',
+    'UserManagement',
 
 ]
 
@@ -147,3 +148,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 from import_export.formats.base_formats import CSV, XLSX
 IMPORT_FORMATS = [CSV, XLSX]
+
+
+
+AUTH_USER_MODEL = 'UserManagement.CustomUser'

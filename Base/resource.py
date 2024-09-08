@@ -5,6 +5,8 @@ from .models import (
     Topic,
     Category,
     Indicator,
+    AnnualData,
+    DataPoint,
 )
 class TopicResource(resources.ModelResource):
 
@@ -58,11 +60,45 @@ class IndicatorResource(resources.ModelResource):
     )
 
 
-
-
-
     class Meta:
         model = Indicator
         report_skipped = True
         skip_unchanged = True
         exclude = ( 'created_at', 'is_deleted', 'composite_key','op_type')
+
+
+class DataPointResource(resources.ModelResource):
+
+    class Meta:
+        model = DataPoint
+        skip_unchanged = True
+        report_skipped = True
+        exclude = ( 'id','created_at', 'updated_at')
+        import_id_fields = ('year_EC', 'year_GC')
+
+
+
+class AnnualDataResource(resources.ModelResource):    
+    indicator = fields.Field(
+        column_name='indicator',
+        attribute='indicator',
+        widget=ForeignKeyWidget(Indicator, field='composite_key'),
+        saves_null_values = True,
+    ) 
+    
+
+    for_datapoint = fields.Field(
+        column_name='for_datapoint',
+        attribute='for_datapoint',
+        widget=ForeignKeyWidget(DataPoint, field='year_EC'),
+        saves_null_values = True,
+    )
+
+
+    class Meta:
+        model = AnnualData
+        skip_unchanged = True
+        report_skipped = True
+        use_bulk = True
+        exclude = ( 'id', 'created_at')
+        import_id_fields = ('indicator', 'for_datapoint', 'performance', 'target')

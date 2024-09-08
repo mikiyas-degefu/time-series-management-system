@@ -15,7 +15,14 @@ from Base.models import (
     Topic,
     Category,
     Indicator, 
-    DataPoint
+    DataPoint,
+    AnnualData
+)
+from UserManagement.forms import(
+    CustomUserForm
+)
+from UserManagement.models import(
+    CustomUser
 )
 
 from Base.serializer import (
@@ -26,6 +33,62 @@ from Base.serializer import (
 
 def index(request):
     return render(request, 'user-admin/index.html')
+
+##Data View
+def data_view(request):
+    return render(request, 'user-admin/data_view.html')
+
+def data_view_indicator_detail(request, id):
+    form = IndicatorForm(request.POST or None)
+    if request.method == "GET":
+        indicator = None
+        try:
+            indicator = Indicator.objects.get(id=id)
+        except:
+            HttpResponse(404)
+        context = {
+            'indicator' : indicator,
+            'form' : form,
+        }
+        return render(request, 'user-admin/data_view_indicator_detail.html', context=context)
+    elif request.method == 'POST':
+        if 'form_indicator_add_id' in request.POST:
+            parent_id = request.POST['form_indicator_add_id']
+            #try:
+            indicator = Indicator.objects.get(id = parent_id)
+            if form.is_valid():
+                obj = form.save(commit=False)
+                obj.parent = indicator
+                obj.save()
+                for category in indicator.for_category.all():
+                    obj.for_category.add(category)
+                obj.save()
+                AnnualData.objects.create(indicator = obj, performance = 0, for_datapoint = DataPoint.objects.first())
+                messages.success(request, '😃 Hello User, Successfully Added Indicator')
+            #except:
+            #    messages.error(request, '😞 Hello User , An error occurred while Adding Indicator')
+            return redirect('data_view_indicator_detail', id)
+        elif 'indicator_id' in request.POST:
+            indicator_id = request.POST['indicator_id']
+            year_id = request.POST['year_id']
+            new_value = request.POST['value']
+    
+            try:
+                value = AnnualData.objects.get(indicator__id = indicator_id, for_datapoint__year_EC = year_id)
+                value.performance = new_value
+                value.save()
+            except:
+                try:
+                    indicator = Indicator.objects.get(id = indicator_id)
+                    datapoint = DataPoint.objects.get(year_EC = year_id)
+                    AnnualData.objects.create(indicator = indicator, performance = new_value, for_datapoint = datapoint)
+                except:
+                    return JsonResponse({'response' : False})
+            return JsonResponse({'response' : True})
+    
+    else: return HttpResponse("Bad Request!")
+
+
 
 def topic(request):
     form = TopicForm(request.POST or None, request.FILES or None)
@@ -99,11 +162,7 @@ def edit_topic(request):
     return Response(response)  
   
 
-def delete_topic(request, id):
-    topic = Topic.objects.get(id=id)    
-    topic.delete()
-    messages.success(request, '&#128532 Hello User, Topic Successfully Deleted')
-    return redirect('topic')
+
 
 
 
@@ -246,58 +305,6 @@ def delete_indicator(request, id):
         messages.error(request, '😞 Hello User , An error occurred while Deleting Indicator')
     return redirect(request.META.get('HTTP_REFERER'))
 
-
-#Users
-def users(request):
-    users = User.objects.all()
-    form = UserForm(request.POST or None)
-    count = 5
-
-
-    if 'q' in request.GET:
-        q = request.GET['q']
-        user = CustomUser.objects.filter( Q(first_name__contains=q) | Q(last_name__contains=q) | Q(email__contains=q))
-    
-    paginator = Paginator(user, 5) 
-    page_number = request.GET.get('page')
-
-    try:
-        page = paginator.get_page(page_number)
-        try: count = (5 * (int(page_number) if page_number  else 1) ) - 5
-        except: count = (5 * (int(1) if page_number  else 1) ) - 5
-    except PageNotAnInteger:
-        # if page is not an integer, deliver the first page
-        page = paginator.page(1)
-        count = (5 * (int(1) if page_number  else 1) ) - 5
-    except EmptyPage:
-        # if the page is out of range, deliver the last page
-        page = paginator.page(paginator.num_pages)
-        count = (5 * (int(paginator.num_pages) if page_number  else 1) ) - 5
-
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            messages.success(request, '&#128532 Hello User, Topic Successfully Added')
-            return redirect('users')
-        else:
-            messages.error(request, '&#128532 Hello User , An error occurred while Adding Topic')
-    
-
-    
-    context = {
-        'users' : page,
-        'count' : count,
-        'form' : form,
-    }
-    return render(request, 'user-admin/user_list.html', context) 
-
-def user_activate(request, id):
-    user = CustomUser.objects.get(id=id)    
-    user.activate = True
-    messages.success(request, '&#128532 Hello User, Topic Successfully Deleted')
-    return redirect('users')
-
-
 #All indicators
 def all_indicators(request):
     all_indicators = Indicator.objects.filter(is_deleted=False)
@@ -336,6 +343,10 @@ def all_indicators(request):
         'form' : form
     }    
     return render(request, 'user-admin/all_indicators.html' , context)
+
+
+
+    
 
 #Data years
 def years(request):
@@ -388,3 +399,93 @@ def years(request):
     }    
    
     return render(request, 'user-admin/years.html',context)
+
+
+
+#Users
+def users(request):
+    users = CustomUser.objects.all()
+    form = CustomUserForm(request.POST or None)
+    count = 5
+    total_users = CustomUser.objects.all().count()
+    active_users = CustomUser.objects.filter(is_active=True).count()
+    inactive_users = CustomUser.objects.filter(is_active=False).count()
+
+
+    if 'q' in request.GET:
+        q = request.GET['q']
+        users = CustomUser.objects.filter( Q(first_name__contains=q) | Q(last_name__contains=q) | Q(email__contains=q) | Q(username__contains=q))
+    
+    paginator = Paginator(users, 5) 
+    page_number = request.GET.get('page')
+
+    try:
+        page = paginator.get_page(page_number)
+        try: count = (5 * (int(page_number) if page_number  else 1) ) - 5
+        except: count = (5 * (int(1) if page_number  else 1) ) - 5
+    except PageNotAnInteger:
+        # if page is not an integer, deliver the first page
+        page = paginator.page(1)
+        count = (5 * (int(1) if page_number  else 1) ) - 5
+    except EmptyPage:
+        # if the page is out of range, deliver the last page
+        page = paginator.page(paginator.num_pages)
+        count = (5 * (int(paginator.num_pages) if page_number  else 1) ) - 5
+
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, '&#128532 Hello User, Topic Successfully Added')
+            return redirect('users')
+        else:
+            messages.error(request, '&#128532 Hello User , An error occurred while Adding Topic')
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, '&#128532 Hello User, User Successfully Added')
+            return redirect('users')
+        else:
+            messages.error(request, '&#128532 Hello User , User error occurred while Adding Topic')
+    
+    
+    context = {
+        'users' : page,
+        'count' : count,
+        'form' : form,
+        'total_users' : total_users,
+        'active_users' : active_users,
+        'inactive_users' : inactive_users
+    }
+    return render(request, 'user-admin/user_list.html', context) 
+
+
+
+def user_activate(request, id):
+    user = CustomUser.objects.get(id=id)    
+    user.is_active = True if user.is_active == False else False
+    user.save()
+    messages.success(request, '&#128532 Hello User, Topic Successfully Deleted')
+    return redirect('users')
+
+    
+@api_view(['POST'])
+def edit_user(request):    
+    id = request.POST['id'] 
+    first_name = request.POST['first_name']
+    last_name = request.POST['last_name']
+    is_superuser = True if request.POST['is_superuser'] == "true" else False
+    email = request.POST['email']
+    username = request.POST.get('username')
+    try:
+        user = CustomUser.objects.get(id = id)
+        user.first_name = first_name
+        user.last_name = last_name
+        user.is_superuser = is_superuser
+        user.rank = rank
+        user.username = username
+        user.save()
+        response = {'success' : True}
+    except:
+        response = {'success' : False}
+    return Response(response)  
+  
