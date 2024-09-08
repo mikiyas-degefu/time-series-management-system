@@ -346,7 +346,6 @@
        //Event handler that handle on Click to delete
      $(".btn-delete").on('click', function(){
           const buttonData = $(this).data()
-          console.log(buttonData)
           $("#deleteCategoryAnchor").attr("href", `/user-admin/delete_category/${buttonData.id}`)
           $("#deleteMessageCategory").html(`Are you sure you want to delete <div> <code> ${buttonData.name_eng} / ${buttonData.name_amh}</code>? </div> `)
         })

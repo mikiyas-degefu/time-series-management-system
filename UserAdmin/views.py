@@ -25,11 +25,6 @@ from UserManagement.models import(
     CustomUser
 )
 
-from Base.serializer import (
-    CategorySerializers,    
-)
-
-# Create your views here.
 
 def index(request):
     return render(request, 'user-admin/index.html')

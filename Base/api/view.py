@@ -67,13 +67,13 @@ def filter_indicator_annual_value(request):
       parent_indicator_id = indicator_ids[0].split(',')
       indicator_list_id_with_children = []
       def child_list(parent):
-            child = Indicator.objects.filter(parent = parent).select_related()
+            child = Indicator.objects.filter(parent = parent, is_deleted = False).select_related()
             for i in child:
                indicator_list_id_with_children.append(i.id)
                child_list(i)
                     
       for i in parent_indicator_id:
-          parent = Indicator.objects.filter(id = i).select_related().first()
+          parent = Indicator.objects.filter(id = i, is_deleted = False).select_related().first()
           indicator_list_id_with_children.append(parent.id)
           child_list(parent)
       
@@ -109,7 +109,7 @@ def detail_indicator_with_children(request, id):
       indicator_id_with_children = []
 
       def child_list(parent):
-            child = Indicator.objects.filter(parent = parent).select_related()
+            child = Indicator.objects.filter(parent = parent, is_deleted = False).select_related()
             for i in child:
                indicator_id_with_children.append(i.id)
                child_list(i)
