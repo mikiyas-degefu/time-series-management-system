@@ -58,7 +58,6 @@ def data_view_indicator_detail(request, id):
                 for category in indicator.for_category.all():
                     obj.for_category.add(category)
                 obj.save()
-                AnnualData.objects.create(indicator = obj, performance = 0, for_datapoint = DataPoint.objects.first())
                 messages.success(request, '😃 Hello User, Successfully Added Indicator')
             #except:
             #    messages.error(request, '😞 Hello User , An error occurred while Adding Indicator')

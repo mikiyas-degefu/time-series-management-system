@@ -194,6 +194,10 @@
     })
     })
 
+    //hide for for category
+    $("#id_for_category").prop("selectedIndex", 0).val(); 
+    $("#id_for_category").parent().hide()
+
 
     //hanndle delete indiactor 
     $("#tableBody").on("click","button[name='btnDeleteIndicator']",function(){

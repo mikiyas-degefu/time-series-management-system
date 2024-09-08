@@ -157,7 +157,7 @@ $(document).ready(function () {
                        ${childRow}
                     </tr>
                 ${space += String("&nbsp;&nbsp;&nbsp;&nbsp")}
-                ${childDataFn(filterChildOfChildIndicator[0].indicator__id)}
+                ${childDataFn(filterChildOfChildIndicator[0].indicator__id, space)}
                 `
                 })
             }

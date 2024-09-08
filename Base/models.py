@@ -1,5 +1,8 @@
 from django.db import models
 from fontawesome_5.fields import IconField
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
+
 # Create your models here.
 
 class Topic(models.Model):
@@ -63,12 +66,31 @@ class Indicator(models.Model):
     is_deleted = models.BooleanField(default = False)
     created_at = models.DateTimeField(auto_now_add=True)
    
-    def save(self, *args, **kwargs):
+    def create_composite_key(self, *args, **kwargs):
         self.composite_key = str(self.title_ENG.replace(" ","").replace("/","").replace("&","")) +  str(self.id)
         super(Indicator, self).save(*args, **kwargs)
+    
+    def create_data_value(self):
+        
+        obj = AnnualData()
+        year = DataPoint.objects.order_by('-year_EC').first()
+        obj.for_datapoint = year
+        obj.performance = 0
+        obj.indicator = self
+        obj.save()
 
     def __str__(self):
         return self.title_ENG 
+
+
+@receiver(post_save, sender=Indicator)
+def call_my_function(sender, instance, created, **kwargs):
+    if created: 
+        instance.create_data_value()
+        instance.create_composite_key()
+    else:  
+        instance.create_data_value()
+
 
     
    
