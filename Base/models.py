@@ -71,13 +71,15 @@ class Indicator(models.Model):
         super(Indicator, self).save(*args, **kwargs)
     
     def create_data_value(self):
-        
         obj = AnnualData()
         year = DataPoint.objects.order_by('-year_EC').first()
         obj.for_datapoint = year
         obj.performance = 0
         obj.indicator = self
         obj.save()
+
+
+
 
     def __str__(self):
         return self.title_ENG 
@@ -88,8 +90,6 @@ def call_my_function(sender, instance, created, **kwargs):
     if created: 
         instance.create_data_value()
         instance.create_composite_key()
-    else:  
-        instance.create_data_value()
 
 
     

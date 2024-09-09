@@ -66,19 +66,17 @@ def handle_uploaded_Category_file(file):
         resource  = CategoryResource()
         dataset = tablib.Dataset()
 
-
         imported_data = dataset.load(file.read())
-        new_data_set = []
-        for row in imported_data.dict:
-            new_data_set.append((row['name_ENG'],  row['name_AMH'],row['topic']))
-        dataset = tablib.Dataset(*new_data_set, headers=['name_ENG', 'name_AMH', 'topic'])
-        result = resource.import_data(dataset, dry_run=True)
+        result = resource.import_data(imported_data, dry_run=True, collect_failed_rows = True)
+        
         if not result.has_errors():
-            return True, dataset, result
+            return True, imported_data, result
         else:
-            return False, dataset, result
+            return False, imported_data, result
     except Exception as e:
-        return False, '', ''
+         return False, imported_data, result
+
+
 
 class IndicatorResource(resources.ModelResource):    
     for_category = fields.Field(
@@ -102,6 +100,25 @@ class IndicatorResource(resources.ModelResource):
         report_skipped = True
         skip_unchanged = True
         exclude = ( 'created_at', 'is_deleted', 'composite_key','op_type')
+
+
+def handle_uploaded_Indicator_file(file):
+    try:
+        resource  = IndicatorResource()
+        dataset = tablib.Dataset()
+
+        imported_data = dataset.load(file.read())
+        result = resource.import_data(imported_data, dry_run=True, collect_failed_rows = True)
+        
+        if not result.has_errors():
+            return True, imported_data, result
+        else:
+            return False, imported_data, result
+    except Exception as e:
+         return False, imported_data, result
+    
+
+
 
 
 class DataPointResource(resources.ModelResource):

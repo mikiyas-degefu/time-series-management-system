@@ -127,8 +127,19 @@ $(document).ready(function () {
                     <tr>
                         <td>
                            <div class="row">
-                                <div class="col-10">&nbsp;&nbsp;&nbsp;&nbsp ${space}  ${filterChildOfIndicator[0].indicator__title_ENG}</div>
-                                   <div class="col-1">
+                                <div class="col-9">&nbsp;&nbsp;&nbsp;&nbsp ${space}  ${filterChildOfIndicator[0].indicator__title_ENG}</div>
+                                <div class="col-1">
+                                    <a 
+                                        href="/user-admin/data_view_indicator_update/${filterChildOfIndicator[0].indicator__id}" 
+                                        name="btnAddIndicator" 
+                                        data-indicator-id="${indicatorId}"
+                                        data-indicator-name-eng="${filterChildOfIndicator[0].indicator__title_ENG}"
+                                        data-indicator-name-amg="${filterChildOfIndicator[0].indicator__title_AMH}"
+                                        class="btn btn-sm btn-outline-primary border-0  pt-1 pb-1" 
+                                        data-bs-placement="bottom" 
+                                        title="Add new Sub-Indicator"><i class="fas fa-pen"></i></a> 
+                                 </div>   
+                                <div class="col-1">
                                      <button 
                                          type="button" 
                                          name="btnAddIndicator" 
@@ -204,8 +215,16 @@ $(document).ready(function () {
                 <tr>
                     <td class="">
                         <div class="row">
-                         <div class="col-10">&nbsp;&nbsp;&nbsp;&nbsp ${filterChildIndicator[0].indicator__title_ENG}</div>
-                            <div class="col-1">
+                         <div class="col-9">&nbsp;&nbsp;&nbsp;&nbsp ${filterChildIndicator[0].indicator__title_ENG}</div>
+                         <div class="col-1">
+                         <a 
+                             href="/user-admin/data_view_indicator_update/${filterChildIndicator[0].indicator__id}" 
+                             name="btnAddIndicator" 
+                             class="btn btn-sm btn-outline-primary border-0  pt-1 pb-1" 
+                             data-bs-placement="bottom" 
+                             title="Add new Sub-Indicator"><i class="fas fa-pen"></i></a> 
+                      </div>    
+                         <div class="col-1">
                               <button 
                                   type="button" 
                                   name="btnAddIndicator" 
@@ -243,7 +262,15 @@ $(document).ready(function () {
             <tr>
                 <td class="fw-bold">
                      <div class="row">
-                      <div class="col-10">${filterIndicator[0].indicator__title_ENG}</div>
+                      <div class="col-9">${filterIndicator[0].indicator__title_ENG}</div>
+                      <div class="col-1">
+                         <a 
+                             href="/user-admin/data_view_indicator_update/${filterIndicator[0].indicator__id}" 
+                             name="btnAddIndicator" 
+                             class="btn btn-sm btn-outline-primary border-0  pt-1 pb-1" 
+                             data-bs-placement="bottom" 
+                             title="Add new Sub-Indicator"><i class="fas fa-pen"></i></a> 
+                      </div>   
                       <div class="col-1">
                         <button 
                             type="button" 
