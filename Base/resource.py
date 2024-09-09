@@ -20,7 +20,6 @@ class TopicResource(resources.ModelResource):
         import_id_fields = ('title_ENG', 'title_AMH')
 
 
-
 #handle_uploaded_Topic_file
 def handle_uploaded_Topic_file(file):
     try:
@@ -37,8 +36,6 @@ def handle_uploaded_Topic_file(file):
     except Exception as e:
          return False, imported_data, result
     
-
-
 
 class CategoryResource(resources.ModelResource):
     topic = fields.Field(
@@ -64,6 +61,24 @@ class CategoryResource(resources.ModelResource):
         import_id_fields = ('name_ENG', 'name_AMH','topic')
 
 
+def handle_uploaded_Category_file(file):
+    try:
+        resource  = CategoryResource()
+        dataset = tablib.Dataset()
+
+
+        imported_data = dataset.load(file.read())
+        new_data_set = []
+        for row in imported_data.dict:
+            new_data_set.append((row['name_ENG'],  row['name_AMH'],row['topic']))
+        dataset = tablib.Dataset(*new_data_set, headers=['name_ENG', 'name_AMH', 'topic'])
+        result = resource.import_data(dataset, dry_run=True)
+        if not result.has_errors():
+            return True, dataset, result
+        else:
+            return False, dataset, result
+    except Exception as e:
+        return False, '', ''
 
 class IndicatorResource(resources.ModelResource):    
     for_category = fields.Field(
