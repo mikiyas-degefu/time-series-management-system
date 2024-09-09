@@ -143,7 +143,8 @@ $(document).ready(function () {
                                      <button 
                                          type="button" 
                                          name="btnDeleteIndicator" 
-                                         data-indicator-id="${child_id}" 
+                                         data-indicator-id="${child_id}"
+                                         data-indicator-name="${filterChildOfIndicator[0].indicator__title_ENG}" 
                                          data-bs-toggle="modal" 
                                          data-bs-target="#modalRemoveIndicator" 
                                          class="btn btn-outline-danger border-0  pt-1 pb-1" 
@@ -156,7 +157,7 @@ $(document).ready(function () {
                        ${childRow}
                     </tr>
                 ${space += String("&nbsp;&nbsp;&nbsp;&nbsp")}
-                ${childDataFn(filterChildOfChildIndicator[0].indicator__id)}
+                ${childDataFn(filterChildOfChildIndicator[0].indicator__id, space)}
                 `
                 })
             }
@@ -220,6 +221,7 @@ $(document).ready(function () {
                                   type="button" 
                                   name="btnDeleteIndicator" 
                                   data-indicator-id="${child_id}"
+                                  data-indicator-name="${filterChildIndicator[0].indicator__title_ENG}"
                                   data-bs-toggle="modal" 
                                   data-bs-target="#modalRemoveIndicator" 
                                   class="btn btn-outline-danger border-0  pt-1 pb-1" 
@@ -258,6 +260,7 @@ $(document).ready(function () {
                             type="button" 
                             name="btnDeleteIndicator" 
                             data-indicator-id="${indicatorId}"
+                            data-indicator-name="${filterIndicator[0].indicator__title_ENG}"
                             data-bs-toggle="modal" 
                             data-bs-target="#modalRemoveIndicator" 
                             class="btn btn-outline-danger border-0  pt-1 pb-1" 

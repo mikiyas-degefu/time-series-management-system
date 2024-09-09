@@ -1,0 +1,122 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% include "base/includes/head.html" %}
+    <style>
+        .scrollable {
+          max-height: 500px;
+          /* replace 500px with your desired maximum width */
+          overflow-y: auto;
+          /* enable 
+          horizontal scrolling */
+        }
+    
+    
+        .vertical-text {
+          writing-mode: vertical-rl;
+          transform: rotate(180deg);
+          text-orientation: sideways-right;
+          white-space: nowrap;
+          width: 100%;
+          text-align: center;
+        }
+    
+      </style>
+</head>
+
+<body class="justify-content-center overflow-auto">
+    <div id="loading">
+        <div id="loading-center">
+            <div id="loading-center-absolute">
+                <div class="object" id="object_one"></div>
+                <div class="object" id="object_two"></div>
+                <div class="object" id="object_three"></div>
+                <div class="object" id="object_four"></div>
+                <div class="object" id="object_five"></div>
+                <div class="object" id="object_six"></div>
+                <div class="object" id="object_seven"></div>
+                <div class="object" id="object_eight"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="scroll-up" id="scroll" style="display: none;">
+        <a href="javascript:void(0);"><i class="fas fa-level-up-alt"></i></a>
+    </div>
+
+   <div style="margin-bottom:50px"> {% include "base/includes/navbar.html" %} </div>
+
+   
+    <div class="content-wrapper border container-fluid" style="padding-bottom:100px">
+        
+<div class="content-wrapper">
+    <!-- TItle Start-->
+    <div class="content-header">
+      <div class="container-fluid">
+          <h1>{{indicator.title_ENG}}</h1>
+          <div class="col-lg-7 mt-3 mx-auto d-block">
+            {% include 'includes/messages.html' %}
+           </div>
+          <div class="card mt-5 shadow-sm border p-3">
+              <div class="table-responsive mt-3">
+                  <table class="table table-bordered"  style="table-layout: fixed;">
+                      <thead id="tableHead">
+                      </thead>
+                      <tbody id="tableBody">
+                       
+                      </tbody>
+                    </table>
+              </div>
+          </div>
+      </div>
+    </div>
+    </div>
+
+
+
+
+    <!-- footer area start -->
+    {% include "base/includes/footer.html" %}
+    <!-- footer area end -->
+
+    <!-- JS here -->
+    {% include "base/includes/footer_js.html" %}
+</body>
+
+<script src="{% static 'base_assets/js/base-data-view/filterTopicAndCategory.js' %}"></script>
+<script src="{% static 'base_assets/js/hooks/useFetch.js' %}"></script>
+
+
+
+
+<script src="{% static " base_assets/plugins/jquery/jquery.min.j" %}s"></script>
+
+<script src="{% static " base_assets/plugins/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+
+<script src="{% static " base_assets/dist/js/adminlte.min2167.js?v=3.2.0" %}"></script>
+
+<script src="{% static " base_assets/plugins/flot/jquery.flot.js" %}"></script>
+
+<script src="{% static " base_assets/plugins/flot/plugins/jquery.flot.resize.js" %}"></script>
+
+<script src="{% static " base_assets/plugins/flot/plugins/jquery.flot.pie.js" %}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+</html>
+
+
+
+
+
+
+

@@ -104,12 +104,12 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p class="h4 fw-normal" id="deleteMessageCategory"></p>
+        <p class="h4 fw-normal" id="deleteMessageIndicator"></p>
       </div> 
         
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <a href="#" id="deleteCategoryAnchor" type="submit" class="btn btn-danger">Delete</a>
+        <a href="#" id="deleteCategoryIndicator" type="submit" class="btn btn-danger">Delete</a>
       </div>
       
     </div>
@@ -193,5 +193,18 @@
         })
     })
     })
+
+    //hide for for category
+    $("#id_for_category").prop("selectedIndex", 0).val(); 
+    $("#id_for_category").parent().hide()
+
+
+    //hanndle delete indiactor 
+    $("#tableBody").on("click","button[name='btnDeleteIndicator']",function(){
+      const buttonData = $(this).data()
+      $("#deleteCategoryIndicator").attr("href", `/user-admin/indicator_delete/${buttonData.indicatorId}`)
+      $("#deleteMessageIndicator").html(`Are you sure you want to delete <div> <code> ${buttonData.indicatorName}</code>? </div> `)
+    }) 
+    
   </script>
 </html>

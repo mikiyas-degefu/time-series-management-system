@@ -3,15 +3,15 @@ $(document).ready(function () {
     let rowCounter = 0
 
     const table = (data) => {
-        let parentLists = data.indicators.filter((item) => item.parent_id == null)
+        let parentLists = data.indicators?.filter((item) => item.parent_id == null)
         let childLists = (parentId, space) => {
             let childList = data.indicators.filter((item) => item.parent_id == parentId)
             return childList.map((item) => {
                 return `
                 <tr>
                    <td>${rowCounter + 1}</td>    
-                   <td>${space} ${item.title_AMH}</td>
                    <td>${space} ${item.title_ENG}</td>
+                   <td>${space} ${item.title_AMH}</td>
                    <td>${space} ${item.composite_key}</td>
                    <td></td>
                    <td>${item.kpi_characteristics ? item.kpi_characteristics : " - "}</td>
@@ -46,15 +46,15 @@ $(document).ready(function () {
         }
 
         let tableRow = ''
-        if (parentLists.length == 0) {
+        if (parentLists?.length == 0) {
             tableRow = `<tr class="text-bold text-center text-danger" ><td colspan="10">No data found</td></tr>`
         } else {
-            tableRow = parentLists.map((item) => {
+            tableRow = parentLists?.map((item) => {
                 return `
                 <tr class="text-bold">
                    <td>${rowCounter + 1}</td>    
-                   <td>${item.title_AMH}</td>
                    <td>${item.title_ENG}</td>
+                   <td>${item.title_AMH}</td>
                    <td>${item.composite_key}</td>
                    <td> ${item.for_category ? item.for_category.slice(0, 2).join(", ") + "..." : " - "} </td>
                    <td>${item.kpi_characteristics ? item.kpi_characteristics : " - "}</td>
@@ -93,7 +93,7 @@ $(document).ready(function () {
     const fetchTableData = async () => {
         let urlPath = window.location.pathname;
         let pathID = urlPath.replace("/user-admin/indicators/", "");
-        let response = await useFetch(`http://127.0.0.1:8000/indicator-lists/${pathID}`)
+        let [loading,response] = await useFetch(`/indicator-lists/${pathID}`)
 
         //Hide for category 
         

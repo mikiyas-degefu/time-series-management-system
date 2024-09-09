@@ -44,11 +44,16 @@
                   class="btn btn-primary float-end m-2"
                   data-bs-toggle="modal" 
                   data-bs-target="#addCategory">
-                  <i class="fas fa-plus"></i> Add Topic
+                  <i class="fas fa-plus"></i> Add Category
                 </button>
-                  <button class="btn btn-primary float-end m-2" 
-                  
-                  data-bs-whatever="@mdo"><i class="fas fa-database"></i> Import Topic</button>
+                  <button 
+                    class="btn btn-primary float-end m-2" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#categoryExcel"
+                    data-bs-whatever="@mdo">
+                    <i class="fas fa-database"></i> 
+                    Import Category
+                  </button>
               </div>
                       
             </div>
@@ -214,7 +219,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button id="saveCategory"  type="submit" class="btn btn-primary">Save changes</button>
+          <button name="addTopicForm" id="saveCategory"  type="submit" class="btn btn-primary">Save changes</button>
         </div>
       </form>
     </div>
@@ -245,6 +250,45 @@
     </div>
   </div>
   <!--End Modal -->
+
+
+  <!--Modal add Excel file for Category-->
+   <!--Add Excel Data-->
+   <div class="modal fade" id="categoryExcel" tabindex="-1" aria-labelledby="categoryExcelLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="categoryExcelLabel">
+            New Category Registration
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method='POST' name="fileCategory" enctype="multipart/form-data">
+          <div class="modal-body">
+
+            {% csrf_token %}
+            <p class="text-info">Click Download button to download sample Excel format. <a href="{% static 'SampleExcel/TopicSample.xlsx' %}" download="TopicSample.xlsx"
+                class="btn btn-info">Download</a></p>
+
+
+            <div class="row justify-content-start mt-5">
+              <div class="col-12">
+                <label for="">Add Excel</label>
+                {{formFile.as_p}}
+
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancel
+            </button>
+            <button type="submit" name="fileCategory" class="btn btn-primary">Add Category</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
 
 
@@ -346,7 +390,6 @@
        //Event handler that handle on Click to delete
      $(".btn-delete").on('click', function(){
           const buttonData = $(this).data()
-          console.log(buttonData)
           $("#deleteCategoryAnchor").attr("href", `/user-admin/delete_category/${buttonData.id}`)
           $("#deleteMessageCategory").html(`Are you sure you want to delete <div> <code> ${buttonData.name_eng} / ${buttonData.name_amh}</code>? </div> `)
         })
