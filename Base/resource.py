@@ -1,5 +1,7 @@
 from import_export import resources, fields
 import datetime
+from import_export.formats.base_formats import XLS
+import tablib
 from import_export.widgets import ForeignKeyWidget, ManyToManyWidget
 from .models import (
     Topic,
@@ -16,6 +18,26 @@ class TopicResource(resources.ModelResource):
         report_skipped = True
         exclude = ( 'id', 'updated', 'created', 'is_deleted', 'rank', 'icon', 'is_dashboard')
         import_id_fields = ('title_ENG', 'title_AMH')
+
+
+
+#handle_uploaded_Topic_file
+def handle_uploaded_Topic_file(file):
+    try:
+        resource  = TopicResource()
+        dataset = tablib.Dataset()
+
+        imported_data = dataset.load(file.read())
+        result = resource.import_data(imported_data, dry_run=True, collect_failed_rows = True)
+        
+        if not result.has_errors():
+            return True, imported_data, result
+        else:
+            return False, imported_data, result
+    except Exception as e:
+         return False, imported_data, result
+    
+
 
 
 class CategoryResource(resources.ModelResource):
@@ -102,3 +124,25 @@ class AnnualDataResource(resources.ModelResource):
         use_bulk = True
         exclude = ( 'id', 'created_at')
         import_id_fields = ('indicator', 'for_datapoint', 'performance', 'target')
+
+
+
+
+###Confirm 
+def confirm_file(imported_data, type):
+    try:
+        if type == 'topic':
+            resource  = TopicResource()
+        elif type == 'category':
+            resource = CategoryResource()
+        elif type == 'indicator':
+            resource = IndicatorResource()
+        result = resource.import_data(imported_data, dry_run=True, collect_failed_rows = True)
+        
+        if not result.has_errors():
+            resource.import_data(imported_data, dry_run=False)  # Actually import now
+            return True, f"Data imported successfully: {len(imported_data)} records imported."
+        else:
+            return False, f"Error importing data: Please review your Document."
+    except Exception as e:
+         return False, f"Error importing data: Please review your Document."

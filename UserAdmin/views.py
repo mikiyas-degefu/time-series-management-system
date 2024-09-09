@@ -1,10 +1,17 @@
 from django.shortcuts import render , redirect, HttpResponse
 from django.db.models import Q
 from django.http import JsonResponse
-from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from UserManagement.forms import CustomUserForm
+from UserManagement.models import CustomUser
+from Base.forms import ImportFileForm
+from Base.resource import (
+    handle_uploaded_Topic_file,
+    confirm_file
+)
+
 from .forms import(
     TopicForm,
     CategoryForm,
@@ -18,12 +25,8 @@ from Base.models import (
     DataPoint,
     AnnualData
 )
-from UserManagement.forms import(
-    CustomUserForm
-)
-from UserManagement.models import(
-    CustomUser
-)
+
+
 
 
 def index(request):
@@ -82,40 +85,59 @@ def data_view_indicator_detail(request, id):
     
     else: return HttpResponse("Bad Request!")
 
-
-
 def topic(request):
     form = TopicForm(request.POST or None, request.FILES or None)
     topics = Topic.objects.filter(is_deleted=False)
-    count = 5
+    count = 30
+
+    formFile = ImportFileForm() #responsive to read imported file for import export 
+    global imported_data_global #global variable to store imported data
    
     if 'q' in request.GET:
         q = request.GET['q']
         topics = Topic.objects.filter(is_deleted=False).filter( Q(title_ENG__contains=q) | Q(title_AMH__contains=q) | Q(created__contains=q))
     
-    paginator = Paginator(topics, 5) 
+    paginator = Paginator(topics, 30) 
     page_number = request.GET.get('page')
 
     try:
         page = paginator.get_page(page_number)
-        try: count = (5 * (int(page_number) if page_number  else 1) ) - 5
-        except: count = (5 * (int(1) if page_number  else 1) ) - 5
+        try: count = (30 * (int(page_number) if page_number  else 1) ) - 30
+        except: count = (30 * (int(1) if page_number  else 1) ) - 30
     except PageNotAnInteger:
         # if page is not an integer, deliver the first page
         page = paginator.page(1)
-        count = (5 * (int(1) if page_number  else 1) ) - 5
+        count = (30 * (int(1) if page_number  else 1) ) - 30
     except EmptyPage:
         # if the page is out of range, deliver the last page
         page = paginator.page(paginator.num_pages)
-        count = (5 * (int(paginator.num_pages) if page_number  else 1) ) - 5
+        count = (30 * (int(paginator.num_pages) if page_number  else 1) ) - 30
 
     if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            messages.success(request, '&#128532 Hello User, Topic Successfully Added')
-            return redirect('topic')
-        else:
-            messages.error(request, '&#128532 Hello User , An error occurred while Adding Topic')
+        if 'addTopic' in request.POST:
+            if form.is_valid():
+                form.save()
+                messages.success(request, '😀 Hello User, Topic Successfully Added')
+                return redirect('topic')
+            else:
+                messages.error(request, '😞 Hello User , An error occurred while Adding Topic')
+        elif 'fileTopic' in request.POST:
+            formFile = ImportFileForm(request.POST, request.FILES)
+            if formFile.is_valid():
+                file = request.FILES['file']
+                success, imported_data, result = handle_uploaded_Topic_file(file)
+                imported_data_global = imported_data
+                context = {'result': result}
+                return render(request, 'user-admin/import_preview.html', context=context)
+            else:
+                messages.error(request, '😞 Hello User , An error occurred while Importing Topic')
+        elif 'confirm_data_form' in request.POST:
+            success, message = confirm_file(imported_data_global, 'topic')
+            if success:
+                messages.success(request, message)
+            else:
+                messages.error(request, message)
+
     
 
     
@@ -123,6 +145,7 @@ def topic(request):
         'topics' : page,
         'count' : count,
         'form' : form,
+        'formFile' : formFile
     }
     return render(request, 'user-admin/topic.html', context)   
 
@@ -155,9 +178,6 @@ def edit_topic(request):
         response = {'success' : False}
     return Response(response)  
   
-
-
-
 
 
 #### Category  
