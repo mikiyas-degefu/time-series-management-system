@@ -127,7 +127,8 @@
                     
                     <button class="btn btn-danger mt-2 btn-sm btn-deactivate" data-bs-toggle="modal"
                       data-bs-target="#deactivateUserModal" data-bs-whatever="@mdo" data-id={{user.id}}
-                      data-first_name={{user.first_name}}>
+                      data-first_name={{user.first_name}}
+                      data-status={{user.is_active}}>
                       Deactive
                     </button>
                     </td>
@@ -311,8 +312,9 @@
     $(".btn-deactivate").on('click', function () {
 
       const buttonData = $(this).data()
+      let status = buttonData.status ? "Deactivate" : "Activate"
       $("#deactivateUserAnchor").attr("href", `/user-admin/user_activate/${buttonData.id}`)
-      $("#deactivateUser").html(`Are you sure you want to delete <div> <code> ${buttonData.first_name}</code>? </div> `)
+      $("#deactivateUser").html(`Are you sure you want to ${status} <div> <code> ${buttonData.first_name}</code>? </div> `)
     })
 
 

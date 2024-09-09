@@ -32,7 +32,14 @@ from Base.serializer import (
 # Create your views here.
 
 def index(request):
-    return render(request, 'user-admin/index.html')
+    context = {
+        'total_topic' : Topic.objects.all().count(),
+        'total_dashboard_topic' : Topic.objects.filter(is_dashboard = True).count(),
+        'total_category' : Category.objects.all().count(),
+        'total_indicator' : Indicator.objects.all().count(),
+    }
+
+    return render(request, 'user-admin/index.html' , context)
 
 ##Data View
 def data_view(request):
@@ -338,7 +345,7 @@ def all_indicators(request):
 
 
     context = {
-        'all_indicators' : all_indicators,
+        'all_indicators' : page,
         'count' : count,
         'form' : form
     }    
@@ -435,17 +442,10 @@ def users(request):
     if request.method == 'POST':
         if form.is_valid():
             form.save()
-            messages.success(request, '&#128532 Hello User, Topic Successfully Added')
-            return redirect('users')
-        else:
-            messages.error(request, '&#128532 Hello User , An error occurred while Adding Topic')
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
             messages.success(request, '&#128532 Hello User, User Successfully Added')
             return redirect('users')
         else:
-            messages.error(request, '&#128532 Hello User , User error occurred while Adding Topic')
+            messages.error(request, '&#128532 Hello User , An error occurred while Adding User')
     
     
     context = {
@@ -463,8 +463,9 @@ def users(request):
 def user_activate(request, id):
     user = CustomUser.objects.get(id=id)    
     user.is_active = True if user.is_active == False else False
+    status = "Deactivated" if user.is_active == False else "Activated"
     user.save()
-    messages.success(request, '&#128532 Hello User, Topic Successfully Deleted')
+    messages.success(request, f'😊 Hello User, User Successfully {status}')
     return redirect('users')
 
     

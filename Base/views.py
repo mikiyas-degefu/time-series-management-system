@@ -12,3 +12,7 @@ def contact(request):
     return render(request, 'Base/contact.html')
 
 
+def data(request):
+    return render(request, 'Base/data.html')
+
+

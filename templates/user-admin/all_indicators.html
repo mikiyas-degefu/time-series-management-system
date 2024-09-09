@@ -65,7 +65,8 @@
 
               {% if all_indicators %}
               {% for indicator in all_indicators %}
-              <tr>
+             
+               <tr>
                 <td>{{count | add:forloop.counter}}</td>
                 <td>{{indicator.title_ENG}}</td>
                 <td>{{indicator.title_AMH}}</td>
@@ -92,16 +93,9 @@
                   {% endif %}
                 </td>
                 <td>
-                  <button class="btn btn-outline-warning mt-2 btn-sm btn-view" data-bs-toggle="modal"
-                  data-bs-target="#viewIndicator" data-bs-whatever="@mdo" 
-                  data-bs-toggle="modal" data-bs-target="#editIndicator" data-bs-whatever="@mdo"
-                  data-id={{ indicator.id }} data-title_ENG={{ indicator.title_ENG }} data-title_AMH={{indicator.title_AMH }} 
-                  data-for-category={{ indicator.for_category.all }} data-is-public={{indicator.is_public }} 
-                  data-measurement-units={{ indicator.measurement_units }}
-                  data-kpi-characteristics={{ indicator.kpi_characteristics }}
-                  data-is_dashboard_visible={{indicator.is_dashboard_visible}}>
+                  <a href="{% url "data_view_indicator_detail" indicator.id %}" class="btn btn-outline-warning mt-2 btn-sm">
                   <i class="fa fa-eye"></i>
-                </button>
+                 </a>
                   
                   <a class="btn btn-outline-info mt-2 btn-sm btn-edit" id="btnEditTable{{indicator.id}}" href="{% url "indicators_detail" indicator.id %}">
                     <i class="fa fa-edit"></i>

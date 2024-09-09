@@ -5,7 +5,8 @@ from .api.view import(
 from .views import (
     base_index,
     about,
-    contact
+    contact,
+    data
 )
 from .api.view import(
     get_indicators,
@@ -26,6 +27,8 @@ urlpatterns = [
     path('' , base_index , name='base_index'),
     path('about' , about , name='about'),
     path('contact' , contact , name='contact'),
+    path('data' , data , name='data'),
+
 
 
     ###Auth

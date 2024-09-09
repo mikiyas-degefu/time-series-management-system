@@ -29,8 +29,8 @@
               <div class="card shadow" style="background-color:#b0e4ac">
                 <div class="card-body text-center text-primary">
                  <h4>  <i class="bi bi-person-video3 ml-1"></i> Total Topic </h4>
-                 <h4> 16  </h4>
-                 <a class="text-primary" href="#"> More Info <i class="bi bi-arrow-down-circle-fill"></i></a>
+                 <h4> {{total_topic}}  </h4>
+                 <a class="text-primary" href="{% url "topic" %}"> More Info <i class="bi bi-arrow-down-circle-fill"></i></a>
                 </div>
               </div>
             </div>
@@ -38,8 +38,8 @@
               <div class="card shadow" style="background-color:#b0e4ac">
                 <div class="card-body text-center text-success">
                   <h4>  <i class="bi bi-list-nested ml-1"></i> Total Category </h4>
-                 <h4> 73  </h4>
-                 <a class="text-success" href="#"> More Info <i class="bi bi-arrow-down-circle-fill"></i></a>
+                 <h4> {{total_category}}  </h4>
+                 <a class="text-success" href="{% url "categories" %}"> More Info <i class="bi bi-arrow-down-circle-fill"></i></a>
                 </div>
               </div>
             </div>
@@ -47,8 +47,8 @@
               <div class="card shadow" style="background-color:#b0e4ac">
                 <div class="card-body text-center text-info">
                   <h4>   <i class="bi bi-app-indicator ml-1"></i> Total Indicator </h4>
-                  <h4> 73  </h4>
-                  <a class="text-info" href="#"> More Info <i class="bi bi-arrow-down-circle-fill"></i></a>
+                  <h4> {{total_indicator}} </h4>
+                  <a class="text-info" href="{% url "all_indicators" %}"> More Info <i class="bi bi-arrow-down-circle-fill"></i></a>
                 </div>
               </div>
             </div>
@@ -56,8 +56,8 @@
               <div class="card shadow" style="background-color:#b0e4ac">
                 <div class="card-body text-center text-secondary">
                   <h4>  <i class="bi bi-house-dash"></i> Total Dashbordtopic </h4>
-                  <h4> 73  </h4>
-                  <a class="text-secondary" href="#"> More Info <i class="bi bi-arrow-down-circle-fill"></i></a>
+                  <h4> {{total_dashboard_topic}}  </h4>
+                  <a class="text-secondary" href="{% url "topic" %}"> More Info <i class="bi bi-arrow-down-circle-fill"></i></a>
                 </div>
               </div>
             </div>
