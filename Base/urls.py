@@ -2,12 +2,6 @@ from django.urls import path
 from .api.view import(
     get_indicators,
 )
-from .views import (
-    base_index,
-    about,
-    contact,
-    data
-)
 from .api.view import(
     get_indicators,
     filter_topic_and_category,
@@ -20,14 +14,6 @@ from UserManagement.views import login_view , logout_view
 
 urlpatterns = [
     path('indicator-lists/<str:id>', get_indicators),
-
-
-
-    ###Base html
-    path('' , base_index , name='base_index'),
-    path('about' , about , name='about'),
-    path('contact' , contact , name='contact'),
-    path('data' , data , name='data'),
 
 
 

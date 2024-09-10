@@ -2,7 +2,7 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('', index, name='index'),
+    path('<int:id>', index, name='index'),
     path('topic/', topic, name='topic'),
     path('delete_topic/<int:id>', delete_topic, name='delete_topic'),
     path('edit_topic/', edit_topic, name='edit_topic'),
@@ -36,5 +36,10 @@ urlpatterns = [
 
     #all_indicators
     path('all_indicators/', all_indicators, name='all_indicators'),
+
+
+
+    #Design
+    path('indicator_detail_view/', indicator_detail_view, name='indicator_detail_view'),
 
 ]
