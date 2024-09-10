@@ -26,19 +26,134 @@ from Base.models import (
     DataPoint,
     AnnualData
 )
+import random
+import string
 
 
 
 
-def index(request):
+
+from django.db.models import Count
+
+from django.db.models import Count
+
+
+
+def indicator_detail_view (request):
+    return render(request, 'user-admin/indicator_detail_view.html')
+
+
+
+
+
+
+
+def index(request , id=32):
+    bootstrap_colors = ['secondary', 'success', 'warning', 'info', 'dark']
+
+    topics = Topic.objects.annotate(num_categories=Count('category'))
+    selected_topic = Topic.objects.get(id=id)
+    selected_topic_categories = Category.objects.filter(topic__id=id)
+    cat_indicator = []
+    for selected_topic_category in selected_topic_categories:
+        indicators = list(Indicator.objects.filter(for_category=selected_topic_category).values('id', 'title_ENG', 'title_AMH'))
+        
+        for indicator in indicators:
+            annual_data_values = list(AnnualData.objects.filter(indicator_id=indicator['id']).values(
+                'id',
+                'indicator__title_ENG',
+                'indicator__title_AMH',
+                'indicator_id',
+                'indicator__parent_id',
+                'for_datapoint__year_EC',
+                'for_datapoint__year_GC',
+                'performance',
+                'target'
+            ))
+            
+            indicator['annual_data_values'] = annual_data_values
+        
+        cat_indicator.append({
+            'cat_name_ENG': selected_topic_category.name_ENG,
+            'cat_name_AMH': selected_topic_category.name_AMH,
+            'cat_id': selected_topic_category.id,
+            'indicators': indicators
+        })  
+    
+    if 'q' in request.GET: # Cheking if query is present
+        q = request.GET['q']
+        id = None
+        # first try if the query exists in the indicator 
+        indicators = Indicator.objects.filter(Q(title_ENG__contains=q) | Q(title_AMH__contains=q))
+        if not indicators:
+            selected_topic_categories = Category.objects.filter(Q(name_ENG__contains=q) | Q(name_AMH__contains=q))
+            cat_indicator = []
+            for selected_topic_category in selected_topic_categories:
+                 indicators = list(Indicator.objects.filter(for_category=selected_topic_category).values('id', 'title_ENG', 'title_AMH'))
+                 
+                 for indicator in indicators:
+                     annual_data_values = list(AnnualData.objects.filter(indicator_id=indicator['id']).values(
+                         'id',
+                         'indicator__title_ENG',
+                         'indicator__title_AMH',
+                         'indicator_id',
+                         'indicator__parent_id',
+                         'for_datapoint__year_EC',
+                         'for_datapoint__year_GC',
+                         'performance',
+                         'target'
+                     ))
+                     
+                     indicator['annual_data_values'] = annual_data_values
+                 
+                 
+                 cat_indicator.append({
+                     'cat_name_ENG': selected_topic_category.name_ENG,
+                     'cat_name_AMH': selected_topic_category.name_AMH,
+                     'cat_id': selected_topic_category.id,
+                     'indicators': indicators
+                 })  
+             
+        # if the query is not present in the indicator but exixts in the category         
+        else :    
+            print(indicators)    
+            indicator_ids = [] 
+            for indicator in indicators:
+                annual_data_values = list(AnnualData.objects.filter(indicator_id=indicator.id).values(
+                    'id',
+                    'indicator_id',
+                    'indicator__parent_id',
+                    'for_datapoint__year_EC',
+                    'for_datapoint__year_GC',
+                    'performance',
+                    'target',
+                ))
+                for data_value in annual_data_values:
+                      indicator_ids.append(data_value['indicator_id'])
+    
+                
+                indicator.annual_data_values = annual_data_values
+                categories = list(Category.objects.filter(indicators__id__in=indicator_ids).values_list('name_ENG' , flat=True).distinct())
+                output_str = ', '.join(categories)
+                cat_indicator = []
+                cat_indicator.append({
+                    'cat_name_ENG': output_str,
+                    'indicators': indicators
+                })  
+
+  
+    for topic in topics:
+        topic.color = random.choice(bootstrap_colors)
     context = {
-        'total_topic' : Topic.objects.all().count(),
-        'total_dashboard_topic' : Topic.objects.filter(is_dashboard = True).count(),
-        'total_category' : Category.objects.all().count(),
-        'total_indicator' : Indicator.objects.all().count(),
+        'topics': topics,
+        'total_topic': Topic.objects.all().count(),
+        'total_dashboard_topic': Topic.objects.filter(is_dashboard=True).count(),
+        'total_category': Category.objects.all().count(),
+        'total_indicator': Indicator.objects.all().count(),
+        'cat_indicator' : cat_indicator
     }
 
-    return render(request, 'user-admin/index.html' , context)
+    return render(request, 'user-admin/index.html', context)
 
 ##Data View
 def data_view(request):
