@@ -31,14 +31,6 @@
                 data-bs-target="#addIndicator">
                 <i class="fas fa-plus"></i> Add Indicator
               </button>
-              <button 
-                data-bs-toggle="modal" 
-                data-bs-target="#addIndicator"
-                class="btn btn-primary float-end m-2" 
-                data-bs-whatever="@mdo">
-                <i class="fas fa-database"></i>
-                Import Indicator
-              </button>
           </div>
 
 
@@ -142,46 +134,6 @@
     </div>
   </div>
   <!--End Modal -->
-
-
-  <!--Modal add Excel file for Topic-->
-   <!--Add Excel Data-->
-   <div class="modal fade" id="topicExcel" tabindex="-1" aria-labelledby="topicExcelLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="topicExcelLabel">
-            New Topic Registration
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form method='POST' name="fileTopic" enctype="multipart/form-data">
-          <div class="modal-body">
-
-            {% csrf_token %}
-            <p class="text-info">Click Download button to download sample Excel format. <a href="{% static 'SampleExcel/TopicSample.xlsx' %}" download="TopicSample.xlsx"
-                class="btn btn-info">Download</a></p>
-
-
-            <div class="row justify-content-start mt-5">
-              <div class="col-12">
-                <label for="">Add Excel</label>
-                {{formFile.as_p}}
-
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-              Cancel
-            </button>
-            <button type="submit" name="fileTopicValue" class="btn btn-primary">Add Topic</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
 
   </div>
 

@@ -11,6 +11,7 @@ urlpatterns = [
     ##Data view 
     path('data_view/', data_view, name='data_view'), 
     path('data_view_indicator_detail/<str:id>/', data_view_indicator_detail, name='data_view_indicator_detail'),
+    path('data_view_indicator_update/<str:id>/', data_view_indicator_update, name='data_view_indicator_update'),
 
     #Category
     path('categories/', categories, name='categories'),

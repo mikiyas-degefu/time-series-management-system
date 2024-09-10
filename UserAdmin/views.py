@@ -6,11 +6,12 @@ from rest_framework.decorators import api_view
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from UserManagement.forms import CustomUserForm
 from UserManagement.models import CustomUser
-from Base.forms import ImportFileForm
+from Base.forms import (ImportFileForm, ImportFileIndicatorAddValueForm)
 from Base.resource import (
     handle_uploaded_Topic_file,
     confirm_file,
     handle_uploaded_Category_file,
+    handle_uploaded_Indicator_file
 )
 
 from .forms import(
@@ -157,7 +158,11 @@ def index(request , id=32):
 
 ##Data View
 def data_view(request):
-    return render(request, 'user-admin/data_view.html')
+    form = ImportFileIndicatorAddValueForm(request.POST or None)
+    context = {
+        'form' : form
+    }
+    return render(request, 'user-admin/data_view.html', context=context)
 
 def data_view_indicator_detail(request, id):
     form = IndicatorForm(request.POST or None)
@@ -207,6 +212,35 @@ def data_view_indicator_detail(request, id):
             return JsonResponse({'response' : True})
     
     else: return HttpResponse("Bad Request!")
+
+
+def data_view_indicator_update(request, id):
+    try:
+        indicator = Indicator.objects.get(id=id)
+    except:
+        return HttpResponse("Bad Request!")
+    
+    previous_page = id
+    i = indicator
+    while i != None:
+        previous_page = i.parent.id if i.parent else i.id
+        i = i.parent 
+    
+    form = IndicatorForm(request.POST or None, instance=indicator)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, '😀 Hello User, Indicator Successfully Updated')
+            return redirect('data_view_indicator_detail', previous_page)
+        else:
+            messages.error(request, '😞 Hello User , An error occurred while Updating Indicator')
+
+    context = {
+        'form' : form,
+    }
+    return render(request, 'user-admin/indicator_detail.html', context=context)
+
 
 def topic(request):
     form = TopicForm(request.POST or None, request.FILES or None)
@@ -441,12 +475,10 @@ def indicator_details(request, id):
     if request.method == 'POST':
         if form.is_valid():
             form.save()
-            print("Saved")
             messages.success(request, '😀 Hello User, Indicator Successfully Updated')
             return redirect('categories')
         else:
             messages.error(request, '😞 Hello User , An error occurred while Updating Indicator')
-            print("Error")
 
     context = {
         'form' : form,
@@ -466,39 +498,61 @@ def delete_indicator(request, id):
 #All indicators
 def all_indicators(request):
     all_indicators = Indicator.objects.filter(is_deleted=False)
-    count = 50
+    count = 30
     form = IndicatorForm(request.POST or None)
+
+    formFile = ImportFileForm() #responsive to read imported file for import export 
+    global imported_data_global #global variable to store imported data
+
     if 'q' in request.GET:
         q = request.GET['q']
         all_indicators = Indicator.objects.filter(is_deleted=False).filter( Q(title_ENG__contains=q) | Q(title_AMH__contains=q))
 
-    paginator = Paginator(all_indicators, 50)
+    paginator = Paginator(all_indicators,30)
     page_number = request.GET.get('page')
 
     try:
         page = paginator.get_page(page_number)
-        try: count = (50 * (int(page_number) if page_number  else 1) ) - 50
-        except: count = (50 * (int(1) if page_number  else 1) ) - 50
+        try: count = (30 * (int(page_number) if page_number  else 1) ) -30
+        except: count = (30 * (int(1) if page_number  else 1) ) -30
     except PageNotAnInteger:
         page = paginator.page(1)
-        count = (50 * (int(1) if page_number  else 1) ) - 50
+        count = (30 * (int(1) if page_number  else 1) ) -30
     except:
         page = paginator.page(paginator.num_pages)
-        count = (50 * (int(paginator.num_pages) if page_number  else 1) ) - 50
+        count = (30 * (int(paginator.num_pages) if page_number  else 1) ) -30
 
     if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            messages.success(request, '&#128532 Hello User, Indicator Successfully Added')
-            return redirect('all_indicators')
-        else:
-            messages.error(request, '&#128532 Hello User , An error occurred while Adding Indicator')
+            if 'addIndicatorForm' in request.POST:
+                if form.is_valid():
+                    form.save()
+                    messages.success(request, '😀 Hello User, Indicator Successfully Added')
+                    return redirect('all_indicators')
+            elif 'fileIndicator' in request.POST:
+                print("hreee")
+                formFile = ImportFileForm(request.POST, request.FILES)
+                if formFile.is_valid():
+                    file = request.FILES['file']
+                    success, imported_data, result = handle_uploaded_Indicator_file(file)
+                    imported_data_global = imported_data
+                    context = {'result': result}
+                    return render(request, 'user-admin/import_preview.html', context=context)
+                else:
+                    messages.error(request, '😞 Hello User , An error occurred while Importing Indicator')
+            elif 'confirm_data_form' in request.POST:
+                success, message = confirm_file(imported_data_global, 'indicator')
+                if success:
+                    messages.success(request, message)
+                else:
+                    messages.error(request, message)
+                
 
 
     context = {
         'all_indicators' : page,
         'count' : count,
-        'form' : form
+        'form' : form,
+        'formFile' : formFile
     }    
     return render(request, 'user-admin/all_indicators.html' , context)
 

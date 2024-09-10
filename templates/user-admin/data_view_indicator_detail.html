@@ -69,12 +69,15 @@
         </div>
         
 
+
+
+
     <!--Modal Add Child Indicator-->
     <div class="modal fade" id="modalAddNewIndicator" tabindex="-1" aria-labelledby="modalAddNewIndicatorLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="modalAddNewIndicatorLabel">Edit Indicator Value</h5>
+              <h5 class="modal-title" id="modalAddNewIndicatorLabel">Add Sub-Indicator</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form name="addSubIndicator" method="post">
@@ -91,6 +94,9 @@
           </div>
         </div>
     </div>
+
+
+    
 
 
     <!--Delete  Modal-->
@@ -197,6 +203,8 @@
     //hide for for category
     $("#id_for_category").prop("selectedIndex", 0).val(); 
     $("#id_for_category").parent().hide()
+
+
 
 
     //hanndle delete indiactor 
