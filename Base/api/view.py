@@ -176,13 +176,31 @@ def detail_indicator_with_children(request, id):
          'target'
       ))
 
+      quarter_data_value =list( QuarterData.objects.filter(indicator__id__in = indicator_id_with_children ).values(
+         'id',
+         'indicator__title_ENG',
+         'indicator__title_AMH',
+         'indicator__id',
+         'indicator__parent_id',
+         'for_datapoint__year_EC',
+         'for_datapoint__year_GC',
+         'for_quarter__number',
+         'performance',
+         'target'
+      ))
+
       year = list(DataPoint.objects.all().values('year_EC', 'year_GC'))
+      quarter = list(Quarter.objects.all().values('title_ENG', 'title_AMH', 'number'))
+      indicator_lists = Indicator.objects.filter(id__in = indicator_id_with_children).select_related().values()
 
       #for_datapoint__year_EC
 
       context = {
          'year' : year,
-         'annual_data_value' : annual_data_value
+         'annual_data_value' : annual_data_value,
+         'quarter_data_value' : quarter_data_value,
+         'quarter' : quarter,
+         'indicator_lists' : indicator_lists,
       }
 
       return Response(context)

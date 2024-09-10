@@ -45,6 +45,28 @@ href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-s
 />
 
 
+<style>
+  .scrollable {
+    max-height: 500px;
+    /* replace 500px with your desired maximum width */
+    overflow-y: auto;
+    /* enable 
+    horizontal scrolling */
+  }
+
+
+  .vertical-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-orientation: sideways-right;
+    white-space: nowrap;
+    width: 100%;
+    text-align: center;
+  }
+
+</style>
+
+
 <!--Select2-->
 <link rel="stylesheet" href="{% static 'assets/plugins/select2/css/select2.min.css' %}">
 

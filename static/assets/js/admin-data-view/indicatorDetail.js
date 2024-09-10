@@ -8,20 +8,32 @@ $(document).ready(function () {
 
     const contractTable = (data) =>{
         AnnualTable(data)
+        QuarterTable(data)
     }
 
     const AnnualTable = (data) =>{
-
         //table header
-        $("#tableHead").html(
-            `<th scope="col" style="width:450px;">Name</th>
-            <th scope="col" style="width:400px;">ስም</th>
-            ` +
-            data.year.map((year) =>{
-            return `
-            <th scope="col" style="width:100px;">${year.year_EC} E.C </th>
+        $('[name="tableHead"]').html(
             `
-        }))
+          <tr style="background-color: #40864b;" >
+            <th style="width:500px;"  class="text-light" scope="col" >Yearly</th>
+            <th style="width:400px;" scope="col" ></th>
+              ` +
+              data.year.map((year) =>{ return ` <th scope="col" style="width:100px;"></th>`})
+              + 
+              `
+          </tr>
+
+        <tr style="background-color: #9fdfa9;" >
+               <th scope="col" >Name</th>
+               <th scope="col" >ስም</th>
+               ` +
+               data.year.map((year) =>{ return ` <th scope="col">${year.year_EC} E.C </th>`})
+               + 
+               `
+         </tr>
+            `
+        )
 
 
          let tableData = indicatorId.map((indicator_id) =>{
@@ -304,7 +316,104 @@ $(document).ready(function () {
            
         })
 
-        $("#tableBody").html(tableData)
+        $('[name="tableBody"]').html(tableData)
+    }
+
+    const QuarterTable = (data) =>{
+        console.log(data)
+        let headerListHtml = ``
+
+        let filterChildHeader = (parent, space="") =>{
+            space += String("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp")
+            let children = data.indicator_lists.filter(item => item.parent_id == parent.id)
+
+            for(let child of children){
+                headerListHtml+=`
+                <th scope="col" class="vertical-text text-start align-middle">${space} ${child.title_ENG} </br> ${space} ${child.title_AMH}
+                `
+                filterChildHeader(child, space)
+            }
+        }
+
+        let parentHeader = ()=>{
+            for(let parent of data.indicator_lists.filter(item => item.parent_id == null)){
+                headerListHtml+=`
+                <th scope="col" class="vertical-text text-start align-middle">${parent.title_ENG} </br> ${parent.title_AMH}
+                `
+                filterChildHeader(parent)
+            }
+        }
+
+        parentHeader()
+
+        $('[name="tableHeadQuarter"]').html(
+            `
+          <tr style="background-color: #40864b;" >
+            <th style="width:30px;"  class="text-light" scope="col" >Quarterly</th>
+            <th style="width:10px;" scope="col" ></th>
+              ` +
+              data.indicator_lists.map((indicator) =>{ 
+                return ` <th scope="col" style="width:70px;"></th>`
+            })
+              + 
+              `
+          </tr>
+
+          <tr style="background-color: #9fdfa9;" >
+          <th scope="col" class="vertical-text text-start align-middle" >(Year)</th>
+          <th scope="col" class="vertical-text text-start align-middle">(Quarter)</th>
+            ` +
+            headerListHtml
+            + 
+            `
+        </tr>
+            `
+        )
+
+        let tableBody = ''
+
+        for(let year of data.year){
+            let hasYear = false
+            let indicatorValue = ''
+            for(let quarter of data.quarter){
+
+                let childBody = (parent, space="") =>{
+                    space += String("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp")
+                    let children = data.indicator_lists.filter(item => item.parent_id == parent.id)
+
+                    for(let child of children){
+                        let value = data.quarter_data_value.find((item) => item.for_datapoint__year_EC == year.for_datapoint__year_EC && item.for_quarter__number == quarter.number && item.indicator__id == child.id)
+                        indicatorValue+= `<td> ${value ? value.performance : "-"}</td>`
+                        childBody(child, space)
+                    }
+                }
+
+                let parentBody = () =>{
+                    for(let indicator of data.indicator_lists.filter((item) => item.parent_id == null)){
+                        let value = data.quarter_data_value.find((item) => item.for_datapoint__year_EC == year.for_datapoint__year_EC && item.for_quarter__number == quarter.number && item.indicator__id == indicator.id)
+                        indicatorValue+= `<td> ${value ? value.performance : "-"}</td>` 
+                        childBody(indicator)
+                    }
+                }
+
+                parentBody()
+
+
+                
+                tableBody+=`
+                <tr>
+                   <th class="text-success" >${hasYear ? "" : year.year_EC + "E.C </br> " + year.year_GC + "G.C"}</th>
+                   <th class="text-success">${quarter.title_ENG}</th>
+                   ${indicatorValue}
+                </tr>
+               `
+               hasYear = true  
+               indicatorValue = '' 
+            }
+        }
+
+
+        $('[name="tableBodyQuarter"]').html(tableBody)
     }
 
     const fetchTableData = async() =>{
@@ -314,7 +423,7 @@ $(document).ready(function () {
 
 
     //handle value button clicked
-    $("#tableBody").on("click","button[name='btnIndicator']",function(){
+    $("[name='tableBody']").on("click","button[name='btnIndicator']",function(){
         const buttonData = $(this).data()
         $("#IndicatorFormValue").val(buttonData.value)
         $("#form_indicator_id").val(buttonData.indicatorId)
@@ -322,7 +431,7 @@ $(document).ready(function () {
     })
 
     //handle add indicator button clicked
-    $("#tableBody").on("click","button[name='btnAddIndicator']",function(){
+    $("[name='tableBody']").on("click","button[name='btnAddIndicator']",function(){
         const buttonData = $(this).data()
         $("#form_indicator_add_id").val(buttonData.indicatorId)
     })
