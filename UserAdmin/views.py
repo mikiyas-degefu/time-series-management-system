@@ -25,7 +25,9 @@ from Base.models import (
     Category,
     Indicator, 
     DataPoint,
-    AnnualData
+    AnnualData,
+    QuarterData,
+    Quarter
 )
 
 
@@ -448,27 +450,27 @@ def all_indicators(request):
 #Data years
 def years(request):
     years = DataPoint.objects.all()
-    count = 3
+    count = 20
    
     if 'q' in request.GET:
         q = request.GET['q']
         years = DataPoint.objects.filter( Q(year_EC__contains=q) | Q(year_GC__contains=q) | Q(created_at__contains=q))
     
-    paginator = Paginator(years, 3) 
+    paginator = Paginator(years, 20) 
     page_number = request.GET.get('page')
 
     try:
         page = paginator.get_page(page_number)
-        try: count = (3 * (int(page_number) if page_number  else 1) ) - 3
-        except: count = (3 * (int(1) if page_number  else 1) ) - 3
+        try: count = (20 * (int(page_number) if page_number  else 1) ) - 20
+        except: count = (20 * (int(1) if page_number  else 1) ) - 20
     except PageNotAnInteger:
         # if page is not an integer, deliver the first page
         page = paginator.page(1)
-        count = (3 * (int(1) if page_number  else 1) ) - 3
+        count = (20 * (int(1) if page_number  else 1) ) - 20
     except EmptyPage:
         # if the page is out of range, deliver the last page
         page = paginator.page(paginator.num_pages)
-        count = (3 * (int(paginator.num_pages) if page_number  else 1) ) - 3
+        count = (20 * (int(paginator.num_pages) if page_number  else 1) ) - 20
 
     if request.method == 'POST':
         try:

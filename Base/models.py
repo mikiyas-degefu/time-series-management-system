@@ -71,12 +71,24 @@ class Indicator(models.Model):
         super(Indicator, self).save(*args, **kwargs)
     
     def create_data_value(self):
+        #Annual Data
         obj = AnnualData()
         year = DataPoint.objects.order_by('-year_EC').first()
         obj.for_datapoint = year
         obj.performance = 0
         obj.indicator = self
         obj.save()
+
+        #Quarterly Data
+        obj = QuarterData()
+        year = DataPoint.objects.order_by('-year_EC').first()
+        quarter = Quarter.objects.order_by('-number').first()
+        obj.for_quarter = quarter
+        obj.for_datapoint = year
+        obj.performance = 0
+        obj.indicator = self
+        obj.save()
+        
 
 
 

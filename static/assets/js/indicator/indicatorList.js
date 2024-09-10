@@ -14,8 +14,8 @@ $(document).ready(function () {
                    <td>${space} ${item.title_AMH}</td>
                    <td>${space} ${item.composite_key}</td>
                    <td></td>
-                   <td>${item.kpi_characteristics ? item.kpi_characteristics : " - "}</td>
-                   <td>${item.is_dashboard_visible ? ` <i class="fa fa-check text-success"></i>` : `<i class="fa fa-times text-danger"></i>`}</td>
+                   <td><button class="btn btn-sm btn-primary btn-block">${item.kpi_characteristics ? item.kpi_characteristics : " None "}</button></td>
+                   <td class="text-center">${item.is_dashboard_visible ? ` <i class="fa fa-check text-success"></i>` : `<i class="fa fa-times text-danger"></i>`}</td>
                    <td>${item.is_public ? ` <i class="fa fa-check text-success"></i>` : `<i class="fa fa-times text-danger"></i>`}</td>
                    <td> 
                         <button
@@ -57,8 +57,8 @@ $(document).ready(function () {
                    <td>${item.title_AMH}</td>
                    <td>${item.composite_key}</td>
                    <td> ${item.for_category ? item.for_category.slice(0, 2).join(", ") + "..." : " - "} </td>
-                   <td>${item.kpi_characteristics ? item.kpi_characteristics : " - "}</td>
-                   <td>${item.is_dashboard_visible ? ` <i class="fa fa-check text-success"></i>` : `<i class="fa fa-times text-danger"></i>`}</td>
+                   <td><button class="btn btn-sm btn-primary btn-block">${item.kpi_characteristics ? item.kpi_characteristics : " None "}</button></td>
+                   <td class="text-center">${item.is_dashboard_visible ? ` <i class="fa fa-check text-success"></i>` : `<i class="fa fa-times text-danger"></i>`}</td>
                    <td>${item.is_public ? ` <i class="fa fa-check text-success"></i>` : `<i class="fa fa-times text-danger"></i>`}</td>
                    <td> 
                         <button

@@ -9,6 +9,10 @@ from .models import (
     Indicator,
     AnnualData,
     DataPoint,
+    QuarterData,
+    MonthData,
+    Month,
+    Quarter,
 )
 class TopicResource(resources.ModelResource):
 
@@ -156,6 +160,40 @@ class AnnualDataResource(resources.ModelResource):
         use_bulk = True
         exclude = ( 'id', 'created_at')
         import_id_fields = ('indicator', 'for_datapoint', 'performance', 'target')
+
+
+class QuarterDataResource(resources.ModelResource):    
+    indicator = fields.Field(
+        column_name='indicator',
+        attribute='indicator',
+        widget=ForeignKeyWidget(Indicator, field='composite_key'),
+        saves_null_values = True,
+    ) 
+
+
+    for_quarter = fields.Field(
+        column_name='for_quarter',
+        attribute='for_quarter',
+        widget=ForeignKeyWidget(Quarter, field='number'),
+        saves_null_values = True,
+    )
+    
+
+    for_datapoint = fields.Field(
+        column_name='for_datapoint',
+        attribute='for_datapoint',
+        widget=ForeignKeyWidget(DataPoint, field='year_EC'),
+        saves_null_values = True,
+    )
+
+
+    class Meta:
+        model = QuarterData
+        skip_unchanged = True
+        report_skipped = True
+        use_bulk = True
+        exclude = ( 'id', 'created_at')
+        import_id_fields = ('indicator', 'for_datapoint', 'for_quarter' ,'performance', 'target')
 
 
 

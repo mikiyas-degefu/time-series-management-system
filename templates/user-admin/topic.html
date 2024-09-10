@@ -9,6 +9,8 @@
   <title>DPMEs</title>
   <link />
 
+  
+
   {% include 'user-admin/include/head.html' %}
   {% fontawesome_5_static %}
 </head>
@@ -20,7 +22,12 @@
 
   <!--Body Start-->
   <div class="content-wrapper">
-    
+
+
+   <div class="row bg-white justify-content-center">
+
+
+
 
     <div class="col-lg-7 mx-auto d-block">
       {% include 'includes/messages.html' %}
@@ -90,7 +97,7 @@
               {% endif %}
             </td>
             <td>{{topic.created|date:"M d, Y" }}</td>
-            <td id="topicRank{{topic.id}}">{{topic.rank}}</td>
+            <td id="topicRank{{topic.id}}"> <button class="btn btn-primary">{% if topic.rank %} {{topic.rank}} {% else %} None {% endif %}</button></td>
             <td id="topicIcon{{topic.id}}">
               <i class="fab fa-{{topic.icon.name}} fa-2x text-success"></i></td>
             <td>

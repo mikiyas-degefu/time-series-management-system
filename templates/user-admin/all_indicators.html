@@ -84,8 +84,25 @@
                   {% if indicator.for_category.all.count > 1 %}, {{ indicator.for_category.all.1 }}{% endif %}
                   {% if indicator.for_category.all.count > 2 %} ... {% endif %}
                 </td>
-                <td>{{indicator.measurement_units}}</td>
-                <td>{{indicator.kpi_characteristics}}</td>
+                <td>
+                  <button class="btn btn-success btn-sm">
+                  {% if indicator.measurement_units %}
+                     {{indicator.measurement_units}}
+                  {% else %}
+                      None
+                  {% endif %}
+                </button>
+                </td>
+                <td>
+                  <button class="btn btn-info btn-sm">
+                    {% if indicator.kpi_characteristics %}
+                       {{indicator.kpi_characteristics}}
+                    {% else %}
+                        None
+                    {% endif %}
+                  </button>
+                  
+                </td>
                 <td class="text-center">
                   {% if indicator.is_dashboard_visible %}
                   <i class="fa fa-check text-success"></i>
