@@ -197,6 +197,41 @@ class QuarterDataResource(resources.ModelResource):
 
 
 
+class MonthDataResource(resources.ModelResource):    
+    indicator = fields.Field(
+        column_name='indicator',
+        attribute='indicator',
+        widget=ForeignKeyWidget(Indicator, field='composite_key'),
+        saves_null_values = True,
+    ) 
+
+
+    for_month = fields.Field(
+        column_name='for_month',
+        attribute='for_month',
+        widget=ForeignKeyWidget(Quarter, field='number'),
+        saves_null_values = True,
+    )
+    
+
+    for_datapoint = fields.Field(
+        column_name='for_datapoint',
+        attribute='for_datapoint',
+        widget=ForeignKeyWidget(DataPoint, field='year_EC'),
+        saves_null_values = True,
+    )
+
+
+    class Meta:
+        model = MonthData
+        skip_unchanged = True
+        report_skipped = True
+        use_bulk = True
+        exclude = ( 'id', 'created_at')
+        import_id_fields = ('indicator', 'for_datapoint', 'for_month' ,'performance', 'target')
+
+
+
 
 ###Confirm 
 def confirm_file(imported_data, type):

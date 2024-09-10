@@ -6,7 +6,8 @@ from .resource import(
     IndicatorResource,
     AnnualDataResource,
     DataPointResource,
-    QuarterDataResource
+    QuarterDataResource,
+    MonthDataResource
 )
 
 
@@ -58,6 +59,13 @@ class QuarterDataAdmin(ImportExportModelAdmin):
     list_display = ('performance','target' )
 
 admin.site.register(QuarterData,  QuarterDataAdmin)
+
+
+class MonthDataAdmin(ImportExportModelAdmin):
+    resource_classes = [MonthDataResource]
+    list_display = ('performance','target' )
+
+admin.site.register(MonthData,  MonthDataAdmin)
 
 
 admin.site.register(Quarter)

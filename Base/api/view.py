@@ -10,6 +10,8 @@ from Base.models import (
     QuarterData,
     DataPoint,
     Quarter,
+    Month,
+    MonthData,
 )
 @api_view(['GET'])
 def get_indicators(request,id):
@@ -94,6 +96,20 @@ def filter_indicator_annual_value(request):
          'target'
       ))
 
+
+      month_data_value =list( MonthData.objects.filter(indicator__id__in = indicator_list_id_with_children ).values(
+         'id',
+         'indicator__title_ENG',
+         'indicator__title_AMH',
+         'indicator__id',
+         'indicator__parent_id',
+         'for_datapoint__year_EC',
+         'for_datapoint__year_GC',
+         'for_month__number',
+         'performance',
+         'target'
+      ))
+
       annual_data_value =list( AnnualData.objects.filter(indicator__id__in = indicator_list_id_with_children ).values(
          'id',
          'indicator__title_ENG',
@@ -107,6 +123,9 @@ def filter_indicator_annual_value(request):
       ))
 
 
+   
+
+
       year = list( AnnualData.objects.filter(indicator__id__in = indicator_list_id_with_children).values(
          'for_datapoint__year_EC',
          'for_datapoint__year_GC',
@@ -116,12 +135,15 @@ def filter_indicator_annual_value(request):
 
       quarter = list(Quarter.objects.all().values('title_ENG', 'title_AMH', 'number'))
 
+      month = list(Month.objects.all().values('month_ENG', 'month_AMH', 'number'))
+
       context = {
          'year' : year,
          'annual_data_value' : annual_data_value,
          'quarter' : quarter,
          'quarter_data_value' : quarter_data_value,
-         'indicator_lists' : indicator_lists
+         'indicator_lists' : indicator_lists,
+         'month' : month,
        }
       return Response(context)
 
