@@ -30,7 +30,6 @@ $(document).ready(function () {
 
         let response = await axios.get(url)
         try{
-            console.log(response.data)
             contractAnnualTable(response.data)
             contractQuarterTable(response.data)
             contractMonthTable(response.data)
@@ -124,9 +123,11 @@ $(document).ready(function () {
 
         $("#categoryListParent").html(categoryLists.length > 0 ? categoryLists : `<p class="text-danger text-center">No category found!</p>`)
         
-        //handle topic on change
+        //handle category on change
         $("#categoryListParent").on('change', function(){
             let categoryId = $(this).find('input[name="category_lists"]:checked').val();
+            let categoryName = category.find((item) => item.id == categoryId).name_ENG
+            $("#categoryName").text(categoryName)
             handleIndicator(categoryId)
             handleButton(true)
         })
@@ -142,6 +143,8 @@ $(document).ready(function () {
             //handle topic on change and clear indicator
             $("#indicatorListParent").html(`<p class="text-danger text-center">Please Select Category</p>`)
             let topic_id = $(this).find('input[name="topic_lists"]:checked').val();
+            let topicName = data.topics.find((item) => item.id == topic_id).title_ENG
+            $("#topicName").text(topicName)
             handleButton(true)
             handleCategory(data.categories, topic_id)
         })
@@ -452,7 +455,7 @@ $(document).ready(function () {
                     let children = data.indicator_lists.filter(item => item.parent_id == parent.id)
 
                     for(let child of children){
-                        let value = data.quarter_data_value.find((item) => item.for_datapoint__year_EC == year.for_datapoint__year_EC && item.for_quarter__number == month.number && item.indicator__id == child.id)
+                        let value = data.month_data_value.find((item) => item.for_datapoint__year_EC == year.for_datapoint__year_EC && item.for_month__number == month.number && item.indicator__id == child.id)
                         indicatorValue+= `<td> ${value ? value.performance : "-"}</td>`
                         childBody(child, space)
                     }
@@ -460,7 +463,7 @@ $(document).ready(function () {
 
                 let parentBody = () =>{
                     for(let indicator of data.indicator_lists.filter((item) => item.parent_id == null)){
-                        let value = data.quarter_data_value.find((item) => item.for_datapoint__year_EC == year.for_datapoint__year_EC && item.for_quarter__number == month.number && item.indicator__id == indicator.id)
+                        let value = data.month_data_value.find((item) => item.for_datapoint__year_EC == year.for_datapoint__year_EC && item.for_month__number == month.number && item.indicator__id == indicator.id)
                         indicatorValue+= `<td> ${value ? value.performance : "-"}</td>` 
                         childBody(indicator)
                     }
@@ -486,8 +489,6 @@ $(document).ready(function () {
         $('[name="tableBodyMonth"]').html(tableBody)
 
     }
-
-
 
 
 

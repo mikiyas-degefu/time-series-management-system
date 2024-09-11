@@ -202,12 +202,15 @@ def data_view_indicator_detail(request, id):
             year_id = request.POST['year_id']
             new_value = request.POST['value']
             quarter_id = request.POST['quarter_id']
+            month_id = request.POST['month_id']
+
+
 
 
     
-            if quarter_id == "":
+            if quarter_id == "" and month_id == "":
                 try:
-                    value = AnnualData.objects.get(indicator__id = indicator_id, for_datapoint__year_EC = year_id)
+                    value = AnnualData.objects.filter(indicator__id = indicator_id, for_datapoint__year_EC = year_id).first()
                     value.performance = new_value
                     value.save()
                 except:
@@ -217,9 +220,9 @@ def data_view_indicator_detail(request, id):
                         AnnualData.objects.create(indicator = indicator, performance = new_value, for_datapoint = datapoint)
                     except:
                         return JsonResponse({'response' : False})
-            elif quarter_id != "":
+            elif quarter_id != "" and month_id == "":
                 try:
-                    value = QuarterData.objects.get(indicator__id = indicator_id, for_datapoint__year_EC = year_id, for_datapoint__quarter = quarter_id)
+                    value = QuarterData.objects.filter(indicator__id = indicator_id, for_datapoint__year_EC = year_id, for_quarter__number = quarter_id).first()
                     value.performance = new_value
                     value.save()
                 except:
@@ -230,6 +233,21 @@ def data_view_indicator_detail(request, id):
                         QuarterData.objects.create(indicator = indicator, performance = new_value, for_datapoint = datapoint, for_quarter = quarter)
                     except:
                         return JsonResponse({'response' : False})
+            elif quarter_id == "" and month_id != "":
+                try:
+                    value = MonthData.objects.filter(indicator__id = indicator_id, for_datapoint__year_EC = year_id, for_month__number = month_id).first()
+                    value.performance = new_value
+                    value.save()
+                    print("month-update")
+                except:
+                    try:
+                        indicator = Indicator.objects.get(id = indicator_id)
+                        datapoint = DataPoint.objects.get(year_EC = year_id)
+                        month = Month.objects.get(id = month_id)
+                        MonthData.objects.create(indicator = indicator, performance = new_value, for_datapoint = datapoint, for_month = month)
+                    except:
+                        return JsonResponse({'response' : False})
+                
 
             return JsonResponse({'response' : True})
     

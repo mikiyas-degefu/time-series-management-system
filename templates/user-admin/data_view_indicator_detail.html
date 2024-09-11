@@ -20,6 +20,7 @@
       <div class="content-header">
         <div class="container-fluid">
             <button class="btn btn-primary btn-lg">{{indicator.title_ENG | capfirst}}</button>
+           
             <div class="col-lg-7 mt-3 mx-auto d-block">
               {% include 'includes/messages.html' %}
              </div>
@@ -48,7 +49,7 @@
                   <div class="tab-pane fade show active" id="pills-yearly"  role="tabpanel" aria-labelledby="pills-yearly-tab">
                     <div class="table-responsive">
                      <!--Year-->
-                    <table class="m-0 p-0 table table-bordered table-hover" style="table-layout: fixed;" >
+                    <table id="test_table" class="m-0 p-0 table table-bordered table-hover" style="table-layout: fixed;" >
                       <thead id="tableHead" name="tableHead">
                       </thead >
                       <tbody id="tableBody" name="tableBody">
@@ -79,20 +80,8 @@
                   <div class="tab-pane fade" id="pills-monthly" role="tabpanel" aria-labelledby="pills-monthly-tab">
                     <table style="table-layout: fixed;"  class="m-0 p-0 table table-hover table-bordered">
                       <thead name="tableHeadMonth">
-                        <tr style="background-color: #40864b;" >
-                          <th class="text-light border" colspan="4">Monthly</th>
-                        </tr>
-                        <tr class="text-start border" style="background-color: #9fdfa9;" >
-                          <th style="width: 230px;" class="vertical-text text-start align-middle" scope="col">Year EC</th>
-                          <th style="width: 200px;" class="vertical-text text-start align-middle" scope="col">Quarter</th>
-                          <th style="width: 70px;" class="vertical-text text-start align-middle" scope="col">Indicator-1</th>
-                          <th style="width: 70px;" class="vertical-text text-start align-middle" scope="col">Indicator-2</th>
-                        </tr>
                       </thead>
                       <tbody name="tableBodyMonth" class="text-center">
-                        <tr>
-                          <td colspan="4" class="text-danger text-center" >Please apply filters to see the relevant information.</td>
-                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -121,6 +110,7 @@
                         <input type="hidden" name="indicator_id" id="form_indicator_id">
                         <input type="hidden" name="year_id" id="form_year_id">
                         <input type="hidden" name="quarter_id" id="form_quarter_id">
+                        <input type="hidden" name="month_id" id="form_month_id">
                         <label for="IndicatorFormValue" >Value</label>
                         <input id="IndicatorFormValue" class="form-control" required type="number" name="" id="">
                     </div>
@@ -209,6 +199,7 @@
   <script>
     $(document).ready(function() {
 
+
       showToast = (title, body, cssClass)=> {
       $.toast({
               heading: title,
@@ -228,8 +219,7 @@
         let year_id = $("#form_year_id").val()
         let value = $("#IndicatorFormValue").val()
         let quarter_id = $("#form_quarter_id").val()
-
-        console.log(quarter_id == "")
+        let month_id = $("#form_month_id").val()
 
 
         $.ajax({
@@ -240,6 +230,7 @@
               'year_id' : year_id,
               'value' : value,
               'quarter_id' : quarter_id ? quarter_id : null,
+              'month_id' : month_id ? month_id : null,
               csrfmiddlewaretoken : '{{ csrf_token }}',
             },
             beforeSend: function() {
@@ -259,12 +250,16 @@
                 $('#indicatorEditValue').modal('hide'); //Hide Modal
 
                 //update value for yearly
-                if(quarter_id == ""){
+                if(quarter_id == "" && month_id == "" ){
                   let buttonData = $(`#${indicator_id}-${year_id}`)
                   buttonData.text(value)
                   buttonData.data("value", value) 
-                }else if(quarter_id != ""){
+                }else if(quarter_id != "" && month_id == ""){
                   let buttonData = $(`#${indicator_id}-${year_id}-${quarter_id}`)
+                  buttonData.text(value)
+                  buttonData.data("value", value)
+                }else if(month_id != "" && quarter_id == "" ){
+                  let buttonData = $(`#${indicator_id}-${year_id}-month-${month_id}`)
                   buttonData.text(value)
                   buttonData.data("value", value)
                 }

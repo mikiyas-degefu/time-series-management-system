@@ -142,8 +142,10 @@ def filter_indicator_annual_value(request):
          'annual_data_value' : annual_data_value,
          'quarter' : quarter,
          'quarter_data_value' : quarter_data_value,
+         'month_data_value' : month_data_value,
          'indicator_lists' : indicator_lists,
          'month' : month,
+         
        }
       return Response(context)
 
@@ -189,9 +191,24 @@ def detail_indicator_with_children(request, id):
          'target'
       ))
 
+      month_data_value =list( MonthData.objects.filter(indicator__id__in = indicator_id_with_children ).values(
+         'id',
+         'indicator__title_ENG',
+         'indicator__title_AMH',
+         'indicator__id',
+         'indicator__parent_id',
+         'for_datapoint__year_EC',
+         'for_datapoint__year_GC',
+         'for_month__number',
+         'performance',
+         'target'
+      ))
+
       year = list(DataPoint.objects.all().values('year_EC', 'year_GC'))
       quarter = list(Quarter.objects.all().values('title_ENG', 'title_AMH', 'number'))
       indicator_lists = Indicator.objects.filter(id__in = indicator_id_with_children).select_related().values()
+      month = list(Month.objects.all().values('month_ENG', 'month_AMH', 'number'))
+
 
       #for_datapoint__year_EC
 
@@ -199,8 +216,10 @@ def detail_indicator_with_children(request, id):
          'year' : year,
          'annual_data_value' : annual_data_value,
          'quarter_data_value' : quarter_data_value,
+         'month_data_value' : month_data_value,
          'quarter' : quarter,
          'indicator_lists' : indicator_lists,
+         'month' : month,
       }
 
       return Response(context)
