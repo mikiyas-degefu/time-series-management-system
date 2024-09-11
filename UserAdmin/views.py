@@ -11,7 +11,8 @@ from Base.resource import (
     handle_uploaded_Topic_file,
     confirm_file,
     handle_uploaded_Category_file,
-    handle_uploaded_Indicator_file
+    handle_uploaded_Indicator_file,
+    handle_uploaded_Annual_file
 )
 
 from .forms import(
@@ -168,7 +169,26 @@ def index(request , id=32):
 
 ##Data View
 def data_view(request):
-    form = ImportFileIndicatorAddValueForm(request.POST or None)
+    form = ImportFileIndicatorAddValueForm(request.POST or None, request.FILES or None)
+    global imported_data_global
+
+    if request.method == 'POST':
+        if 'fileDataValue' in request.POST:
+            if form.is_valid():
+                #type_of_data = form.cleaned_data['type_of_data']
+                success, imported_data,result = handle_uploaded_Annual_file(file = request.FILES['file'])
+                imported_data_global = imported_data
+                context = {'result': result}
+                return render(request, 'user-admin/import_preview.html', context=context)
+            else:
+                messages.error(request, '😞 Hello User , An error occurred while Importing Data')
+        elif 'confirm_data_form' in request.POST:
+            success, message = confirm_file(imported_data_global, 'annual_data')
+            if success:
+                messages.success(request, message)
+            else:
+                messages.error(request, message)
+
     context = {
         'form' : form
     }
