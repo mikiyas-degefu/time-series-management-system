@@ -386,7 +386,7 @@ def edit_topic(request):
 #### Category  
 
 def categories(request):
-    category = Category.objects.filter(is_deleted = False)
+    category = Category.objects.filter(is_deleted = False).select_related()
     form = CategoryForm(request.POST or None)
     count = 20
 
@@ -768,3 +768,4 @@ def export_indicator(request):
     response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
     response['Content-Disposition'] = 'attachment; filename="indicator.xlsx"'
     return response
+

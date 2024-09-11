@@ -24,9 +24,16 @@
 
           <!--Add Button-->
           <div>
-            <divclass="flot-right">
+            <div class="flot-right">
               <button 
-                class="btn btn-primary float-end m-2"
+                  id="btnDownloadExcel"
+                  onclick="tableToExcel('tableCategoryIndicator', 'tableCategoryIndicator', 'tableCategoryIndicator.xls');"
+                  type="button" 
+                  class="btn btn-success m-2 float-end">
+                  <i class="bi bi-download"></i>
+              </button>
+              <button 
+                class="btn btn-success float-end m-2"
                 data-bs-toggle="modal" 
                 data-bs-target="#addIndicator">
                 <i class="fas fa-plus"></i> Add Indicator
@@ -37,7 +44,7 @@
             <caption class="text-muted">List of Indicators</caption>
             <!--Table Start-->
            <div class="table-responsive">
-            <table class="table table-sm  table-hover caption-top">
+            <table id="tableCategoryIndicator" class="table table-sm  table-hover caption-top">
               <thead>
                 <tr>
                   <th scope="col">#</th>
