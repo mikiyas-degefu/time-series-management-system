@@ -24,15 +24,6 @@
               {% include 'includes/messages.html' %}
              </div>
             <div class="card mt-5 shadow-sm border p-3">
-                <div class="table-responsive mt-3">
-                    <table class="table table-bordered"  style="table-layout: fixed;">
-                        <thead id="tableHead">
-                        </thead>
-                        <tbody id="tableBody">
-                         
-                        </tbody>
-                      </table>
-                </div>
 
 
                 <!--UPDATED TABLE-->
@@ -59,29 +50,15 @@
                      <!--Year-->
                     <table class="m-0 p-0 table table-bordered table-hover" style="table-layout: fixed;" >
                       <thead id="tableHead" name="tableHead">
-                        <tr style="background-color: #40864b;" ><th class="text-light" colspan="9">Yearly</th></tr>
-                        <tr style="background-color: #9fdfa9;" >
-                          <th  scope="col">Indicator (English)</th>
-                          <th  scope="col">Indicator (Amharic)</th>
-                          <th  scope="col">2000</th>
-                          <th  scope="col">2001</th>
-                          <th  scope="col">2002</th>
-                          <th  scope="col">2003</th>
-                          <th  scope="col">2004</th>
-                          <th  scope="col">2005</th>
-                          <th  scope="col">2006</th>
-                        </tr>
                       </thead >
                       <tbody id="tableBody" name="tableBody">
                         <tr>
-                          <td colspan="9" class="text-danger text-center" >Please filter data to see here!</td>
+                          <td colspan="9" class="text-danger text-center" >Please apply filters to see the relevant information.</td>
                         </tr>
                       </tbody>
                     </table>
           
                     </div>
-                    <!--Year end-->
-          
                   </div>
 
 
@@ -90,20 +67,8 @@
                     <div class="table-responsive">
                       <table style="table-layout: fixed;"  class="m-0 p-0 table table-hover table-bordered">
                         <thead name="tableHeadQuarter">
-                          <tr style="background-color: #40864b;" >
-                            <th class="text-light border" colspan="4">Quarter</th>
-                          </tr>
-                          <tr class="text-start border" style="background-color: #9fdfa9;" >
-                            <th style="width: 230px;" class="vertical-text text-start align-middle" scope="col">Year EC</th>
-                            <th style="width: 200px;" class="vertical-text text-start align-middle" scope="col">Quarter</th>
-                            <th style="width: 70px;" class="vertical-text text-start align-middle" scope="col">Agriculture</th>
-                            <th style="width: 70px;" class="vertical-text text-start align-middle" scope="col">Culture</th>
-                          </tr>
                         </thead>
                         <tbody name="tableBodyQuarter" class="text-center">
-                          <tr>
-                            <td colspan="4" class="text-danger text-center" >Please filter data to see here!</td>
-                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -120,13 +85,13 @@
                         <tr class="text-start border" style="background-color: #9fdfa9;" >
                           <th style="width: 230px;" class="vertical-text text-start align-middle" scope="col">Year EC</th>
                           <th style="width: 200px;" class="vertical-text text-start align-middle" scope="col">Quarter</th>
-                          <th style="width: 70px;" class="vertical-text text-start align-middle" scope="col">Agriculture</th>
-                          <th style="width: 70px;" class="vertical-text text-start align-middle" scope="col">Culture</th>
+                          <th style="width: 70px;" class="vertical-text text-start align-middle" scope="col">Indicator-1</th>
+                          <th style="width: 70px;" class="vertical-text text-start align-middle" scope="col">Indicator-2</th>
                         </tr>
                       </thead>
                       <tbody name="tableBodyMonth" class="text-center">
                         <tr>
-                          <td colspan="4" class="text-danger text-center" >Please filter data to see here!</td>
+                          <td colspan="4" class="text-danger text-center" >Please apply filters to see the relevant information.</td>
                         </tr>
                       </tbody>
                     </table>
@@ -155,6 +120,7 @@
                     <div class="modal-body">
                         <input type="hidden" name="indicator_id" id="form_indicator_id">
                         <input type="hidden" name="year_id" id="form_year_id">
+                        <input type="hidden" name="quarter_id" id="form_quarter_id">
                         <label for="IndicatorFormValue" >Value</label>
                         <input id="IndicatorFormValue" class="form-control" required type="number" name="" id="">
                     </div>
@@ -261,8 +227,9 @@
         let indicator_id = $("#form_indicator_id").val()
         let year_id = $("#form_year_id").val()
         let value = $("#IndicatorFormValue").val()
+        let quarter_id = $("#form_quarter_id").val()
 
-        console.log(indicator_id)
+        console.log(quarter_id)
 
 
         $.ajax({

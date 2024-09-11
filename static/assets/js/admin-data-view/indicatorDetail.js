@@ -349,7 +349,7 @@ $(document).ready(function () {
         $('[name="tableHeadQuarter"]').html(
             `
           <tr style="background-color: #40864b;" >
-            <th style="width:30px;"  class="text-light" scope="col" >Quarterly</th>
+            <th style="width:50px;"  class="text-light" scope="col" >Quarterly</th>
             <th style="width:10px;" scope="col" ></th>
               ` +
               data.indicator_lists.map((indicator) =>{ 
@@ -382,16 +382,45 @@ $(document).ready(function () {
                     let children = data.indicator_lists.filter(item => item.parent_id == parent.id)
 
                     for(let child of children){
-                        let value = data.quarter_data_value.find((item) => item.for_datapoint__year_EC == year.for_datapoint__year_EC && item.for_quarter__number == quarter.number && item.indicator__id == child.id)
-                        indicatorValue+= `<td> ${value ? value.performance : "-"}</td>`
+                        let value = data.quarter_data_value.find((item) => item.for_datapoint__year_EC == year.year_EC && item.for_quarter__number == quarter.number && item.indicator__id == child.id)
+                        indicatorValue+= `
+                        <td> 
+                            <button
+                                id="${quarter.number}-${year.year_EC}" 
+                                data-indicator-id="${child.id}" 
+                                data-quarter-id="${quarter.number}" 
+                                data-value="${value ? value.performance : "-"}" 
+                                data-year="${year.year_EC}"
+                                data-bs-toggle="modal" 
+                                name="btnIndicator" 
+                                data-bs-target="#indicatorEditValue" 
+                                class="btn btn-block btn-outline-secondary border-0 fw-bold text-dark">
+                                ${value ? value.performance : "-"}
+                            </button>
+                        </td>`
                         childBody(child, space)
                     }
                 }
 
                 let parentBody = () =>{
                     for(let indicator of data.indicator_lists.filter((item) => item.parent_id == null)){
-                        let value = data.quarter_data_value.find((item) => item.for_datapoint__year_EC == year.for_datapoint__year_EC && item.for_quarter__number == quarter.number && item.indicator__id == indicator.id)
-                        indicatorValue+= `<td> ${value ? value.performance : "-"}</td>` 
+                        let value = data.quarter_data_value.find((item) => item.for_datapoint__year_EC == year.year_EC && item.for_quarter__number == quarter.number && item.indicator__id == indicator.id)
+                        indicatorValue+= 
+                        `<td> 
+                            <button
+                                id="${quarter.number}-${year.year_EC}" 
+                                data-indicator-id="${indicator.id}" 
+                                data-quarter-id="${quarter.number}" 
+                                data-value="${value ? value.performance : "-"}" 
+                                data-year="${year.year_EC}"
+                                data-bs-toggle="modal" 
+                                name="btnIndicator" 
+                                data-bs-target="#indicatorEditValue" 
+                                class="btn btn-block btn-outline-secondary border-0 fw-bold text-dark">
+                                ${value ? value.performance : "-"}
+                            </button>
+                        
+                        </td>` 
                         childBody(indicator)
                     }
                 }
@@ -422,12 +451,23 @@ $(document).ready(function () {
     }
 
 
-    //handle value button clicked
+    //handle value button clicked for yearly
     $("[name='tableBody']").on("click","button[name='btnIndicator']",function(){
         const buttonData = $(this).data()
         $("#IndicatorFormValue").val(buttonData.value)
         $("#form_indicator_id").val(buttonData.indicatorId)
         $("#form_year_id").val(buttonData.year)
+        $("#form_quarter_id").val("")
+    })
+
+
+    //handle value button clicked for quarterly
+    $("[name='tableBodyQuarter']").on("click","button[name='btnIndicator']",function(){
+        const buttonData = $(this).data()
+        $("#IndicatorFormValue").val(buttonData.value)
+        $("#form_indicator_id").val(buttonData.indicatorId)
+        $("#form_year_id").val(buttonData.year)
+        $("#form_quarter_id").val(buttonData.quarterId)
     })
 
     //handle add indicator button clicked
