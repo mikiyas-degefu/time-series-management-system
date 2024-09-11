@@ -42,4 +42,11 @@ urlpatterns = [
     #Design
     path('indicator_detail_view/', indicator_detail_view, name='indicator_detail_view'),
 
+
+    ##Export data
+    path('export_topic/', export_topic, name='export_topic'),
+    path('export_category/', export_category, name='export_category'),
+    path('export_indicator/', export_indicator, name='export_indicator'),
+
+
 ]

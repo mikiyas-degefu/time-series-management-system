@@ -41,13 +41,20 @@
               
               <div class="col flot-right">
                   <button 
-                  class="btn btn-primary float-end m-2"
+                  class="btn btn-success float-end m-2"
                   data-bs-toggle="modal" 
                   data-bs-target="#addCategory">
                   <i class="fas fa-plus"></i> Add Category
                 </button>
+                <a 
+                  href="{% url 'export_category' %}"  
+                  download
+                  type="button" 
+                  class="btn btn-success m-2 float-end">
+                  <i class="bi bi-download"></i>
+                 </a>
                   <button 
-                    class="btn btn-primary float-end m-2" 
+                    class="btn btn-success float-end m-2" 
                     data-bs-toggle="modal" 
                     data-bs-target="#categoryExcel"
                     data-bs-whatever="@mdo">
@@ -60,9 +67,9 @@
 
               <!--Table Start-->
             <div class="table-responsive">
-              <table class="table  table-sm  table-hover caption-top">
+              <table id="categoryDataLists" class="table  table-sm  table-hover caption-top">
                 <thead>
-                  <tr>
+                  <tr style="background-color: #9fdfa9;" >
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
                     <th scope="col">ስም</th>

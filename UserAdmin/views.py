@@ -19,6 +19,12 @@ from .forms import(
     CategoryForm,
     IndicatorForm
 )
+
+from Base.resource import(
+    TopicResource,
+    CategoryResource,
+    IndicatorResource
+)
 from django.contrib import messages
 from Base.models import (
     Topic,
@@ -735,3 +741,30 @@ def edit_user(request):
         response = {'success' : False}
     return Response(response)  
   
+
+
+
+
+################EXPORT DATA####################
+
+def export_topic(request):
+    topic = TopicResource()
+    dataset = topic.export()
+    response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="topic.xlsx"'
+    return response
+
+
+def export_category(request):
+    category = CategoryResource()
+    dataset = category.export()
+    response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="category.xlsx"'
+    return response
+
+def export_indicator(request):
+    indicator = IndicatorResource()
+    dataset = indicator.export()
+    response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="indicator.xlsx"'
+    return response
