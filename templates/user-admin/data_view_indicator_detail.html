@@ -229,7 +229,7 @@
         let value = $("#IndicatorFormValue").val()
         let quarter_id = $("#form_quarter_id").val()
 
-        console.log(quarter_id)
+        console.log(quarter_id == "")
 
 
         $.ajax({
@@ -239,6 +239,7 @@
               'indicator_id' : indicator_id,
               'year_id' : year_id,
               'value' : value,
+              'quarter_id' : quarter_id ? quarter_id : null,
               csrfmiddlewaretoken : '{{ csrf_token }}',
             },
             beforeSend: function() {
@@ -257,12 +258,19 @@
                 showToast('&#128515 Hello, User', 'Successfully Updated', 'success' )
                 $('#indicatorEditValue').modal('hide'); //Hide Modal
 
-                let buttonData = $(`#${indicator_id}-${year_id}`)
-                buttonData.text(value)
-                buttonData.data("value", value)
+                //update value for yearly
+                if(quarter_id == ""){
+                  let buttonData = $(`#${indicator_id}-${year_id}`)
+                  buttonData.text(value)
+                  buttonData.data("value", value) 
+                }else if(quarter_id != ""){
+                  let buttonData = $(`#${indicator_id}-${year_id}-${quarter_id}`)
+                  buttonData.text(value)
+                  buttonData.data("value", value)
+                }
 
               }else{
-                showToast('&#128532 Hello User', 'Failed to update Category.', 'error' )
+                showToast('&#128532 Hello User', 'Failed to update Value.', 'error' )
               }
             },
             error: function () {

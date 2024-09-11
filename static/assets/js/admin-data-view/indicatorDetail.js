@@ -320,7 +320,6 @@ $(document).ready(function () {
     }
 
     const QuarterTable = (data) =>{
-        console.log(data)
         let headerListHtml = ``
 
         let filterChildHeader = (parent, space="") =>{
@@ -386,7 +385,7 @@ $(document).ready(function () {
                         indicatorValue+= `
                         <td> 
                             <button
-                                id="${quarter.number}-${year.year_EC}" 
+                                id="${child.id}-${year.year_EC}-${quarter.number}" 
                                 data-indicator-id="${child.id}" 
                                 data-quarter-id="${quarter.number}" 
                                 data-value="${value ? value.performance : "-"}" 
@@ -408,7 +407,7 @@ $(document).ready(function () {
                         indicatorValue+= 
                         `<td> 
                             <button
-                                id="${quarter.number}-${year.year_EC}" 
+                                id="${indicator.id}-${year.year_EC}-${quarter.number}" 
                                 data-indicator-id="${indicator.id}" 
                                 data-quarter-id="${quarter.number}" 
                                 data-value="${value ? value.performance : "-"}" 

@@ -184,35 +184,53 @@ def data_view_indicator_detail(request, id):
     elif request.method == 'POST':
         if 'form_indicator_add_id' in request.POST:
             parent_id = request.POST['form_indicator_add_id']
-            #try:
-            indicator = Indicator.objects.get(id = parent_id)
-            if form.is_valid():
-                obj = form.save(commit=False)
-                obj.parent = indicator
-                obj.save()
-                for category in indicator.for_category.all():
-                    obj.for_category.add(category)
-                obj.save()
-                messages.success(request, '😃 Hello User, Successfully Added Indicator')
-            #except:
-            #    messages.error(request, '😞 Hello User , An error occurred while Adding Indicator')
+            try:
+                indicator = Indicator.objects.get(id = parent_id)
+                if form.is_valid():
+                    obj = form.save(commit=False)
+                    obj.parent = indicator
+                    obj.save()
+                    for category in indicator.for_category.all():
+                        obj.for_category.add(category)
+                    obj.save()
+                    messages.success(request, '😃 Hello User, Successfully Added Indicator')
+            except:
+               messages.error(request, '😞 Hello User , An error occurred while Adding Indicator')
             return redirect('data_view_indicator_detail', id)
         elif 'indicator_id' in request.POST:
             indicator_id = request.POST['indicator_id']
             year_id = request.POST['year_id']
             new_value = request.POST['value']
+            quarter_id = request.POST['quarter_id']
+
+
     
-            try:
-                value = AnnualData.objects.get(indicator__id = indicator_id, for_datapoint__year_EC = year_id)
-                value.performance = new_value
-                value.save()
-            except:
+            if quarter_id == "":
                 try:
-                    indicator = Indicator.objects.get(id = indicator_id)
-                    datapoint = DataPoint.objects.get(year_EC = year_id)
-                    AnnualData.objects.create(indicator = indicator, performance = new_value, for_datapoint = datapoint)
+                    value = AnnualData.objects.get(indicator__id = indicator_id, for_datapoint__year_EC = year_id)
+                    value.performance = new_value
+                    value.save()
                 except:
-                    return JsonResponse({'response' : False})
+                    try:
+                        indicator = Indicator.objects.get(id = indicator_id)
+                        datapoint = DataPoint.objects.get(year_EC = year_id)
+                        AnnualData.objects.create(indicator = indicator, performance = new_value, for_datapoint = datapoint)
+                    except:
+                        return JsonResponse({'response' : False})
+            elif quarter_id != "":
+                try:
+                    value = QuarterData.objects.get(indicator__id = indicator_id, for_datapoint__year_EC = year_id, for_datapoint__quarter = quarter_id)
+                    value.performance = new_value
+                    value.save()
+                except:
+                    try:
+                        indicator = Indicator.objects.get(id = indicator_id)
+                        datapoint = DataPoint.objects.get(year_EC = year_id)
+                        quarter = Quarter.objects.get(id = quarter_id)
+                        QuarterData.objects.create(indicator = indicator, performance = new_value, for_datapoint = datapoint, for_quarter = quarter)
+                    except:
+                        return JsonResponse({'response' : False})
+
             return JsonResponse({'response' : True})
     
     else: return HttpResponse("Bad Request!")
