@@ -12,7 +12,9 @@ from Base.resource import (
     confirm_file,
     handle_uploaded_Category_file,
     handle_uploaded_Indicator_file,
-    handle_uploaded_Annual_file
+    handle_uploaded_Annual_file,
+    handle_uploaded_Quarter_file,
+    handle_uploaded_Month_file
 )
 
 from .forms import(
@@ -39,15 +41,9 @@ from Base.models import (
     Quarter
 )
 import random
-import string
-
-
-
-
 
 from django.db.models import Count
 
-from django.db.models import Count
 
 
 
@@ -171,19 +167,28 @@ def index(request , id=32):
 def data_view(request):
     form = ImportFileIndicatorAddValueForm(request.POST or None, request.FILES or None)
     global imported_data_global
+    global type_of_data
 
     if request.method == 'POST':
         if 'fileDataValue' in request.POST:
             if form.is_valid():
-                #type_of_data = form.cleaned_data['type_of_data']
-                success, imported_data,result = handle_uploaded_Annual_file(file = request.FILES['file'])
+                type_of_data = form.cleaned_data['type_of_data']
+                if type_of_data == 'yearly':
+                    type_of_data = 'yearly'
+                    success, imported_data,result = handle_uploaded_Annual_file(file = request.FILES['file'])
+                elif type_of_data == 'quarterly':
+                    type_of_data = 'quarterly'
+                    success, imported_data, result = handle_uploaded_Quarter_file(file = request.FILES['file'])
+                elif type_of_data == 'monthly':
+                    type_of_data = 'monthly'
+                    success, imported_data, result = handle_uploaded_Month_file(file = request.FILES['file'])
                 imported_data_global = imported_data
                 context = {'result': result}
                 return render(request, 'user-admin/import_preview.html', context=context)
             else:
                 messages.error(request, '😞 Hello User , An error occurred while Importing Data')
         elif 'confirm_data_form' in request.POST:
-            success, message = confirm_file(imported_data_global, 'annual_data')
+            success, message = confirm_file(imported_data_global, type_of_data)
             if success:
                 messages.success(request, message)
             else:
