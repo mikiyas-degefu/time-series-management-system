@@ -8,7 +8,37 @@
     <title>DPMEs</title>
     <link />
     {% include 'user-admin/include/head.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   </head>
+  <style>
+    
+    
+    .scrolldiv {
+        height: 500px; 
+        overflow-y: auto; 
+    }
+       .rowquarter {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); 
+            border: 1px solid #ccc; 
+            padding: 5px;
+            margin-bottom: 5px; 
+        }
+        .header{
+          background-color: #40864b;
+        }
+
+        .rowquarter p {
+            text-align: center; 
+            padding: 5px;
+            margin: 0; 
+            border-right: 1px solid #ccc; 
+        }
+
+        .rowquarter p:last-child {
+            border-right: none; /* Remove right border for the last "cell" in each row */
+        }
+  </style>
 
   <body class="hold-transition sidebar-mini layout-fixed">
     {% include 'user-admin/include/navbar.html'%}
@@ -22,11 +52,119 @@
             
         </div>
         <div class="container-fluid">
-            <button class="btn btn-primary btn-lg">{{indicator.title_ENG | capfirst}}</button>
+
+
+          <div class="row justify-content-center">
+            <div class="col-lg-8 card bg-info row" style="border-radius: 20px;">
+                <div class="col-lg-6">
+                  <h1 class="mt-3"> Agriculture </h1>
+                  <p class="mt-3"> When presenting a description about a topic on a webpage, it's essential to ensure that the content is both engaging and easy to read.</p>
+                </div>
+                <div class="col-lg-6 mt-5 mr-5">
+                  <i class="fas fa-tractor fa-6x float-end"></i>
+                </div>
+            </div>
+          </div>
+
+            <div class="row shadow"> 
+              <div class="col-lg-9 shadow"> 
+                <div class="row border"> 
+                 <div class="col-md-6"> 
+                   <div id="chart"></div> 
+                 </div> 
+                 <div class="col-md-6"> 
+                   <div id="chartMonth"></div> 
+                 </div> 
+                 <div class="col-md-12"> 
+                   <div id="chart-year"></div>
+                   <div id="chart-quarter"></div> 
+                 </div> 
+                </div> 
+               </div>
+         
+              <div class="col-lg-3 mx-auto"> 
+                <div class="card shadow-lg rounded p-4 pb-1"> 
+                  <div class="row justify-content-center"> 
+                    <div class="col-5  text-center"><h3>96 </h3></div> 
+                    <div class="col-2 d-flex"> 
+                      <div class="border"></div> 
+                    </div> 
+                    <div class="col-5 fw-bold text-success text-center"><h3>2017</h3></div> 
+                  </div> 
+                  <hr class="text-success fw-bold"> 
+                  <p class="text-center fw-bold text-success ">Yearly</p> 
+                  <p class="text-center fw-bold ">Employment-Unemployment</p> 
+                </div> 
+                <div class="card shadow-lg rounded p-4 pb-1"> 
+                  <div class="row justify-content-center"> 
+                    <div class="col-5 fw-bold text-success text-center align-item-center"><h3>2017</h3></div> 
+                  </div> 
+                  <hr class="text-success fw-bold"> 
+                  <div class="rowquarter header">
+                    <p>Q 1</p>
+                    <p>Q 2</p>
+                    <p>Q 3</p>
+                    <p>Q 4</p>
+                </div>
+                <div class="rowquarter">
+                    <p>23</p>
+                    <p>33</p>
+                    <p>44</p>
+                    <p>31</p>
+                </div>
+                  <p class="text-center fw-bold text-success ">Quarterly</p> 
+                  <p class="text-center fw-bold ">Employment-Unemployment</p> 
+                </div> 
+                <div class="card shadow-lg rounded p-4 pb-1"> 
+                  <div class="row justify-content-center"> 
+                    <div class="col-5 fw-bold text-success text-center align-item-center"><h3>2017</h3></div> 
+                  </div> 
+                  <hr class="text-success fw-bold"> 
+                  <table class="table table-bordered table-responsive">
+                    <tr>
+                      <th class="header">JAN</th>   
+                      <th>FEB</th>
+                      <th>MAR</th>
+                      <th>APR</th>
+                      <th>MAY</th>   
+                      <th>JUNE</th>
+                      <th>JUL</th>
+                      <th>AUG</th>
+                      <th>SEP</th>   
+                      <th>OCT</th>
+                      <th>NOV</th>
+                      <th>DEC</th>     
+                    </tr>
+                    <tr>
+                      <td>23</td> 
+                      <td>33</td>
+                      <td>44</td>
+                      <td>31</td>
+                      <td>35</td>
+                      <td>67</td>
+                      <td>85</td>
+                      <td>43</td> 
+                      <td>74</td>
+                      <td>47</td>
+                      <td>57</td>
+                      <td>75</td>
+                    </tr>
+                  </table>
+                  <p class="text-center fw-bold text-success ">Monthly</p> 
+                  <p class="text-center fw-bold ">Employment-Unemployment</p> 
+                </div> 
+              </div> 
+            </div>
+      
+
+
+
+
+            <h4 class="text-center text-secondary mt-4">{{indicator.title_ENG | capfirst}}</h4>
             <div class="col-lg-7 mt-3 mx-auto d-block">
               {% include 'includes/messages.html' %}
              </div>
-            <div class="card mt-5 shadow-sm border p-3">
+            <div class="card mt-2 shadow-sm border p-3">
 
 
                 <!--UPDATED TABLE-->
@@ -66,7 +204,7 @@
 
 
                   <!--Table Quarterly-->
-                  <div class="tab-pane fade" id="pills-quarterly" role="tabpanel" aria-labelledby="pills-quarterly-tab">
+                  <div class="tab-pane fade scrolldiv" id="pills-quarterly" role="tabpanel" aria-labelledby="pills-quarterly-tab">
                     <div class="table-responsive">
                       <table style="table-layout: fixed;"  class="m-0 p-0 table table-hover table-bordered">
                         <thead name="tableHeadQuarter">
@@ -79,7 +217,7 @@
 
 
                   <!--Table Monthly-->
-                  <div class="tab-pane fade" id="pills-monthly" role="tabpanel" aria-labelledby="pills-monthly-tab">
+                  <div class="tab-pane fade scrolldiv" id="pills-monthly" role="tabpanel" aria-labelledby="pills-monthly-tab">
                     <table style="table-layout: fixed;"  class="m-0 p-0 table table-hover table-bordered">
                       <thead name="tableHeadMonth">
                         <tr style="background-color: #40864b;" >
@@ -132,4 +270,341 @@
     
   </body>
 
+  <script>
+    function makeData() {
+    return [30, 40, 50, 60 , 70 , 80  ]; 
+}
+      
+    //Year 
+    var options = { 
+          colors:['#40864b'], 
+          series: [{ 
+          name: 'Servings', 
+          data: [44, 55, 41, 67, 22, 43, 21, 33, 45, 31, 87, 65, 35] 
+        }], 
+        chart: { 
+          height: 350, 
+          type: 'bar', 
+          toolbar: { 
+        show: false, 
+        offsetX: 0, 
+        offsetY: 0,} 
+        }, 
+        plotOptions: { 
+          bar: { 
+            borderRadius: 10, 
+            columnWidth: '50%', 
+          } 
+        }, 
+        dataLabels: { 
+          enabled: false 
+        }, 
+        stroke: { 
+          width: 0 
+        }, 
+        grid: { 
+          row: { 
+            colors: ['#fff', '#f2f2f2'] 
+          } 
+        }, 
+        xaxis: { 
+          labels: { 
+            rotate: -45 
+          }, 
+          categories: ['2000', '2001', '2002', '2003', '2004', '2005', 
+            '2006', '2007', '2008', '2009', '2010', '2011', '2012' 
+          ], 
+          tickPlacement: 'on' 
+        }, 
+        yaxis: { 
+          title: { 
+            text: 'Last 10 Years Performance', 
+          }, 
+        }, 
+        fill: { 
+          type: 'gradient', 
+          gradient: { 
+            shade: 'light', 
+            type: "horizontal", 
+            shadeIntensity: 0.25, 
+            gradientToColors: undefined, 
+            inverseColors: true, 
+            opacityFrom: 0.85, 
+            opacityTo: 0.85, 
+            stops: [50, 0, 100] 
+          }, 
+        } 
+        }; 
+ 
+        var chart = new ApexCharts(document.querySelector("#chart"), options); 
+        chart.render(); 
+ 
+ 
+ 
+ 
+        //Month  
+        var options = { 
+          series: [{ 
+          name: 'Sales', 
+          data: [4, 3, 10, 9, 29, 19, 22, 9, 12, 7, 19, 5, 13, 9, 17, 2, 7, 5] 
+        }], 
+         
+          chart: { 
+          height: 350, 
+          type: 'line', 
+        }, 
+        forecastDataPoints: { 
+          count: 7 
+        }, 
+        stroke: { 
+          width: 5, 
+          curve: 'smooth' 
+        }, 
+        xaxis: { 
+          type: 'datetime', 
+          categories: ['1/11/2000', '2/11/2000', '3/11/2000', '4/11/2000', '5/11/2000', '6/11/2000', '7/11/2000', '8/11/2000', '9/11/2000', '10/11/2000', '11/11/2000', '12/11/2000', '1/11/2001', '2/11/2001', '3/11/2001','4/11/2001' ,'5/11/2001' ,'6/11/2001'], 
+          tickAmount: 10, 
+          labels: { 
+            formatter: function(value, timestamp, opts) { 
+              return opts.dateFormatter(new Date(timestamp), 'dd MMM') 
+            } 
+          } 
+        }, 
+        title: { 
+          text: 'Last 3 Years Quarter Performance', 
+          align: 'left', 
+          style: { 
+            fontSize: "16px", 
+            color: '#666' 
+          } 
+        }, 
+        fill: { 
+          type: 'gradient', 
+          gradient: { 
+            shade: 'dark', 
+            gradientToColors: [ '#FDD835'], 
+            shadeIntensity: 1, 
+            type: 'horizontal', 
+            opacityFrom: 1, 
+            opacityTo: 1, 
+            stops: [0, 100, 100, 100] 
+          }, 
+        } 
+        }; 
+ 
+        var chart = new ApexCharts(document.querySelector("#chartMonth"), options); 
+        chart.render();
+
+
+
+      // Quarter Data
+
+      function makeData() {
+    return [30, 40, 50 ,80 , 90 , 100 , 70 , 60  ]
+}
+
+      var options = {
+          series: [{
+          data: makeData()
+        }],
+          chart: {
+          id: 'barYear',
+          height: 400,
+          width: '100%',
+          type: 'bar',
+          events: {
+            dataPointSelection: function (e, chart, opts) {
+              var quarterChartEl = document.querySelector("#chart-quarter");
+              var yearChartEl = document.querySelector("#chart-year");
+        
+              if (opts.selectedDataPoints[0].length === 1) {
+                if (quarterChartEl.classList.contains("active")) {
+                  updateQuarterChart(chart, 'barQuarter')
+                } else {
+                  yearChartEl.classList.add("chart-quarter-activated")
+                  quarterChartEl.classList.add("active");
+                  updateQuarterChart(chart, 'barQuarter')
+                }
+              } else {
+                updateQuarterChart(chart, 'barQuarter')
+              }
+        
+              if (opts.selectedDataPoints[0].length === 0) {
+                yearChartEl.classList.remove("chart-quarter-activated")
+                quarterChartEl.classList.remove("active");
+              }
+        
+            },
+            updated:  function (chart) {
+              updateQuarterChart(chart, 'barQuarter')
+            }
+          }
+        },
+        plotOptions: {
+          bar: {
+            distributed: true,
+            horizontal: true,
+            barHeight: '75%',
+            dataLabels: {
+              position: 'bottom'
+            }
+          }
+        },
+        dataLabels: {
+          enabled: true,
+          textAnchor: 'start',
+          style: {
+            colors: ['#fff']
+          },
+          formatter: function (val, opt) {
+            return opt.w.globals.labels[opt.dataPointIndex]
+          },
+          offsetX: 0,
+          dropShadow: {
+            enabled: true
+          }
+        },
+        
+        
+        
+        states: {
+          normal: {
+            filter: {
+              type: 'desaturate'
+            }
+          },
+          active: {
+            allowMultipleDataPointsSelection: true,
+            filter: {
+              type: 'darken',
+              value: 1
+            }
+          }
+        },
+        tooltip: {
+          x: {
+            show: false
+          },
+          y: {
+            title: {
+              formatter: function (val, opts) {
+                return opts.w.globals.labels[opts.dataPointIndex]
+              }
+            }
+          }
+        },
+        title: {
+          text: 'Yearly Results',
+          offsetX: 15
+        },
+        subtitle: {
+          text: '(Click on bar to see details)',
+          offsetX: 15
+        },
+        yaxis: {
+          labels: {
+            show: false
+          }
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart-year"), options);
+        chart.render();
+      
+        var optionsQuarter = {
+          series: [{
+          data: []
+        }],
+          chart: {
+          id: 'barQuarter',
+          height: 400,
+          width: '100%',
+          type: 'bar',
+          stacked: true
+        },
+        plotOptions: {
+          bar: {
+            columnWidth: '50%',
+            horizontal: false
+          }
+        },
+        legend: {
+          show: false
+        },
+        grid: {
+          yaxis: {
+            lines: {
+              show: false,
+            }
+          },
+          xaxis: {
+            lines: {
+              show: true,
+            }
+          }
+        },
+        yaxis: {
+          labels: {
+            show: false
+          }
+        },
+        title: {
+          text: 'Quarterly Results',
+          offsetX: 10
+        },
+        tooltip: {
+          x: {
+            formatter: function (val, opts) {
+              return opts.w.globals.seriesNames[opts.seriesIndex]
+            }
+          },
+          y: {
+            title: {
+              formatter: function (val, opts) {
+                return opts.w.globals.labels[opts.dataPointIndex]
+              }
+            }
+          }
+        }
+        };
+
+        var chartQuarter = new ApexCharts(document.querySelector("#chart-quarter"), optionsQuarter);
+        chartQuarter.render();
+      
+      
+        chart.addEventListener('dataPointSelection', function (e, chart, opts) {
+        var quarterChartEl = document.querySelector("#chart-quarter");
+        var yearChartEl = document.querySelector("#chart-year");
+      
+        if (opts.selectedDataPoints[0].length === 1) {
+          if(quarterChartEl.classList.contains("active")) {
+            updateQuarterChart(chart, 'barQuarter')
+          }
+          else {
+            yearChartEl.classList.add("chart-quarter-activated")
+            quarterChartEl.classList.add("active");
+            updateQuarterChart(chart, 'barQuarter')
+          }
+        } else {
+            updateQuarterChart(chart, 'barQuarter')
+        }
+      
+        if (opts.selectedDataPoints[0].length === 0) {
+          yearChartEl.classList.remove("chart-quarter-activated")
+          quarterChartEl.classList.remove("active");
+        }
+      
+      })
+      
+      chart.addEventListener('updated', function (chart) {
+        updateQuarterChart(chart, 'barQuarter')
+      })
+      
+      document.querySelector("#model").addEventListener("change", function (e) {
+        chart.updateSeries([{
+          data: makeData()
+        }])
+      })
+
+  </script>
 </html>

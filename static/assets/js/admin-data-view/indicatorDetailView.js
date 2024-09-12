@@ -1,7 +1,6 @@
 $(document).ready(function () {
     let urlPath = window.location.pathname;
     let pathID = urlPath.replace("/user-admin/indicator_detail_view/", "").replace("/", "");
-    console.log( urlPath , pathID)
     let URL = `/filter_indicator_detail_annual_value/${pathID}`
 
     const indicatorId = [pathID]
@@ -10,6 +9,7 @@ $(document).ready(function () {
     const contractTable = (data) =>{
         AnnualTable(data)
         QuarterTable(data)
+        MonthTable(data)
     }
 
     const AnnualTable = (data) =>{
@@ -45,11 +45,11 @@ $(document).ready(function () {
                 let getIndicatorValue = filterIndicator.find((item) => item.for_datapoint__year_EC == year.year_EC)
                 if (getIndicatorValue){
                     return `
-                    <td>${getIndicatorValue.performance}</td>
+                    <td> ${getIndicatorValue.performance} </td>
                     `
                 }else{
                     return `
-                    <td>-</td>`
+                    <td> - </td>`
                 }
             })
 
@@ -80,11 +80,11 @@ $(document).ready(function () {
                         if (getIndicatorValue){
                             return `
                             
-                            <td>${getIndicatorValue.performance}</td>
+                            <td> ${getIndicatorValue.performance} </td>
                             `
                         }else{
                             return `
-                            <td>-</td>`
+                            <td> - </td>`
                         }
                     })
     
@@ -93,6 +93,7 @@ $(document).ready(function () {
                         <td>
                            <div class="row">
                                 <div class="col-9">&nbsp;&nbsp;&nbsp;&nbsp ${space}  ${filterChildOfIndicator[0].indicator__title_ENG}</div>
+                                
                                 </div>
                          </td>
                        <td class="">${space}  ${filterChildOfIndicator[0].indicator__title_AMH}</td> 
@@ -110,11 +111,11 @@ $(document).ready(function () {
                     let getIndicatorValue = filterChildIndicator.find((item) => item.for_datapoint__year_EC == year.year_EC)
                     if (getIndicatorValue){
                         return `
-                        <td> ${getIndicatorValue.performance} </td>
+                        <td>  ${getIndicatorValue.performance} </td>
                         `
                     }else{
                         return `
-                        <td>-</td>`
+                        <td> - </td>`
                     }
                 })
 
@@ -123,6 +124,7 @@ $(document).ready(function () {
                     <td class="">
                         <div class="row">
                          <div class="col-9">&nbsp;&nbsp;&nbsp;&nbsp ${filterChildIndicator[0].indicator__title_ENG}</div>
+                         
                          </div>
                     </td>
                <td class="">&nbsp;&nbsp;&nbsp;&nbsp ${filterChildIndicator[0].indicator__title_AMH}</td> 
@@ -140,7 +142,7 @@ $(document).ready(function () {
                      <div class="row">
                       <div class="col-9">${filterIndicator[0].indicator__title_ENG}</div>
                      
-                    </div>
+                     </div>
                 </td>
                <td class="fw-bold">${filterIndicator[0].indicator__title_AMH}</td> 
                ${row}
@@ -228,8 +230,7 @@ $(document).ready(function () {
                     for(let indicator of data.indicator_lists.filter((item) => item.parent_id == null)){
                         let value = data.quarter_data_value.find((item) => item.for_datapoint__year_EC == year.year_EC && item.for_quarter__number == quarter.number && item.indicator__id == indicator.id)
                         indicatorValue+= 
-                        `<td> 
-                                ${value ? value.performance : "-"}
+                        `<td> ${value ? value.performance : "-"} 
                         </td>` 
                         childBody(indicator)
                     }
@@ -255,10 +256,116 @@ $(document).ready(function () {
         $('[name="tableBodyQuarter"]').html(tableBody)
     }
 
+    const MonthTable = (data) =>{
+        let headerListHtml = ``
+
+        let filterChildHeader = (parent, space="") =>{
+            space += String("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp")
+            let children = data.indicator_lists.filter(item => item.parent_id == parent.id)
+
+            for(let child of children){
+                headerListHtml+=`
+                <th scope="col" class="vertical-text text-start align-middle">${space} ${child.title_ENG} </br> ${space} ${child.title_AMH}
+                `
+                filterChildHeader(child, space)
+            }
+        }
+
+        let parentHeader = ()=>{
+            for(let parent of data.indicator_lists.filter(item => item.parent_id == null)){
+                headerListHtml+=`
+                <th scope="col" class="vertical-text text-start align-middle">${parent.title_ENG} </br> ${parent.title_AMH}
+                `
+                filterChildHeader(parent)
+            }
+        }
+
+        parentHeader()
+
+        $('[name="tableHeadMonth"]').html(
+            `
+          <tr style="background-color: #40864b;" >
+            <th style="width:100px;"  class="text-light" scope="col" >Monthly</th>
+            <th style="width:100px;" scope="col" ></th>
+              ` +
+              data.indicator_lists.map((indicator) =>{ 
+                return ` <th scope="col" style="width:70px;"></th>`
+            })
+              + 
+              `
+          </tr>
+
+          <tr style="background-color: #9fdfa9;" >
+          <th scope="col" class="vertical-text text-start align-middle" >(Year)</th>
+          <th scope="col" class="vertical-text text-start align-middle">(Month)</th>
+            ` +
+            headerListHtml
+            + 
+            `
+        </tr>
+            `
+        )
+
+        let tableBody = ''
+
+        for(let year of data.year){
+            let hasYear = false
+            let indicatorValue = ''
+            for(let month of data.month){
+
+                let childBody = (parent, space="") =>{
+                    space += String("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp")
+                    let children = data.indicator_lists.filter(item => item.parent_id == parent.id)
+
+                    for(let child of children){
+                        let value = data.month_data_value.find((item) => item.for_datapoint__year_EC == year.year_EC && item.for_month__number == month.number && item.indicator__id == child.id)
+                        indicatorValue+= `
+                        <td> 
+                                ${value ? value.performance : "-"}
+                        </td>`
+                        childBody(child, space)
+                    }
+                }
+
+                let parentBody = () =>{
+                    for(let indicator of data.indicator_lists.filter((item) => item.parent_id == null)){
+                        let value = data.month_data_value.find((item) => item.for_datapoint__year_EC == year.year_EC && item.for_month__number == month.number && item.indicator__id == indicator.id)
+                        indicatorValue+= 
+                        `<td> 
+                          
+                                ${value ? value.performance : "-"}
+                        
+                        </td>` 
+                        childBody(indicator)
+                    }
+                }
+
+                parentBody()
+
+
+                
+                tableBody+=`
+                <tr>
+                   <th class="text-success" >${hasYear ? "" : year.year_EC + "E.C </br> " + year.year_GC + "G.C"}</th>
+                   <th class="text-success">${month.month_AMH} </br> ${month.month_ENG}</th>
+                   ${indicatorValue}
+                </tr>
+               `
+               hasYear = true  
+               indicatorValue = '' 
+            }
+        }
+
+
+        $('[name="tableBodyMonth"]').html(tableBody)
+    }
+
     const fetchTableData = async() =>{
         let [loading, response] = await useFetch(URL)
         contractTable(response)
     }
+
+
 
 
     //handle value button clicked for yearly
@@ -268,6 +375,7 @@ $(document).ready(function () {
         $("#form_indicator_id").val(buttonData.indicatorId)
         $("#form_year_id").val(buttonData.year)
         $("#form_quarter_id").val("")
+        $("#form_month_id").val("")
     })
 
 
@@ -278,6 +386,18 @@ $(document).ready(function () {
         $("#form_indicator_id").val(buttonData.indicatorId)
         $("#form_year_id").val(buttonData.year)
         $("#form_quarter_id").val(buttonData.quarterId)
+        $("#form_month_id").val("")
+    })
+
+
+     //handle value button clicked for month
+     $("[name='tableBodyMonth']").on("click","button[name='btnIndicator']",function(){
+        const buttonData = $(this).data()
+        $("#IndicatorFormValue").val(buttonData.value)
+        $("#form_indicator_id").val(buttonData.indicatorId)
+        $("#form_year_id").val(buttonData.year)
+        $("#form_quarter_id").val("")
+        $("#form_month_id").val(buttonData.monthId)
     })
 
     //handle add indicator button clicked
