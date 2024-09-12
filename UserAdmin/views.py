@@ -47,42 +47,119 @@ from django.db.models import Count
 
 
 
-def indicator_detail_view (request):
-    return render(request, 'user-admin/indicator_detail_view.html')
-
-
-def index(request , id=32):
-    bootstrap_colors = ['secondary', 'success', 'warning', 'info', 'dark']
-
-    topics = Topic.objects.annotate(num_categories=Count('category'))
-    selected_topic = Topic.objects.get(id=id)
-    selected_topic_categories = Category.objects.filter(topic__id=id)
-    cat_indicator = []
-    for selected_topic_category in selected_topic_categories:
-        indicators = list(Indicator.objects.filter(for_category=selected_topic_category).values('id', 'title_ENG', 'title_AMH'))
-        
-        for indicator in indicators:
-            annual_data_values = list(AnnualData.objects.filter(indicator_id=indicator['id']).values(
-                'id',
-                'indicator__title_ENG',
-                'indicator__title_AMH',
-                'indicator_id',
-                'indicator__parent_id',
-                'for_datapoint__year_EC',
-                'for_datapoint__year_GC',
-                'performance',
-                'target'
-            ))
-            
-            indicator['annual_data_values'] = annual_data_values
-        
-        cat_indicator.append({
-            'cat_name_ENG': selected_topic_category.name_ENG,
-            'cat_name_AMH': selected_topic_category.name_AMH,
-            'cat_id': selected_topic_category.id,
-            'indicators': indicators
-        })  
+def indicator_detail_view (request , id):
+    form = IndicatorForm(request.POST or None)
+    if request.method == "GET":
+        indicator = None
+        try:
+            indicator = Indicator.objects.get(id=id)
+        except:
+            HttpResponse(404)
+        context = {
+            'indicator' : indicator,
+            'form' : form,
+        }
+        return render(request, 'user-admin/indicator_detail_view.html', context=context)
     
+    elif request.method == 'POST':
+        if 'form_indicator_add_id' in request.POST:
+            parent_id = request.POST['form_indicator_add_id']
+            try:
+                indicator = Indicator.objects.get(id = parent_id)
+                if form.is_valid():
+                    obj = form.save(commit=False)
+                    obj.parent = indicator
+                    obj.save()
+                    for category in indicator.for_category.all():
+                        obj.for_category.add(category)
+                    obj.save()
+                    messages.success(request, '😃 Hello User, Successfully Added Indicator')
+            except:
+               messages.error(request, '😞 Hello User , An error occurred while Adding Indicator')
+            return redirect('indicator_detail_view', id)
+        elif 'indicator_id' in request.POST:
+            indicator_id = request.POST['indicator_id']
+            year_id = request.POST['year_id']
+            new_value = request.POST['value']
+            quarter_id = request.POST['quarter_id']
+
+    
+            if quarter_id == "":
+                try:
+                    value = AnnualData.objects.get(indicator__id = indicator_id, for_datapoint__year_EC = year_id)
+                    value.performance = new_value
+                    value.save()
+                except:
+                    try:
+                        indicator = Indicator.objects.get(id = indicator_id)
+                        datapoint = DataPoint.objects.get(year_EC = year_id)
+                        AnnualData.objects.create(indicator = indicator, performance = new_value, for_datapoint = datapoint)
+                    except:
+                        return JsonResponse({'response' : False})
+            elif quarter_id != "":
+                try:
+                    value = QuarterData.objects.get(indicator__id = indicator_id, for_datapoint__year_EC = year_id, for_datapoint__quarter = quarter_id)
+                    value.performance = new_value
+                    value.save()
+                except:
+                    try:
+                        indicator = Indicator.objects.get(id = indicator_id)
+                        datapoint = DataPoint.objects.get(year_EC = year_id)
+                        quarter = Quarter.objects.get(id = quarter_id)
+                        QuarterData.objects.create(indicator = indicator, performance = new_value, for_datapoint = datapoint, for_quarter = quarter)
+                    except:
+                        return JsonResponse({'response' : False})
+
+            return JsonResponse({'response' : True})
+    
+    else: return HttpResponse("Bad Request!")
+
+
+
+
+
+
+
+def index(request , id=None):
+    bootstrap_colors = ['secondary', 'success', 'warning', 'info', 'dark']
+ 
+    topics = Topic.objects.annotate(num_categories=Count('category'))
+    if id:   
+        try :  
+               selected_topic = Topic.objects.get(id=id)
+               selected_topic_categories = Category.objects.filter(topic__id=id)
+               cat_indicator = []
+               for selected_topic_category in selected_topic_categories:
+                    indicators = list(Indicator.objects.filter(for_category=selected_topic_category).values('id', 'title_ENG', 'title_AMH'))
+                    
+                    for indicator in indicators:
+                        annual_data_values = list(AnnualData.objects.filter(indicator_id=indicator['id']).values(
+                            'id',
+                            'indicator__title_ENG',
+                            'indicator__title_AMH',
+                            'indicator_id',
+                            'indicator__parent_id',
+                            'for_datapoint__year_EC',
+                            'for_datapoint__year_GC',
+                            'performance',
+                            'target'
+                        ))
+                        
+                        indicator['annual_data_values'] = annual_data_values
+                    
+                    cat_indicator.append({
+                        'cat_name_ENG': selected_topic_category.name_ENG,
+                        'cat_name_AMH': selected_topic_category.name_AMH,
+                        'cat_id': selected_topic_category.id,
+                        'indicators': indicators
+                    })  
+               
+        except: 
+            cat_indicator = []
+            selected_topic  = None
+    else :
+        cat_indicator = []
+        selected_topic  = None        
     if 'q' in request.GET: # Cheking if query is present
         q = request.GET['q']
         id = None
@@ -118,8 +195,7 @@ def index(request , id=32):
                  })  
              
         # if the query is not present in the indicator but exixts in the category         
-        else :    
-            print(indicators)    
+        else :       
             indicator_ids = [] 
             for indicator in indicators:
                 annual_data_values = list(AnnualData.objects.filter(indicator_id=indicator.id).values(
@@ -153,7 +229,8 @@ def index(request , id=32):
         'total_dashboard_topic': Topic.objects.filter(is_dashboard=True).count(),
         'total_category': Category.objects.all().count(),
         'total_indicator': Indicator.objects.all().count(),
-        'cat_indicator' : cat_indicator
+        'cat_indicator' : cat_indicator,
+        'selected_topic' : selected_topic
     }
 
     return render(request, 'user-admin/index.html', context)
