@@ -87,7 +87,6 @@ class DataPointResource(resources.ModelResource):
         import_id_fields = ('year_EC', 'year_GC')
 
 
-
 class AnnualDataResource(resources.ModelResource):    
     indicator = fields.Field(
         column_name='indicator',
@@ -215,7 +214,6 @@ def handle_uploaded_Indicator_file(file):
             return False, imported_data, result
     except Exception as e:
          return False, imported_data, result
-    
 
 def handle_uploaded_Category_file(file):
     try:

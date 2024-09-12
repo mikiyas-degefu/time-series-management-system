@@ -273,8 +273,15 @@
           <div class="modal-body">
 
             {% csrf_token %}
-            <p class="text-info">Click Download button to download sample Excel format. <a href="{% static 'SampleExcel/TopicSample.xlsx' %}" download="TopicSample.xlsx"
-                class="btn btn-info">Download</a></p>
+            <p class="text-info">
+              <a 
+                href="{% static 'sample_excel/SampleCategoryFormat.xlsx' %}"
+                download="SampleCategoryFormat.xlsx"
+                class="btn btn-info">
+                <i class="bi bi-download"></i>
+              </a>
+              Download sample Excel format. 
+            </p>
 
 
             <div class="row justify-content-start mt-5">

@@ -51,11 +51,6 @@ def indicator_detail_view (request):
     return render(request, 'user-admin/indicator_detail_view.html')
 
 
-
-
-
-
-
 def index(request , id=32):
     bootstrap_colors = ['secondary', 'success', 'warning', 'info', 'dark']
 
@@ -166,6 +161,7 @@ def index(request , id=32):
 ##Data View
 def data_view(request):
     form = ImportFileIndicatorAddValueForm(request.POST or None, request.FILES or None)
+    last_indicator_id = Indicator.objects.last().id
     global imported_data_global
     global type_of_data
 
@@ -195,7 +191,8 @@ def data_view(request):
                 messages.error(request, message)
 
     context = {
-        'form' : form
+        'form' : form,
+        'last_indicator_id' : last_indicator_id+1
     }
     return render(request, 'user-admin/data_view.html', context=context)
 
@@ -568,6 +565,7 @@ def delete_indicator(request, id):
 
 #All indicators
 def all_indicators(request):
+    last_indicator_id = Indicator.objects.last().id
     all_indicators = Indicator.objects.filter(is_deleted=False)
     count = 30
     form = IndicatorForm(request.POST or None)
@@ -623,7 +621,8 @@ def all_indicators(request):
         'all_indicators' : page,
         'count' : count,
         'form' : form,
-        'formFile' : formFile
+        'formFile' : formFile,
+        'last_indicator_id' : last_indicator_id+1
     }    
     return render(request, 'user-admin/all_indicators.html' , context)
 
