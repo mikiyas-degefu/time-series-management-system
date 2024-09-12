@@ -11,13 +11,22 @@ from Base.resource import (
     handle_uploaded_Topic_file,
     confirm_file,
     handle_uploaded_Category_file,
-    handle_uploaded_Indicator_file
+    handle_uploaded_Indicator_file,
+    handle_uploaded_Annual_file,
+    handle_uploaded_Quarter_file,
+    handle_uploaded_Month_file
 )
 
 from .forms import(
     TopicForm,
     CategoryForm,
     IndicatorForm
+)
+
+from Base.resource import(
+    TopicResource,
+    CategoryResource,
+    IndicatorResource
 )
 from django.contrib import messages
 from Base.models import (
@@ -32,15 +41,9 @@ from Base.models import (
     Quarter
 )
 import random
-import string
-
-
-
-
 
 from django.db.models import Count
 
-from django.db.models import Count
 
 
 
@@ -234,7 +237,35 @@ def index(request , id=None):
 
 ##Data View
 def data_view(request):
-    form = ImportFileIndicatorAddValueForm(request.POST or None)
+    form = ImportFileIndicatorAddValueForm(request.POST or None, request.FILES or None)
+    global imported_data_global
+    global type_of_data
+
+    if request.method == 'POST':
+        if 'fileDataValue' in request.POST:
+            if form.is_valid():
+                type_of_data = form.cleaned_data['type_of_data']
+                if type_of_data == 'yearly':
+                    type_of_data = 'yearly'
+                    success, imported_data,result = handle_uploaded_Annual_file(file = request.FILES['file'])
+                elif type_of_data == 'quarterly':
+                    type_of_data = 'quarterly'
+                    success, imported_data, result = handle_uploaded_Quarter_file(file = request.FILES['file'])
+                elif type_of_data == 'monthly':
+                    type_of_data = 'monthly'
+                    success, imported_data, result = handle_uploaded_Month_file(file = request.FILES['file'])
+                imported_data_global = imported_data
+                context = {'result': result}
+                return render(request, 'user-admin/import_preview.html', context=context)
+            else:
+                messages.error(request, '😞 Hello User , An error occurred while Importing Data')
+        elif 'confirm_data_form' in request.POST:
+            success, message = confirm_file(imported_data_global, type_of_data)
+            if success:
+                messages.success(request, message)
+            else:
+                messages.error(request, message)
+
     context = {
         'form' : form
     }
@@ -274,12 +305,15 @@ def data_view_indicator_detail(request, id):
             year_id = request.POST['year_id']
             new_value = request.POST['value']
             quarter_id = request.POST['quarter_id']
+            month_id = request.POST['month_id']
+
+
 
 
     
-            if quarter_id == "":
+            if quarter_id == "" and month_id == "":
                 try:
-                    value = AnnualData.objects.get(indicator__id = indicator_id, for_datapoint__year_EC = year_id)
+                    value = AnnualData.objects.filter(indicator__id = indicator_id, for_datapoint__year_EC = year_id).first()
                     value.performance = new_value
                     value.save()
                 except:
@@ -289,9 +323,9 @@ def data_view_indicator_detail(request, id):
                         AnnualData.objects.create(indicator = indicator, performance = new_value, for_datapoint = datapoint)
                     except:
                         return JsonResponse({'response' : False})
-            elif quarter_id != "":
+            elif quarter_id != "" and month_id == "":
                 try:
-                    value = QuarterData.objects.get(indicator__id = indicator_id, for_datapoint__year_EC = year_id, for_datapoint__quarter = quarter_id)
+                    value = QuarterData.objects.filter(indicator__id = indicator_id, for_datapoint__year_EC = year_id, for_quarter__number = quarter_id).first()
                     value.performance = new_value
                     value.save()
                 except:
@@ -302,6 +336,21 @@ def data_view_indicator_detail(request, id):
                         QuarterData.objects.create(indicator = indicator, performance = new_value, for_datapoint = datapoint, for_quarter = quarter)
                     except:
                         return JsonResponse({'response' : False})
+            elif quarter_id == "" and month_id != "":
+                try:
+                    value = MonthData.objects.filter(indicator__id = indicator_id, for_datapoint__year_EC = year_id, for_month__number = month_id).first()
+                    value.performance = new_value
+                    value.save()
+                    print("month-update")
+                except:
+                    try:
+                        indicator = Indicator.objects.get(id = indicator_id)
+                        datapoint = DataPoint.objects.get(year_EC = year_id)
+                        month = Month.objects.get(id = month_id)
+                        MonthData.objects.create(indicator = indicator, performance = new_value, for_datapoint = datapoint, for_month = month)
+                    except:
+                        return JsonResponse({'response' : False})
+                
 
             return JsonResponse({'response' : True})
     
@@ -434,7 +483,7 @@ def edit_topic(request):
 #### Category  
 
 def categories(request):
-    category = Category.objects.filter(is_deleted = False)
+    category = Category.objects.filter(is_deleted = False).select_related()
     form = CategoryForm(request.POST or None)
     count = 20
 
@@ -789,3 +838,31 @@ def edit_user(request):
         response = {'success' : False}
     return Response(response)  
   
+
+
+
+
+################EXPORT DATA####################
+
+def export_topic(request):
+    topic = TopicResource()
+    dataset = topic.export()
+    response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="topic.xlsx"'
+    return response
+
+
+def export_category(request):
+    category = CategoryResource()
+    dataset = category.export()
+    response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="category.xlsx"'
+    return response
+
+def export_indicator(request):
+    indicator = IndicatorResource()
+    dataset = indicator.export()
+    response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="indicator.xlsx"'
+    return response
+

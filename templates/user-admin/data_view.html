@@ -20,10 +20,37 @@
       <!-- TItle Start-->
       <div class="content-header">
         <div class="container-fluid bg-white pt-5">
-          <div class="text-end">
-            <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#valueExcel" data-bs-whatever="@mdo">
-            <i class="bi bi-file-earmark-arrow-down"></i> Add Excel
-          </button>
+          {% include 'includes/messages.html' %}
+          <div class="row justify-content-between  d-flex align-items-end">
+            <div class="col-md-6 card text-light " style="background-color: #40864b;">
+              <div class="card-body" >
+
+                <div class="row">
+                  <div class="col-3">
+                    <h5>Topic: </h5>
+                  </div>
+                  <div class="col-7">
+                    <h5 id="topicName"> </h5>
+                  </div>
+                </div>
+
+                <div class="row mt-2">
+                  <div class="col-3">
+                    <h5>Category: </h5>
+                  </div>
+                  <div class="col-7">
+                    <h5 id="categoryName"></h5>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#valueExcel" data-bs-whatever="@mdo">
+                  <i class="bi bi-file-earmark-arrow-down"></i> Add Excel
+                </button>
+            </div>
           </div>
 
 
@@ -105,25 +132,6 @@
             <div class="col-md-9 card p-4">
               <!-- Table Start-->
                <div class="table-responsive">
-                {% comment %} <table class="table table-bordered bg-white" style="table-layout: fixed;">
-                  <thead>
-                    <tr class="" id="tableHead">
-                      <th scope="col" >#</th>
-                      <th scope="col">Name</th>
-                      <th scope="col">ስም</th>
-                      <th scope="col">2000</th>
-                      <th scope="col">2001</th>
-                      <th scope="col">2002</th>
-                      <th scope="col">2003</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tableBody">
-                    <tr>
-                      <td colspan="7"><p class="text-danger text-center">Please apply filters to see the relevant information.</p></td>
-                    </tr>
-                  </tbody>
-                </table> {% endcomment %}
-
                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                   <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="pills-all-tab" data-bs-toggle="pill" data-bs-target="#pills-all" type="button" role="tab" aria-controls="pills-all" aria-selected="false">All</button>
@@ -140,11 +148,19 @@
                 </ul>
                 
                 <div class="tab-content" id="pills-tabContent">
+                  <div id="tableLoader"></div>
           
                   <div class="tab-pane fade show active" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab">
           
                     <!--All-->
-                    <table class="table" style="table-layout: fixed;" >
+                    <button 
+                      id="btnDownloadExcel"
+                      onclick="tableToExcel('allReportData', 'allReportData', 'allReportData.xls');"
+                      type="button" 
+                      class="btn btn-success mb-2 float-end">
+                      <i class="bi bi-download"></i>
+                  </button>
+                    <table id="allReportData" class="table" style="table-layout: fixed;" >
           
                       <tbody>
               
@@ -238,9 +254,15 @@
           
           
                   <div class="tab-pane fade" id="pills-yearly"  role="tabpanel" aria-labelledby="pills-yearly-tab">
-          
+                    <button 
+                      id="btnDownloadExcel"
+                      onclick="tableToExcel('yearData', 'yearData', 'yearData.xls');" 
+                      type="button" 
+                      class="btn btn-success mb-2 float-end">
+                      <i class="bi bi-download"></i>
+                  </button>
                     <!--Year-->
-                    <table class="m-0 p-0 table table-bordered table-hover" style="table-layout: fixed;" >
+                    <table id="yearData" class="m-0 p-0 table table-bordered table-hover" style="table-layout: fixed;" >
                       <thead  name="tableHead">
                         <tr style="background-color: #40864b;" ><th class="text-light" colspan="9">Yearly</th></tr>
                         <tr style="background-color: #9fdfa9;" >
@@ -268,7 +290,14 @@
           
           
                   <div class="tab-pane fade" id="pills-quarterly" role="tabpanel" aria-labelledby="pills-quarterly-tab">
-                    <table style="table-layout: fixed;"  class="m-0 p-0 table table-hover table-bordered">
+                    <button 
+                      id="btnDownloadExcel"
+                      onclick="tableToExcel('quarterData', 'quarterData', 'quarterData.xls');" 
+                      type="button" 
+                      class="btn btn-success mb-2 float-end">
+                    <i class="bi bi-download"></i>
+                  </button>
+                    <table id="quarterData" style="table-layout: fixed;"  class="m-0 p-0 table table-hover table-bordered">
                       <thead name="tableHeadQuarter">
                         <tr style="background-color: #40864b;" >
                           <th class="text-light border" colspan="4">Quarter</th>
@@ -290,7 +319,14 @@
 
 
                   <div class="tab-pane fade" id="pills-monthly" role="tabpanel" aria-labelledby="pills-monthly-tab">
-                    <table style="table-layout: fixed;"  class="m-0 p-0 table table-hover table-bordered">
+                    <button 
+                      id="btnDownloadExcel"
+                      type="button"
+                      onclick="tableToExcel('monthData', 'monthData', 'monthData.xls');" 
+                      class="btn btn-success mb-2 float-end">
+                      <i class="bi bi-download"></i>
+                  </button>
+                    <table id="monthData" style="table-layout: fixed;"  class="m-0 p-0 table table-hover table-bordered">
                       <thead name="tableHeadMonth">
                         <tr style="background-color: #40864b;" >
                           <th class="text-light border" colspan="4">Monthly</th>
@@ -318,7 +354,7 @@
           
                 </div>
 
-                <div id="tableLoader"></div>
+                
                </div>
               <!--Table End-->
             </div>

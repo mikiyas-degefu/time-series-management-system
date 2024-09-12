@@ -50,15 +50,22 @@
   
         <div class="col flot-right ">
           <button
-            class="btn btn-primary float-end m-2" 
+            class="btn btn-success float-end m-2" 
             data-bs-toggle="modal" 
             data-bs-target="#AddTopic"
             data-bs-whatever="@mdo">
             <i class="fas fa-plus"></i> 
             Add Topic
           </button>
+          <a 
+            href="{% url 'export_topic' %}"  
+            download
+            type="button" 
+            class="btn btn-success m-2 float-end">
+            <i class="bi bi-download"></i>
+          </a>
           <button 
-            class="btn btn-primary float-end m-2" 
+            class="btn btn-success float-end m-2" 
             data-bs-toggle="modal" 
             data-bs-target="#topicExcel"
             data-bs-whatever="@mdo"
@@ -69,9 +76,9 @@
         </div>
   
       </div>
-      <table class="table  bg-white table-sm  table-hover caption-top">
+      <table id="topicDataLists" class="table  bg-white table-sm  table-hover caption-top">
         <thead>
-          <tr class="">
+          <tr style="background-color:  #9fdfa9;" >
             <th>#</th>
             <th>Name English</th>
             <th>Name Amharic</th>
