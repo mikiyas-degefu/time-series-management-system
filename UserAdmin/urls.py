@@ -40,6 +40,6 @@ urlpatterns = [
 
 
     #Design
-    path('indicator_detail_view/', indicator_detail_view, name='indicator_detail_view'),
+    path('indicator_detail_view/<str:id>/', indicator_detail_view, name='indicator_detail_view'),
 
 ]
