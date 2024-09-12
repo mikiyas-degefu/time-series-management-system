@@ -39,6 +39,7 @@
           </div>
 
           <div class=" col flot-right">
+            <p class="text-success text-end"> Last Indicator ID: <span class="text-bold">{{last_indicator_id}}</span> </p>
             <button class="btn btn-success float-end m-2" data-bs-toggle="modal" data-bs-target="#AddIndicator"
               data-bs-whatever="@mdo">
               <i class="fas fa-plus"></i> Add Indicator
@@ -58,6 +59,7 @@
               <i class="fas fa-database"></i>
                Import Indicator
           </button>
+          
           </div>
         </div>
         <div class="table-responsive ps-4">
@@ -315,9 +317,15 @@
           <div class="modal-body">
 
             {% csrf_token %}
-            <p class="text-info">Click Download button to download sample Excel format. <a href="{% static 'SampleExcel/TopicSample.xlsx' %}" download="TopicSample.xlsx"
-                class="btn btn-info">Download</a></p>
-
+            <p class="text-info">
+              <a 
+                href="{% static 'sample_excel/SampleIndicatorFormat.xlsx' %}"
+                download="SampleIndicatorFormat.xlsx"
+                class="btn btn-info">
+                <i class="bi bi-download"></i>
+              </a>
+              Download sample Excel format. 
+            </p>
 
             <div class="row justify-content-start mt-5">
               <div class="col-12">

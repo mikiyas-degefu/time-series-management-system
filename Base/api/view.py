@@ -123,13 +123,8 @@ def filter_indicator_annual_value(request):
       ))
 
 
-   
 
-
-      year = list( AnnualData.objects.filter(indicator__id__in = indicator_list_id_with_children).values(
-         'for_datapoint__year_EC',
-         'for_datapoint__year_GC',
-      ).distinct())
+      year = list(DataPoint.objects.all().values('year_EC', 'year_GC'))
 
       indicator_lists = Indicator.objects.filter(id__in = indicator_list_id_with_children).select_related().values()
 
@@ -210,7 +205,7 @@ def detail_indicator_with_children(request, id):
       month = list(Month.objects.all().values('month_ENG', 'month_AMH', 'number'))
 
 
-      #for_datapoint__year_EC
+   
 
       context = {
          'year' : year,

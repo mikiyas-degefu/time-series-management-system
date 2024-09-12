@@ -27,7 +27,7 @@
 
                 <div class="row">
                   <div class="col-3">
-                    <h5>Topic: </h5>
+                    <h5>Topic:</h5>
                   </div>
                   <div class="col-7">
                     <h5 id="topicName"> </h5>
@@ -47,6 +47,7 @@
               </div>
             </div>
             <div class="col-md-6 text-end">
+                <p class="text-success"> Last Indicator ID: <span class="text-bold">{{last_indicator_id}}</span> </p>
                 <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#valueExcel" data-bs-whatever="@mdo">
                   <i class="bi bi-file-earmark-arrow-down"></i> Add Excel
                 </button>
@@ -382,8 +383,33 @@
           <div class="modal-body">
 
             {% csrf_token %}
-            <p class="text-info">Click Download button to download sample Excel format. <a href="{% static 'SampleExcel/TopicSample.xlsx' %}" download="TopicSample.xlsx"
-                class="btn btn-info">Download</a></p>
+            <p class="text-info">
+              <a 
+                href="{% static 'sample_excel/SampleYearFormat.xlsx' %}"
+                download="SampleYearFormat.xlsx"
+                class="btn btn-info">
+                <i class="bi bi-download"></i>
+              </a>
+              Download sample Excel <span class="fw-bold text-success">Yearly</span> format. 
+            </p>
+            <p class="text-info">
+              <a 
+                href="{% static 'sample_excel/SampleQuarterFormat.xlsx' %}"
+                download="SampleQuarterFormat.xlsx"
+                class="btn btn-info">
+                <i class="bi bi-download"></i>
+              </a>
+              Download sample Excel <span class="fw-bold text-success">Quarterly</span> format. 
+            </p>
+            <p class="text-info">
+              <a 
+                href="{% static 'sample_excel/SampleMonthFormat.xlsx' %}"
+                download="SampleMonthFormat.xlsx"
+                class="btn btn-info">
+                <i class="bi bi-download"></i>
+              </a>
+              Download sample Excel <span class="fw-bold text-success">Monthly</span> format. 
+            </p>
 
 
             <div class="row justify-content-start mt-5">
