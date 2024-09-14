@@ -2,6 +2,17 @@ $(document).ready(function () {
 
     const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'];
 
+    const multiSelectForm = (htmlId) =>{
+        //multi select
+        new MultiSelectTag(htmlId, {
+            rounded: false, // default true
+            placeholder: "Search Category", // default Search...
+            onChange: function (values) {
+              console.log(values);
+            },
+          });
+    }
+
     const columnChart = (item) =>{
         $("#chart").html('')
         var options = {
@@ -58,6 +69,33 @@ $(document).ready(function () {
           var chart = new ApexCharts(document.querySelector("#chart"), options);
           chart.render();
     }
+
+    const categoryFilter = (items) =>{
+        $("#filter_category").html('')
+        let catFilterHtml = `
+            <hr>
+            <div class="p-5 rounded bg-white">
+              <p>Filter Category</p>
+              <form id="filterCategoryForm">
+                <div class="d-flex">
+                    <select required id="id_for_category" class="form-select me-2" multiple aria-label="multiple select example">
+                    ${items.map((item) => `<option value="${item.id}">${item.name_ENG}</option>` )}
+                    </select>
+                    <button class="btn btn-outline-success ms-3" type="submit">Filter</button>
+                </div>
+              </form>
+            </div>
+        `
+        $("#filter_category").html(catFilterHtml)
+
+        $("#filterCategoryForm").on('submit', function(e) {
+            e.preventDefault()
+
+            let values = $("#id_for_category").val();
+            console.log(values.join(', '));
+           
+        })
+    }
     const topicCard = (topic,color) =>{
         return `
         <div data-id="${topic.id}" name="topic-card" class="col-md-3 col-sm-6">
@@ -94,10 +132,22 @@ $(document).ready(function () {
         $("[name='topic-card']").click(async function () {
             let id = $(this).data("id");
             let [loading,category_count_indicator] = await useFetch(`/count_indicator_by_category/${id}/`);
-            columnChart(category_count_indicator)
-        })
+            columnChart(category_count_indicator) // column chart
+            categoryFilter(category_count_indicator) //filter category 
+            multiSelectForm('id_for_category') //activate multi select style
+        })   
         
+        
+        
+    
     }
 
+
+   
+
     fetchTopicLists()
+
+   
+
+   
 })
