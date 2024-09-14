@@ -7,7 +7,8 @@ from .api.view import(
     filter_topic_and_category,
     filter_indicator_by_category,
     filter_indicator_annual_value,
-    detail_indicator_with_children
+    detail_indicator_with_children,
+    indicator_graph,
 )
 
 from UserManagement.views import login_view , logout_view
@@ -29,6 +30,8 @@ urlpatterns = [
     path('filter_indicator_by_category/<str:id>/', filter_indicator_by_category),
     path('filter_indicator_annual_value/', filter_indicator_annual_value),
     path('filter_indicator_detail_annual_value/<str:id>/', detail_indicator_with_children),
+    path('indicator_graph/<str:id>/', indicator_graph),
+
 
 
 
