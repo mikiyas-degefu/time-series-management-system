@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from .models import (
   Topic,
-  Category
+  Category,
+  Indicator,
+  AnnualData,
+  DataPoint,
 )
 
 
@@ -17,5 +20,23 @@ class CategorySerializers(serializers.ModelSerializer):
   class Meta:
     model = Category
     fields = '__all__'
+
+
+class IndicatorSerializers(serializers.ModelSerializer):
+  class Meta:
+    model = Indicator
+    fields = '__all__'
+
+
+class AnnualDataSerializers(serializers.ModelSerializer):
+  class Meta:
+    model = AnnualData
+    fields = '__all__'
+
+
+class DataPointSerializers(serializers.ModelSerializer):
+  class Meta:
+    model = DataPoint
+    fields = ['id','year_EC','year_GC']
 
     

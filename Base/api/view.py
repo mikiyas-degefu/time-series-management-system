@@ -19,6 +19,9 @@ from Base.models import (
 from Base.serializer import (
     TopicSerializers,
     CategorySerializers,
+    IndicatorSerializers,
+    AnnualDataSerializers,
+    DataPointSerializers,
 )
 
 @api_view(['GET'])
@@ -27,6 +30,33 @@ def topic_lists(request):
         topics = Topic.objects.annotate(category_count=Count('categories')).select_related()
         serializer = TopicSerializers(topics, many=True)
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+def filter_by_category_with_value(request):
+    if request.method == 'GET':
+        if 'category' in request.GET:
+            category = request.GET['category'].split(',')
+            try:
+               indicators = Indicator.objects.filter(for_category__id__in = category, parent = None ,is_deleted = False).select_related()
+               serializer = IndicatorSerializers(indicators, many=True)
+
+               years = DataPoint.objects.all()
+               year_serializer = DataPointSerializers(years, many=True)
+
+               annualData = AnnualData.objects.filter(indicator__in = indicators).select_related()
+               serializer2 = AnnualDataSerializers(annualData, many=True)
+
+
+               return Response({
+                   'indicators' : serializer.data,
+                   'years' : year_serializer.data,
+                   'annualData' : serializer2.data
+               })
+            except:
+               return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
     
 @api_view(['GET'])
 def count_indicator_by_category(request,id):

@@ -2,6 +2,38 @@ $(document).ready(function () {
 
     const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'];
 
+    const annualTable = () =>{
+        $("#annualTable").html('')
+        let table = `
+        <div class="p-5 rounded bg-white">
+            <p>Annual Table</p>
+            <table id="yearData" class="m-0 p-0 table table-bordered table-hover" style="table-layout: fixed;" >
+                <thead  name="tableHead">
+                  <tr style="background-color: #40864b;" ><th class="text-light" colspan="9">Yearly</th></tr>
+                  <tr style="background-color: #9fdfa9;" >
+                    <th  scope="col">Indicator (English)</th>
+                    <th  scope="col">Indicator (Amharic)</th>
+                    <th  scope="col">2000</th>
+                    <th  scope="col">2001</th>
+                    <th  scope="col">2002</th>
+                    <th  scope="col">2003</th>
+                    <th  scope="col">2004</th>
+                    <th  scope="col">2005</th>
+                    <th  scope="col">2006</th>
+                  </tr>
+                </thead >
+                <tbody name="tableBody">
+                  <tr>
+                    <td colspan="9" class="text-danger text-center" >Please apply filters to see the relevant information.</td>
+                  </tr>
+                </tbody>
+            </table>
+        </div>
+        `
+
+        $("#annualTable").html(table)
+    }
+
     const multiSelectForm = (htmlId) =>{
         //multi select
         new MultiSelectTag(htmlId, {
@@ -88,11 +120,15 @@ $(document).ready(function () {
         `
         $("#filter_category").html(catFilterHtml)
 
-        $("#filterCategoryForm").on('submit', function(e) {
+        $("#filterCategoryForm").on('submit', async function(e) {
             e.preventDefault()
 
-            let values = $("#id_for_category").val();
-            console.log(values.join(', '));
+            let values = $("#id_for_category").val().join(" ,");
+
+            let [indicatorLoading,indicatorValue] = await useFetch(`/filter_by_category_with_value/?category=${values}`);
+            console.log(indicatorValue)
+            annualTable()
+
            
         })
     }
