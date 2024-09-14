@@ -1,7 +1,9 @@
 from rest_framework.response import Response
-from django.http import JsonResponse
-import random
 from rest_framework.decorators import api_view
+from django.shortcuts import HttpResponse
+from django.db.models import Count
+from django.db.models import Q
+from rest_framework import status
 from Base.models import (
     Topic,
     Category,
@@ -13,6 +15,31 @@ from Base.models import (
     Month,
     MonthData,
 )
+
+from Base.serializer import (
+    TopicSerializers,
+    CategorySerializers,
+)
+
+@api_view(['GET'])
+def topic_lists(request):
+    if request.method == 'GET':
+        topics = Topic.objects.annotate(category_count=Count('categories')).select_related()
+        serializer = TopicSerializers(topics, many=True)
+        return Response(serializer.data)
+    
+@api_view(['GET'])
+def count_indicator_by_category(request,id):
+      try:
+         topic = Topic.objects.get(id = id)
+      except:
+         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+      
+      if request.method == 'GET':
+        categories = Category.objects.filter(topic =  topic).annotate(indicator_count=Count('indicators')).select_related()
+        serializer = CategorySerializers(categories, many=True)
+        return Response(serializer.data)
+
 @api_view(['GET'])
 def get_indicators(request,id):
    '''
