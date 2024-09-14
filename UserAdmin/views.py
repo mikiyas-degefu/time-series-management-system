@@ -123,7 +123,7 @@ def indicator_detail_view (request , id):
 def index(request , id=None):
     bootstrap_colors = ['secondary', 'success', 'warning', 'info', 'dark']
  
-    topics = Topic.objects.annotate(num_categories=Count('category'))
+    topics = Topic.objects.annotate(num_categories=Count('categories'))
     if id:   
         try :  
                selected_topic = Topic.objects.get(id=id)
