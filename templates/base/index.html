@@ -1,0 +1,75 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DPMEs</title>
+    <link />
+    {% include 'base/include/head.html' %}
+  </head>
+
+
+
+
+  <body class="hold-transition sidebar-mini layout-fixed">
+    {% include 'base/include/navbar.html'%}
+    <div>{% include 'base/include/sidebar.html' %}</div>
+
+    <!--Body Start-->
+    <div class="content-wrapper">
+     
+      <div class="content-header">
+        <div class="container-fluid mt-2">
+          <!--Start Here-->
+
+          <form class="d-flex col-8 mx-auto">
+            <input class="form-control p-4 me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+
+          <!--Topic Card Start -->
+          <p>Topic lists</p>
+          <div id="topic_list" class="row">
+           </div>
+          <!--Topic Card End-->
+
+  
+
+         <!--Chart Category-->
+          <div class="bg-white p-3" id="chart"></div>
+          <!--End Here-->
+
+          <!--Filter Category Start-->
+          <div id="filter_category">
+          
+          </div>
+          <!--Filter Category End-->
+
+          <!--Annual Table Start-->
+          <div id="annualTable">
+          
+          </div>
+          <!--Annual Table End-->
+        </div>
+      </div>
+
+    </div>
+
+
+    <!--Body End-->
+    {% include 'base/include/footer.html'%}
+    {% include 'base/include/footer_js.html'%}
+
+
+    <script src="{% static 'assets/js/hooks/useFetch.js' %}"></script>
+    <script src="{% static 'assets/js/base/topicLists.js' %}"></script>
+
+
+
+  </body>
+  <script>
+     
+  </script>
+</html>

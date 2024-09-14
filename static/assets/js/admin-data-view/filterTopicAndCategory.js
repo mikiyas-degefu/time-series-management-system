@@ -166,6 +166,7 @@ $(document).ready(function () {
 
     /// Table
     const contractAnnualTable = (data) => {
+        console.log(data)
         $('[name="tableHead"]').html(
             `
           <tr style="background-color: #40864b;" >
@@ -181,7 +182,7 @@ $(document).ready(function () {
                <th scope="col" >Name</th>
                <th scope="col" >ስም</th>
                ` +
-               data.year.map((year) =>{ return ` <th scope="col">${year.for_datapoint__year_EC} E.C </th>`})
+               data.year.map((year) =>{ return ` <th scope="col">${year.year_EC} E.C </th>`})
                + 
                `
          </tr>
@@ -194,7 +195,7 @@ $(document).ready(function () {
             
             //parent indicator
             let row = data.year.map((year) =>{
-                let getIndicatorValue = filterIndicator.find((item) => item.for_datapoint__year_EC == year.for_datapoint__year_EC)
+                let getIndicatorValue = filterIndicator.find((item) => item.for_datapoint__year_EC == year.year_EC)
                 if (getIndicatorValue){
                     return `
                     <td>${getIndicatorValue.performance}</td>
@@ -227,7 +228,7 @@ $(document).ready(function () {
                 return uniqueChildOfChildId.map((child_id) =>{
                     let filterChildOfChildIndicator = data.annual_data_value.filter((item) => item.indicator__id === Number(child_id))
                     let childRow = data.year.map((year) =>{
-                        let getIndicatorValue = filterChildOfChildIndicator.find((item) => item.for_datapoint__year_EC == year.for_datapoint__year_EC)
+                        let getIndicatorValue = filterChildOfChildIndicator.find((item) => item.for_datapoint__year_EC == year.year_EC)
                         if (getIndicatorValue){
                             return `
                             <td>${getIndicatorValue.performance}</td>
@@ -252,7 +253,7 @@ $(document).ready(function () {
             let childData = uniqueChildId.map((child_id) =>{
                 let filterChildIndicator = data.annual_data_value.filter((item) => item.indicator__id === Number(child_id))
                 let childRow = data.year.map((year) =>{
-                    let getIndicatorValue = filterChildIndicator.find((item) => item.for_datapoint__year_EC == year.for_datapoint__year_EC)
+                    let getIndicatorValue = filterChildIndicator.find((item) => item.for_datapoint__year_EC == year.year_EC)
                     if (getIndicatorValue){
                         return `
                         <td>${getIndicatorValue.performance}</td>
@@ -356,7 +357,7 @@ $(document).ready(function () {
                     let children = data.indicator_lists.filter(item => item.parent_id == parent.id)
 
                     for(let child of children){
-                        let value = data.quarter_data_value.find((item) => item.for_datapoint__year_EC == year.for_datapoint__year_EC && item.for_quarter__number == quarter.number && item.indicator__id == child.id)
+                        let value = data.quarter_data_value.find((item) => item.for_datapoint__year_EC == year.year_EC && item.for_quarter__number == quarter.number && item.indicator__id == child.id)
                         indicatorValue+= `<td> ${value ? value.performance : "-"}</td>`
                         childBody(child, space)
                     }
@@ -364,7 +365,7 @@ $(document).ready(function () {
 
                 let parentBody = () =>{
                     for(let indicator of data.indicator_lists.filter((item) => item.parent_id == null)){
-                        let value = data.quarter_data_value.find((item) => item.for_datapoint__year_EC == year.for_datapoint__year_EC && item.for_quarter__number == quarter.number && item.indicator__id == indicator.id)
+                        let value = data.quarter_data_value.find((item) => item.for_datapoint__year_EC == year.year_EC && item.for_quarter__number == quarter.number && item.indicator__id == indicator.id)
                         indicatorValue+= `<td> ${value ? value.performance : "-"}</td>` 
                         childBody(indicator)
                     }
@@ -376,7 +377,7 @@ $(document).ready(function () {
                 
                 tableBody+=`
                 <tr>
-                   <th class="text-success" >${hasYear ? "" : year.for_datapoint__year_EC}</th>
+                   <th class="text-success" >${hasYear ? "" : year.year_EC}</th>
                    <th class="text-success">${quarter.title_ENG}</th>
                    ${indicatorValue}
                 </tr>
@@ -455,7 +456,7 @@ $(document).ready(function () {
                     let children = data.indicator_lists.filter(item => item.parent_id == parent.id)
 
                     for(let child of children){
-                        let value = data.month_data_value.find((item) => item.for_datapoint__year_EC == year.for_datapoint__year_EC && item.for_month__number == month.number && item.indicator__id == child.id)
+                        let value = data.month_data_value.find((item) => item.for_datapoint__year_EC == year.year_EC && item.for_month__number == month.number && item.indicator__id == child.id)
                         indicatorValue+= `<td> ${value ? value.performance : "-"}</td>`
                         childBody(child, space)
                     }
@@ -463,7 +464,7 @@ $(document).ready(function () {
 
                 let parentBody = () =>{
                     for(let indicator of data.indicator_lists.filter((item) => item.parent_id == null)){
-                        let value = data.month_data_value.find((item) => item.for_datapoint__year_EC == year.for_datapoint__year_EC && item.for_month__number == month.number && item.indicator__id == indicator.id)
+                        let value = data.month_data_value.find((item) => item.for_datapoint__year_EC == year.year_EC && item.for_month__number == month.number && item.indicator__id == indicator.id)
                         indicatorValue+= `<td> ${value ? value.performance : "-"}</td>` 
                         childBody(indicator)
                     }
@@ -475,7 +476,7 @@ $(document).ready(function () {
                 
                 tableBody+=`
                 <tr>
-                   <th class="text-success" >${hasYear ? "" : year.for_datapoint__year_EC}</th>
+                   <th class="text-success" >${hasYear ? "" : year.year_EC}</th>
                    <th class="text-success">${month.month_AMH} (${month.month_ENG})</th>
                    ${indicatorValue}
                 </tr>
