@@ -2,32 +2,64 @@ $(document).ready(function () {
 
     const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'];
 
-    const annualTable = () =>{
+    const annualTable = (indicatorValue) =>{
         $("#annualTable").html('')
+        console.log(indicatorValue)
         let table = `
         <div class="p-5 rounded bg-white">
             <p>Annual Table</p>
-            <table id="yearData" class="m-0 p-0 table table-bordered table-hover" style="table-layout: fixed;" >
-                <thead  name="tableHead">
-                  <tr style="background-color: #40864b;" ><th class="text-light" colspan="9">Yearly</th></tr>
-                  <tr style="background-color: #9fdfa9;" >
-                    <th  scope="col">Indicator (English)</th>
-                    <th  scope="col">Indicator (Amharic)</th>
-                    <th  scope="col">2000</th>
-                    <th  scope="col">2001</th>
-                    <th  scope="col">2002</th>
-                    <th  scope="col">2003</th>
-                    <th  scope="col">2004</th>
-                    <th  scope="col">2005</th>
-                    <th  scope="col">2006</th>
-                  </tr>
-                </thead >
-                <tbody name="tableBody">
-                  <tr>
-                    <td colspan="9" class="text-danger text-center" >Please apply filters to see the relevant information.</td>
-                  </tr>
-                </tbody>
-            </table>
+            
+            ${indicatorValue.categories.map((category) =>{
+                let filterIndicator = indicatorValue.indicators.filter((indicator) => indicator.for_category.includes(category.id));
+                let years = indicatorValue.years.map((year) => ` <th style="width:100px;  scope="col">${year.year_EC}</th>` ).join("")
+                let indicatorLists = filterIndicator.map((indicator) => {
+
+                    let value = indicatorValue.years.map((year) =>{
+                        let getValue = indicatorValue.annualData.find((data) => data.for_datapoint == year.id && data.indicator == indicator.id)
+                        return ` <td class="text-danger text-center">${getValue ? getValue.performance : ' - '}</td>`
+                    }).join("")
+
+                    return `
+                    <tr>
+                        <td class="text-success fw-bold text-start">${indicator.title_ENG} <a href="#"><i class="fa fa-eye float-end "></i></a> </td>
+                        <td class="text-success fw-bold text-start">${indicator.title_AMH}</td>
+                        ${value}
+                     </tr>
+                    `
+                    
+                    
+                }).join("")
+                return `
+                <div class="table-responsive m-3">
+                    <button 
+                      id="btnDownloadExcel"
+                      onclick="tableToExcel('yearData${category.id}', 'yearData${category.id}', 'yearData${category.id}.xls');" 
+                      type="button" 
+                      class="btn btn-success mb-2 float-end">
+                      <i class="bi bi-download"></i>
+                    </button>
+                    <table id="yearData${category.id}" class="m-0 p-0 table table-bordered table-hover"  style="table-layout: fixed;" >
+                        <thead  name="tableHead">
+
+                             <tr style="background-color: #40864b;" >
+                                  <th style="width:500px;"  class="text-light" scope="col" >Yearly</th>
+                                  <th style="width:500px;"  scope="col"></th>
+                                  ${indicatorValue.years.map((year) => ` <th style="width:100px;  scope="col"></th>` ).join("")}
+                            </tr>
+                           
+                            <tr style="background-color: #9fdfa9;" >
+                              <th  scope="col">Indicator (English)</th>
+                              <th  scope="col">Indicator (Amharic)</th>
+                              ${years}
+                            </tr>
+                        </thead >
+                        <tbody name="tableBody">
+                          ${indicatorLists ? indicatorLists : `<tr><td colspan="${indicatorValue.years.length + 2}" class="text-danger text-center" >No data.</td></tr>`}
+                        </tbody>
+                     </table>
+                </div>
+                `
+            }).join('')}
         </div>
         `
 
@@ -126,8 +158,7 @@ $(document).ready(function () {
             let values = $("#id_for_category").val().join(" ,");
 
             let [indicatorLoading,indicatorValue] = await useFetch(`/filter_by_category_with_value/?category=${values}`);
-            console.log(indicatorValue)
-            annualTable()
+            annualTable(indicatorValue, values.split(" ,"))
 
            
         })

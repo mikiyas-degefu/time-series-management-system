@@ -38,7 +38,10 @@ def filter_by_category_with_value(request):
         if 'category' in request.GET:
             category = request.GET['category'].split(',')
             try:
-               indicators = Indicator.objects.filter(for_category__id__in = category, parent = None ,is_deleted = False).select_related()
+               categories = Category.objects.filter(id__in = category, is_deleted = False).select_related()
+               category_serializer = CategorySerializers(categories, many=True)
+
+               indicators = Indicator.objects.filter(for_category__id__in = categories, parent = None ,is_deleted = False).select_related()
                serializer = IndicatorSerializers(indicators, many=True)
 
                years = DataPoint.objects.all()
@@ -49,6 +52,7 @@ def filter_by_category_with_value(request):
 
 
                return Response({
+                   'categories' : category_serializer.data,
                    'indicators' : serializer.data,
                    'years' : year_serializer.data,
                    'annualData' : serializer2.data
