@@ -5,7 +5,7 @@ from .api.view import(
     filter_indicator_by_category,
     filter_indicator_annual_value,
     detail_indicator_with_children,
-    indicator_graph,,
+    indicator_graph,
     topic_lists,
     count_indicator_by_category,
     filter_by_category_with_value,
