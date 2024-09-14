@@ -140,7 +140,7 @@ $(document).ready(function () {
             <hr>
             <div class="p-5 rounded bg-white">
               <p>Filter Category</p>
-              <form id="filterCategoryForm">
+              <form id="filterCategoryForm" style="padding-bottom: 100px;">
                 <div class="d-flex">
                     <select required id="id_for_category" class="form-select me-2" multiple aria-label="multiple select example">
                     ${items.map((item) => `<option value="${item.id}">${item.name_ENG}</option>` )}
