@@ -281,4 +281,69 @@ def detail_indicator_with_children(request, id):
       return Response(context)
    
 
-      
+
+
+
+#Graph API
+@api_view(['GET'])
+def indicator_graph(request, id):
+   if request.method == 'GET':
+      indicator = Indicator.objects.filter(id=id, is_deleted=False).select_related().first()
+
+      annual_data_value = list(AnnualData.objects.filter(indicator=indicator)
+      .order_by('-for_datapoint__year_GC')
+      .values(
+         'id',
+         'indicator__title_ENG',
+         'indicator__title_AMH',
+         'indicator__id',
+         'indicator__parent_id',
+         'for_datapoint__year_EC',
+         'for_datapoint__year_GC',
+         'performance',
+         'target'
+      ))
+      quarter_data_value = list(QuarterData.objects.filter(indicator=indicator)
+                                       .order_by('-for_datapoint__year_GC', '-for_quarter__number')
+                                       .values(
+                                           'id',
+                                           'indicator__title_ENG',
+                                           'indicator__title_AMH',
+                                           'indicator__id',
+                                           'indicator__parent_id',
+                                           'for_datapoint__year_EC',
+                                           'for_datapoint__year_GC',
+                                           'for_quarter__number',
+                                           'performance',
+                                           'target'
+                                       )[:40])
+      month_data_value = list(MonthData.objects.filter(indicator=indicator)
+      .order_by('-for_datapoint__year_GC', '-for_month__number')
+      .values(
+         'id',
+         'indicator__title_ENG',
+         'indicator__title_AMH',
+         'indicator__id',
+         'indicator__parent_id',
+         'for_datapoint__year_EC',
+         'for_datapoint__year_GC',
+         'for_month__number',
+         'performance',
+         'target'
+      )[:12])
+
+      year = list(DataPoint.objects.all().values('year_EC', 'year_GC'))
+      quarter = list(Quarter.objects.all().values('title_ENG', 'title_AMH', 'number'))
+      month = list(Month.objects.all().values('month_ENG', 'month_AMH', 'number'))
+
+
+   
+
+      context = {
+         'annual_data_value' : annual_data_value,
+         'quarter_data_value' : quarter_data_value,
+         'month_data_value' : month_data_value,
+      }
+
+      return Response(context)
+   

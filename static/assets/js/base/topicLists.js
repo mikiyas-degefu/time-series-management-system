@@ -38,14 +38,15 @@ $(document).ready(function () {
                       class="btn btn-success mb-2 float-end">
                       <i class="bi bi-download"></i>
                     </button>
+
                     <table id="yearData${category.id}" class="m-0 p-0 table table-bordered table-hover"  style="table-layout: fixed;" >
                         <thead  name="tableHead">
 
-                             <tr style="background-color: #40864b;" >
-                                  <th style="width:500px;"  class="text-light" scope="col" >Yearly</th>
+                              <tr style="background-color: #40864b;" >
+                                  <th style="width:500px;"  class="text-light" scope="col" >${category.name_ENG}</th>
                                   <th style="width:500px;"  scope="col"></th>
                                   ${indicatorValue.years.map((year) => ` <th style="width:100px;  scope="col"></th>` ).join("")}
-                            </tr>
+                              </tr>
                            
                             <tr style="background-color: #9fdfa9;" >
                               <th  scope="col">Indicator (English)</th>
