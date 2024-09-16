@@ -38,14 +38,15 @@ $(document).ready(function () {
                       class="btn btn-success mb-2 float-end">
                       <i class="bi bi-download"></i>
                     </button>
+
                     <table id="yearData${category.id}" class="m-0 p-0 table table-bordered table-hover"  style="table-layout: fixed;" >
                         <thead  name="tableHead">
 
-                             <tr style="background-color: #40864b;" >
-                                  <th style="width:500px;"  class="text-light" scope="col" >Yearly</th>
+                              <tr style="background-color: #40864b;" >
+                                  <th style="width:500px;"  class="text-light" scope="col" >${category.name_ENG}</th>
                                   <th style="width:500px;"  scope="col"></th>
                                   ${indicatorValue.years.map((year) => ` <th style="width:100px;  scope="col"></th>` ).join("")}
-                            </tr>
+                              </tr>
                            
                             <tr style="background-color: #9fdfa9;" >
                               <th  scope="col">Indicator (English)</th>
@@ -140,7 +141,7 @@ $(document).ready(function () {
             <hr>
             <div class="p-5 mb-5 rounded bg-white">
               <p>Filter Category</p>
-              <form id="filterCategoryForm">
+              <form id="filterCategoryForm" style="padding-bottom: 100px;">
                 <div class="d-flex">
                     <select required id="id_for_category" class="form-select me-2" multiple aria-label="multiple select example">
                     ${items.map((item) => `<option value="${item.id}">${item.name_ENG}</option>` )}
