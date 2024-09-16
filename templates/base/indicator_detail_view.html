@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>DPMEs</title>
     <link />
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.6/css/dataTables.dataTables.css" />
     {% include 'user-admin/include/head.html' %}
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -269,9 +270,9 @@
 
 
                   <!--Table Quarterly-->
-                  <div class="tab-pane fade scrolldiv" id="pills-quarterly" role="tabpanel" aria-labelledby="pills-quarterly-tab">
+                  <div  class="tab-pane fade scrolldiv" id="pills-quarterly" role="tabpanel" aria-labelledby="pills-quarterly-tab">
                     <div class="table-responsive">
-                      <table style="table-layout: fixed;"  class="m-0 p-0 table table-hover table-bordered">
+                      <table id="tableQuarterDataTable" style="table-layout: fixed;"  class="m-0 p-0 table table-hover table-bordered">
                         <thead name="tableHeadQuarter">
                         </thead>
                         <tbody name="tableBodyQuarter" class="text-center">
@@ -283,7 +284,7 @@
 
                   <!--Table Monthly-->
                   <div class="tab-pane fade scrolldiv" id="pills-monthly" role="tabpanel" aria-labelledby="pills-monthly-tab">
-                    <table style="table-layout: fixed;"  class="m-0 p-0 table table-hover table-bordered">
+                    <table id="tableMonthDataTable" style="table-layout: fixed;"  class="m-0 p-0 table table-hover table-bordered">
                       <thead name="tableHeadMonth">
                         <tr style="background-color: #40864b;" >
                           <th class="text-light border" colspan="4">Monthly</th>
@@ -320,6 +321,7 @@
 
     <script src="{% static 'assets/js/hooks/useFetch.js' %}"></script>
     <script src="{% static 'assets/js/admin-data-view/indicatorDetailView.js' %}"></script>
+    <script src="https://cdn.datatables.net/2.1.6/js/dataTables.js"></script>
 
 
 
