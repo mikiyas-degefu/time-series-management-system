@@ -39,9 +39,7 @@ urlpatterns = [
 
 
 
-    #Design
-    path('indicator_detail_view/<str:id>/', indicator_detail_view, name='indicator_detail_view'),
-
+ 
 
     ##Export data
     path('export_topic/', export_topic, name='export_topic'),

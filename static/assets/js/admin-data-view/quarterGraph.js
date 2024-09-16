@@ -1,8 +1,12 @@
    
 
-    async function fetchData(id) {
+    let urlPath = window.location.pathname;
+    let pathID = urlPath.replace("/indicator_detail_view/", "").replace("/", "");
+
+
+    async function fetchData(pathID) {
         try {
-            const response = await axios.get(`/indicator_graph/${id}`, {
+            const response = await axios.get(`/indicator_graph/${pathID}`, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -14,7 +18,7 @@
         }
     }
 
-    fetchData(1173)
+    fetchData(pathID)
         .then((data) => {
 
             function makeData() {
@@ -58,7 +62,7 @@
             
            
             var result = makeData();
-            console.log('Updated Array Data:', result);
+           
             
 
             
@@ -271,11 +275,7 @@
           data: makeData()
         }])
       })
-    
 
-            
-
-            console.log('Updated Array Data:', dataYearSeries);
         })
         .catch((error) => {
             console.error('Error:', error);

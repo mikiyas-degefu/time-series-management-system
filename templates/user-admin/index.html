@@ -144,7 +144,7 @@
                         <th scope="row"> 
                             {{ indicator.title_ENG }}  
                             <br>
-                            <a href="{% url "indicator_detail_view" indicator.id %}"><i class="fas fa-eye text-success"></i></a>  
+                            <a href="{% url "data_view_indicator_detail" indicator.id %}"><i class="fas fa-eye text-success"></i></a>  
                         </th> 
                         <th>{{ indicator.title_AMH }}</th> 
                         {% for year_data in indicator.annual_data_values %}

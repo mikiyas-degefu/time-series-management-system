@@ -1,6 +1,5 @@
 
-
-axios.get('/indicator_graph/211')
+axios.get(`/indicator_graph/${pathID}`)
   .then(response => {
     const data = response.data;
     const annualData = data.annual_data_value.map(item => ({
@@ -72,13 +71,15 @@ axios.get('/indicator_graph/211')
     chart.render();
  
     const monthData = data.month_data_value.map(item => ({
-      month: item.for_datapoint__month_EC,
+      month: item.for_month__number,
       year: item.for_datapoint__year_EC,
       performance: item.performance
     }));
+    console.log(data);
 
     // Create month-year combinations for x-axis categories
-    const categories = monthData.map(item => `${item.month}/${item.year}`);
+    const categories = monthData.map(item => `${item.month}/2/${item.year}`);
+    console.log(categories);
 
     const optionsMonth = {
       colors: ['#40864b'],
@@ -91,7 +92,7 @@ axios.get('/indicator_graph/211')
         type: 'line', 
       }, 
       forecastDataPoints: { 
-        count: 7 
+        count: 10 
       }, 
       stroke: { 
         width: 5, 
