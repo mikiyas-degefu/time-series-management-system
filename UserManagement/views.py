@@ -9,7 +9,7 @@ from django.contrib import messages
 
 
 
-@login_required(login_url='login')
+
 def logout_view(request):
     logout(request)
     return redirect('login')
@@ -24,7 +24,7 @@ def login_view(request):
 
             if user is not None and user.is_superuser:
                 login(request, user)
-                return redirect('index')
+                return redirect('user-index')
             elif user is not None and user.is_staff:
                 login(request, user)
                 return redirect('base_index')

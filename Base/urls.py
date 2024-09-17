@@ -34,6 +34,9 @@ urlpatterns = [
     path('indicator_graph/<str:id>/', indicator_graph),
 
 
+    path('recent_data_for_topic/<str:id>', recent_data_for_topic),
+
+
 
 
 

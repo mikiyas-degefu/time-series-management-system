@@ -179,7 +179,7 @@ class MonthData(models.Model):
             return self.indicator.title_ENG + " " + self.for_month.month_AMH
 
 class QuarterData(models.Model):
-    indicator = models.ForeignKey(Indicator, on_delete=models.SET_NULL, blank=True ,null=True)
+    indicator = models.ForeignKey(Indicator, on_delete=models.SET_NULL, blank=True ,null=True , related_name='quarter_data')
     for_quarter = models.ForeignKey(Quarter, on_delete=models.SET_NULL, blank=True ,null=True)
     for_datapoint = models.ForeignKey(DataPoint, on_delete=models.SET_NULL, blank=True, null=True)
     performance = models.FloatField(blank=True ,null=True)

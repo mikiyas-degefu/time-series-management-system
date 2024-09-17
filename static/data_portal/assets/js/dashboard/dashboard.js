@@ -242,6 +242,8 @@ $(document).ready(function () {
         handleTopicSkeleton(true) // show loading before fetching data
         const topics = await fetchData('/data-portal/api/topic-lists')
         handleTopicSkeleton(false)  // hide loading
+
+        console.log(topics)
         
         
         topicListHtml(topics) //contract the topic cards
