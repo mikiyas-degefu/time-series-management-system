@@ -9,6 +9,7 @@ from .api.view import(
     topic_lists,
     count_indicator_by_category,
     filter_by_category_with_value,
+    recent_data_for_topic,
 )
 from .views import *
 
@@ -40,6 +41,9 @@ urlpatterns = [
     path('filter_indicator_annual_value/', filter_indicator_annual_value),
     path('filter_indicator_detail_annual_value/<str:id>/', detail_indicator_with_children),
     path('indicator_graph/<str:id>/', indicator_graph),
+
+
+    path('recent_data_for_topic/<str:id>', recent_data_for_topic),
 
 
 

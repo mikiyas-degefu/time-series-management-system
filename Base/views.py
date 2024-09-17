@@ -13,14 +13,17 @@ from .models import (
 from UserAdmin.forms import(
     IndicatorForm
 )
+from django.contrib.auth.decorators import login_required
 
 
+
+@login_required(login_url='login')
 def index(request):
     return render(request, 'base/index.html')
 
 
 
-
+@login_required(login_url='login')
 def indicator_detail_view (request , id):
     form = IndicatorForm(request.POST or None)
     if request.method == "GET":

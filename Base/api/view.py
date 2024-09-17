@@ -22,8 +22,11 @@ from Base.serializer import (
     IndicatorSerializers,
     AnnualDataSerializers,
     DataPointSerializers,
+    CategoryIndicatorSerializers,
 )
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='login')
 @api_view(['GET'])
 def topic_lists(request):
     if request.method == 'GET':
@@ -31,7 +34,7 @@ def topic_lists(request):
         serializer = TopicSerializers(topics, many=True)
         return Response(serializer.data)
 
-
+@login_required(login_url='login')
 @api_view(['GET'])
 def filter_by_category_with_value(request):
     if request.method == 'GET':
@@ -61,7 +64,9 @@ def filter_by_category_with_value(request):
                return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
         else:
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
-    
+
+
+@login_required(login_url='login')   
 @api_view(['GET'])
 def count_indicator_by_category(request,id):
       try:
@@ -74,6 +79,8 @@ def count_indicator_by_category(request,id):
         serializer = CategorySerializers(categories, many=True)
         return Response(serializer.data)
 
+
+@login_required(login_url='login')
 @api_view(['GET'])
 def get_indicators(request,id):
    '''
@@ -99,6 +106,8 @@ def get_indicators(request,id):
    }
    return Response(context)
 
+
+@login_required(login_url='login')
 @api_view(['GET'])
 def filter_topic_and_category(request):
    '''
@@ -113,6 +122,7 @@ def filter_topic_and_category(request):
    return Response(context)
 
 
+@login_required(login_url='login')
 @api_view(['GET'])
 def filter_indicator_by_category(request, id):   
    '''
@@ -125,6 +135,7 @@ def filter_indicator_by_category(request, id):
    return Response(context)
 
 
+@login_required(login_url='login')
 @api_view(['GET'])
 def filter_indicator_annual_value(request):
    if request.method == 'GET':
@@ -206,6 +217,7 @@ def filter_indicator_annual_value(request):
       return Response(context)
 
 
+@login_required(login_url='login')
 @api_view(['GET'])
 def detail_indicator_with_children(request, id):
    if request.method == 'GET':
@@ -285,6 +297,7 @@ def detail_indicator_with_children(request, id):
 
 
 #Graph API
+@login_required(login_url='login')
 @api_view(['GET'])
 def indicator_graph(request, id):
    if request.method == 'GET':
@@ -347,3 +360,11 @@ def indicator_graph(request, id):
 
       return Response(context)
    
+
+
+@login_required(login_url='login')
+@api_view(['GET'])
+def recent_data_for_topic(request, id):
+   categories = Category.objects.filter(topic__id = id, is_deleted = False).select_related()
+   serializer = CategoryIndicatorSerializers(categories, many = True)
+   return Response(serializer.data)

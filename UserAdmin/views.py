@@ -43,12 +43,13 @@ from Base.models import (
 import random
 
 from django.db.models import Count
+from django.contrib.auth.decorators import login_required
 
 
 
 
 
-
+@login_required(login_url='login')
 def index(request , id=None):
     bootstrap_colors = ['secondary', 'success', 'warning', 'info', 'dark']
  
@@ -165,6 +166,7 @@ def index(request , id=None):
     return render(request, 'user-admin/index.html', context)
 
 ##Data View
+@login_required(login_url='login')
 def data_view(request):
     form = ImportFileIndicatorAddValueForm(request.POST or None, request.FILES or None)
     last_indicator_id = Indicator.objects.last().id
@@ -202,6 +204,7 @@ def data_view(request):
     }
     return render(request, 'user-admin/data_view.html', context=context)
 
+@login_required(login_url='login')
 def data_view_indicator_detail(request, id):
     form = IndicatorForm(request.POST or None)
     if request.method == "GET":
@@ -287,7 +290,7 @@ def data_view_indicator_detail(request, id):
     
     else: return HttpResponse("Bad Request!")
 
-
+@login_required(login_url='login')
 def data_view_indicator_update(request, id):
     try:
         indicator = Indicator.objects.get(id=id)
@@ -315,7 +318,7 @@ def data_view_indicator_update(request, id):
     }
     return render(request, 'user-admin/indicator_detail.html', context=context)
 
-
+@login_required(login_url='login')
 def topic(request):
     form = TopicForm(request.POST or None, request.FILES or None)
     topics = Topic.objects.filter(is_deleted=False)
@@ -380,14 +383,14 @@ def topic(request):
     }
     return render(request, 'user-admin/topic.html', context)   
 
-
+@login_required(login_url='login')
 def delete_topic(request, id):
     topic = Topic.objects.get(id=id)    
     topic.delete()
     messages.success(request, '&#128532 Hello User, Topic Successfully Deleted')
     return redirect('topic')
 
-
+@login_required(login_url='login')
 @api_view(['POST'])
 def edit_topic(request):    
     id = request.POST['id'] 
@@ -412,7 +415,7 @@ def edit_topic(request):
 
 
 #### Category  
-
+@login_required(login_url='login')
 def categories(request):
     category = Category.objects.filter(is_deleted = False).select_related()
     form = CategoryForm(request.POST or None)
@@ -476,7 +479,7 @@ def categories(request):
      }
     
     return render(request, 'user-admin/category.html', context)   
-
+@login_required(login_url='login')
 def update_category(request):
     id = request.POST['id']
     name_ENG = request.POST['name_ENG']
@@ -499,6 +502,7 @@ def update_category(request):
         response = {'success' : False}
     return JsonResponse( response)
 
+@login_required(login_url='login')
 def delete_category(request, id):
     try:
         category = Category.objects.get(id=id)    
@@ -511,6 +515,7 @@ def delete_category(request, id):
 
 
 ### Indicator
+@login_required(login_url='login')
 def indicators(request, id):
     form = IndicatorForm(request.POST or None)
     if request.method == 'POST':
@@ -538,6 +543,9 @@ def indicators(request, id):
     }
     return render(request, 'user-admin/indicator.html', context=context)
 
+
+
+@login_required(login_url='login')
 def indicator_details(request, id):
     try:
         indicator = Indicator.objects.get(id=id)
@@ -559,6 +567,8 @@ def indicator_details(request, id):
     }
     return render(request, 'user-admin/indicator_detail.html', context=context)
 
+
+@login_required(login_url='login')
 def delete_indicator(request, id):
     try:
         indicator = Indicator.objects.get(id=id)    
@@ -570,6 +580,7 @@ def delete_indicator(request, id):
     return redirect(request.META.get('HTTP_REFERER'))
 
 #All indicators
+@login_required(login_url='login')
 def all_indicators(request):
     last_indicator_id = Indicator.objects.last().id
     all_indicators = Indicator.objects.filter(is_deleted=False)
@@ -637,6 +648,7 @@ def all_indicators(request):
     
 
 #Data years
+@login_required(login_url='login')
 def years(request):
     years = DataPoint.objects.all()
     count = 20
@@ -691,6 +703,7 @@ def years(request):
 
 
 #Users
+@login_required(login_url='login')
 def users(request):
     users = CustomUser.objects.all()
     form = CustomUserForm(request.POST or None)
@@ -740,7 +753,7 @@ def users(request):
     return render(request, 'user-admin/user_list.html', context) 
 
 
-
+@login_required(login_url='login')
 def user_activate(request, id):
     user = CustomUser.objects.get(id=id)    
     user.is_active = True if user.is_active == False else False
@@ -750,6 +763,7 @@ def user_activate(request, id):
     return redirect('users')
 
     
+@login_required(login_url='login')
 @api_view(['POST'])
 def edit_user(request):    
     id = request.POST['id'] 
@@ -776,7 +790,7 @@ def edit_user(request):
 
 
 ################EXPORT DATA####################
-
+@login_required(login_url='login')
 def export_topic(request):
     topic = TopicResource()
     dataset = topic.export()
@@ -785,6 +799,8 @@ def export_topic(request):
     return response
 
 
+
+@login_required(login_url='login')
 def export_category(request):
     category = CategoryResource()
     dataset = category.export()
@@ -792,6 +808,8 @@ def export_category(request):
     response['Content-Disposition'] = 'attachment; filename="category.xlsx"'
     return response
 
+
+@login_required(login_url='login')
 def export_indicator(request):
     indicator = IndicatorResource()
     dataset = indicator.export()
