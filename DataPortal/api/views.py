@@ -18,8 +18,6 @@ def topic_lists(request):
     if request.method == 'GET':
         topics = Topic.objects.filter(is_dashboard=True, is_deleted=False).annotate(category_count=Count('categories')).select_related()
         serializer = TopicSerializers(topics, many=True)
-        import time
-        time.sleep(1)
         return Response(serializer.data)
     
 
