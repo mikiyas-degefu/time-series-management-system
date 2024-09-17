@@ -302,7 +302,7 @@ def indicator_graph(request, id):
          'for_datapoint__year_GC',
          'performance',
          'target'
-      ))
+      )[:10])
       quarter_data_value = list(QuarterData.objects.filter(indicator=indicator)
                                        .order_by('-for_datapoint__year_GC', '-for_quarter__number')
                                        .values(

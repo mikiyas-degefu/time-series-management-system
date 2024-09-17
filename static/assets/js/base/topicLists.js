@@ -21,7 +21,7 @@ $(document).ready(function () {
 
                     return `
                     <tr>
-                        <td class="text-success fw-bold text-start">${indicator.title_ENG} <a href="#"><i class="fa fa-eye float-end "></i></a> </td>
+                        <td class="text-success fw-bold text-start">${indicator.title_ENG} <a href="/indicator_detail_view/${indicator.id}"><i class="fa fa-eye float-end "></i></a> </td>
                         <td class="text-success fw-bold text-start">${indicator.title_AMH}</td>
                         ${value}
                      </tr>
@@ -139,7 +139,7 @@ $(document).ready(function () {
         $("#filter_category").html('')
         let catFilterHtml = `
             <hr>
-            <div class="p-5 rounded bg-white">
+            <div class="p-5 mb-5 rounded bg-white">
               <p>Filter Category</p>
               <form id="filterCategoryForm" style="padding-bottom: 100px;">
                 <div class="d-flex">

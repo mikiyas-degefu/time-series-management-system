@@ -1,6 +1,6 @@
 $(document).ready(function () {
     let urlPath = window.location.pathname;
-    let pathID = urlPath.replace("/user-admin/indicator_detail_view/", "").replace("/", "");
+    let pathID = urlPath.replace("/indicator_detail_view/", "").replace("/", "");
     let URL = `/filter_indicator_detail_annual_value/${pathID}`
 
     const indicatorId = [pathID]
@@ -242,7 +242,7 @@ $(document).ready(function () {
                 
                 tableBody+=`
                 <tr>
-                   <th class="text-success" >${hasYear ? "" : year.year_EC + "E.C </br> " + year.year_GC + "G.C"}</th>
+                   <th class="text-success" style="${hasYear ? 'font-size: 0;' : ''}" >${year.year_EC + "E.C </br> " + year.year_GC + "G.C"}</th>
                    <th class="text-success">${quarter.title_ENG}</th>
                    ${indicatorValue}
                 </tr>
@@ -254,6 +254,12 @@ $(document).ready(function () {
 
 
         $('[name="tableBodyQuarter"]').html(tableBody)
+        $('#tableQuarterDataTable').DataTable({
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All']
+            ]
+        });
     }
 
     const MonthTable = (data) =>{
@@ -346,7 +352,7 @@ $(document).ready(function () {
                 
                 tableBody+=`
                 <tr>
-                   <th class="text-success" >${hasYear ? "" : year.year_EC + "E.C </br> " + year.year_GC + "G.C"}</th>
+                   <th class="text-success" style="${hasYear ? 'font-size: 0;' : ''}" >${year.year_EC + "E.C </br> " + year.year_GC + "G.C"}</th>
                    <th class="text-success">${month.month_AMH} </br> ${month.month_ENG}</th>
                    ${indicatorValue}
                 </tr>
@@ -358,6 +364,12 @@ $(document).ready(function () {
 
 
         $('[name="tableBodyMonth"]').html(tableBody)
+        $('#tableMonthDataTable').DataTable({
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All']
+            ]
+        });
     }
 
     const fetchTableData = async() =>{

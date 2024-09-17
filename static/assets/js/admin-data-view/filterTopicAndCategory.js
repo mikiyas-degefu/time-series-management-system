@@ -287,6 +287,7 @@ $(document).ready(function () {
         })
 
         $('[name="tableBody"]').html(tableData)
+        
 
     }
 
@@ -377,7 +378,7 @@ $(document).ready(function () {
                 
                 tableBody+=`
                 <tr>
-                   <th class="text-success" >${hasYear ? "" : year.year_EC}</th>
+                   <th class="text-success" style="${hasYear ? 'font-size: 0;' : ''}" >${year.year_EC}</th>
                    <th class="text-success">${quarter.title_ENG}</th>
                    ${indicatorValue}
                 </tr>
@@ -488,6 +489,7 @@ $(document).ready(function () {
 
 
         $('[name="tableBodyMonth"]').html(tableBody)
+   
 
     }
 

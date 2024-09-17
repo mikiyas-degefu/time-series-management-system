@@ -10,6 +10,7 @@ $(document).ready(function () {
         AnnualTable(data)
         QuarterTable(data)
         MonthTable(data)
+        
     }
 
     const AnnualTable = (data) =>{
@@ -431,7 +432,7 @@ $(document).ready(function () {
                 
                 tableBody+=`
                 <tr>
-                   <th class="text-success" >${hasYear ? "" : year.year_EC + "E.C </br> " + year.year_GC + "G.C"}</th>
+                   <th class="text-success" style="${hasYear ? 'font-size: 0;' : ''}" >${ year.year_EC + "E.C </br> " + year.year_GC + "G.C"}</th>
                    <th class="text-success">${quarter.title_ENG}</th>
                    ${indicatorValue}
                 </tr>
@@ -443,6 +444,12 @@ $(document).ready(function () {
 
 
         $('[name="tableBodyQuarter"]').html(tableBody)
+        $('#table_quarter_dataTable').DataTable({
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All']
+            ]
+        });
     }
 
     const MonthTable = (data) =>{
@@ -556,7 +563,7 @@ $(document).ready(function () {
                 
                 tableBody+=`
                 <tr>
-                   <th class="text-success" >${hasYear ? "" : year.year_EC + "E.C </br> " + year.year_GC + "G.C"}</th>
+                   <th class="text-success" style="${hasYear ? 'font-size: 0;' : ''}" >${year.year_EC + "E.C </br> " + year.year_GC + "G.C"}</th>
                    <th class="text-success">${month.month_AMH} </br> ${month.month_ENG}</th>
                    ${indicatorValue}
                 </tr>
@@ -568,6 +575,12 @@ $(document).ready(function () {
 
 
         $('[name="tableBodyMonth"]').html(tableBody)
+        $('#table_month_dataTable').DataTable({
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All']
+            ]
+        });
     }
 
     const fetchTableData = async() =>{
@@ -616,6 +629,10 @@ $(document).ready(function () {
         $("#form_indicator_add_id").val(buttonData.indicatorId)
     })
 
+   
+
     fetchTableData()
+
+    
 
 })
