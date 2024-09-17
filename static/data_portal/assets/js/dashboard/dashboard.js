@@ -89,13 +89,10 @@ $(document).ready(function () {
                 cardGraph(indicator, color)
             }
         }
-
     }
 
     
-
     const indicatorCard = (indicators, color) => {
-        console.log(indicators)
         let card =  indicators.map((indicator) =>{
             return `
             <div class="col-md-6 col-xxl-4 col-12">
@@ -129,10 +126,10 @@ $(document).ready(function () {
                                     <i class="ti ti-dots-vertical f-18"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
-                                    <button  class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <a href="/data-portal/detail-indicator/${indicator.id}/"  class="dropdown-item">
                                         <svg class="pc-icon"> <use xlink:href="#custom-flash"></use></svg> 
                                         Detail
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -243,8 +240,7 @@ $(document).ready(function () {
         const topics = await fetchData('/data-portal/api/topic-lists')
         handleTopicSkeleton(false)  // hide loading
 
-        console.log(topics)
-        
+
         
         topicListHtml(topics) //contract the topic cards
 
@@ -260,6 +256,8 @@ $(document).ready(function () {
 
             categoryHtml(categories)
         })
+
+
 
 
 

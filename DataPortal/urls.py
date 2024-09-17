@@ -4,6 +4,7 @@ from .api import views as api
 
 urlpatterns = [
     path('', views.index, name='data_portal'),
+    path('detail-indicator/<str:id>/', views.detail_indicator, name='detail_indicator'),
 
 
     #api
