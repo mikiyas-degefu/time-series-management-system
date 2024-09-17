@@ -9,10 +9,84 @@
     <link />
     {% include 'base/include/head.html' %}
   </head>
+  <style>
+    #chart-year,
+    #chart-quarter {
+      width: 48%;
+      box-shadow: none;
+      display: inline-block;
+    }
+    
+    #chart-year {
+      float: left;
+      position: relative;
+      transition: 1s ease transform;
+      z-index: 3;
+    }
+    
+    #chart-year.chart-quarter-activated {
+      transform: translateX(0);
+      transition: 1s ease transform;
+    }
+    
+    #chart-quarter {
+      float: left;
+      position: relative;
+      z-index: -2;
+      transition: 1s ease transform;
+    }
+    
+    #chart-quarter.active {
+      transition: 1.1s ease-in-out transform;
+      transform: translateX(0);
+      z-index: 1;
+    }
+    
+    @media screen and (min-width: 480px) {
+      #chart-year {
+        transform: translateX(50%);
+      }
+      #chart-quarter {
+        transform: translateX(-50%);
+      }
+    }
+    
+    select#model {
+      display: none;
+      position: absolute;
+      top: -40px;
+      left: 0;
+      z-index: 2;
+      cursor: pointer;
+      transform: scale(0.8);
+    }
+    
+    .scrolldiv {
+        height: 50px; 
+        overflow-y: auto; 
+    }
+       .rowquarter {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); 
+            border: 1px solid #ccc; 
+            padding: 5px;
+            margin-bottom: 5px; 
+        }
+        .header{
+          background-color: #40864b;
+        }
 
+        .rowquarter p {
+            text-align: center; 
+            padding: 5px;
+            margin: 0; 
+            border-right: 1px solid #ccc; 
+        }
 
-
-
+        .rowquarter p:last-child {
+            border-right: none; /* Remove right border for the last "cell" in each row */
+        }
+  </style>
   <body class="hold-transition sidebar-mini layout-fixed">
     {% include 'base/include/navbar.html'%}
     <div>{% include 'base/include/sidebar.html' %}</div>
@@ -40,7 +114,13 @@
   
 
          <!--Chart Category-->
-          <div class="bg-white p-5" id="chart"></div>
+          <div class="row">
+            <div class="bg-white  col-lg-5" id="admin-chart-year"></div>
+            <div class="bg-white  col-lg-7" id="admin-chart-quarter">
+                   <div id="chart-year"></div>
+                   <div id="chart-quarter" class="scrolldiv"></div> 
+            </div>
+          </div>
           <!--End Here-->
 
           <!--Filter Category Start-->
