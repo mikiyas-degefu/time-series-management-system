@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'fontawesome_5',
     'rest_framework',
     'UserManagement',
-
+    'DataPortal',
 ]
 
 MIDDLEWARE = [
