@@ -7,3 +7,6 @@ from .models import (
 
 def index(request):
     return render(request, 'base/index.html')
+
+
+

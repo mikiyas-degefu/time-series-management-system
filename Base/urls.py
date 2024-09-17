@@ -1,15 +1,5 @@
 from django.urls import path
-from .api.view import(
-    get_indicators,
-    filter_topic_and_category,
-    filter_indicator_by_category,
-    filter_indicator_annual_value,
-    detail_indicator_with_children,
-    indicator_graph,
-    topic_lists,
-    count_indicator_by_category,
-    filter_by_category_with_value,
-)
+from .api.view import *
 from .views import *
 
 from UserManagement.views import login_view , logout_view
@@ -28,11 +18,13 @@ urlpatterns = [
     path('count_indicator_by_category/<str:id>/', count_indicator_by_category),
     path('filter_by_category_with_value/', filter_by_category_with_value),
     
+    
 
     
     path('indicator-lists/<str:id>/', get_indicators),
     path('filter_topic_and_category/', filter_topic_and_category),
     path('filter_indicator_by_category/<str:id>/', filter_indicator_by_category),
+   
 
 
 
