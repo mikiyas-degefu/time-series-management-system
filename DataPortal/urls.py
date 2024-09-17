@@ -8,4 +8,5 @@ urlpatterns = [
 
     #api
     path('api/topic-lists', api.topic_lists),
+    path('api/category-with-indicator/<str:id>', api.category_with_indicator),
 ]
