@@ -3,7 +3,8 @@ from Base.models import (
     Topic,
     Indicator,
     Category,
-    AnnualData
+    AnnualData,
+    DataPoint,
 )
 
 class TopicSerializers(serializers.ModelSerializer):
@@ -37,3 +38,24 @@ class CategorySerializers(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
+
+
+
+
+class IndicatorWithDataSerializers(serializers.ModelSerializer):
+    annual_data = serializers.SerializerMethodField()
+    class Meta:
+        model = Indicator
+        fields = '__all__'
+
+    def get_fields(self):
+        fields = super(IndicatorWithDataSerializers, self).get_fields()
+        fields['children'] = IndicatorWithDataSerializers(many=True)
+        return fields
+    
+    def get_annual_data(self, obj):
+        annual = AnnualData.objects.filter(indicator = obj).order_by('for_datapoint__year_EC').reverse()[:10]
+        serializer = AnnualDataSerializers(annual, many=True)
+        return serializer.data
+    
+

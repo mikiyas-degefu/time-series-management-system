@@ -15,4 +15,8 @@ def detail_indicator(request, id):
         indicator = Indicator.objects.get(id=id)
     except Indicator.DoesNotExist:
         return HttpResponse(404)
-    return render(request, 'data_portal/detail_indicator.html')
+    
+    context = {
+        'indicator' : indicator
+    }
+    return render(request, 'data_portal/detail_indicator.html', context=context)
