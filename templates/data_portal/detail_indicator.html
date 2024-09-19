@@ -51,8 +51,11 @@
                     </div>
   
   
-                    <!--Table Quarterly-->
+                    <!--Quarterly-->
                     <div  class="tab-pane fade scrolldiv" id="pills-quarterly" role="tabpanel" aria-labelledby="pills-quarterly-tab">
+                      
+                      
+                      <!--Table-->
                       <div class="table-responsive">
                         <table id="tableQuarterDataTable"   class="m-0 p-0 table table-hover table-bordered">
                           <thead name="tableHeadQuarter">
@@ -61,6 +64,8 @@
                           </tbody>
                         </table>
                       </div>
+
+          
                     </div>
   
   
@@ -90,10 +95,23 @@
             
                   </div>
   
-  
-  
+
+                 
               </div>
 
+
+                 <!--Chart-->
+                  <div class="row">
+
+                      <div class="col-lg-6">
+                        <div class="card p-3" id="chart-year-line"></div>
+                      </div>
+
+                      <div class="col-lg-6">
+                        <div class="card p-3" id="chart-quarter-bar"></div>
+                      </div>
+
+                  </div>
 
             </div>
         </div>
@@ -105,7 +123,14 @@
          <script src="{% static 'assets/js/hooks/useFetch.js' %}"></script>
          <script src="{% static 'data_portal/assets/js/dashboard/dashboard_detail.js' %}"></script>
 
+         <script>
+
+      
+      
+         </script>
+
 
     </body>
+
 
 </html>

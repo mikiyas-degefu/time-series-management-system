@@ -6,10 +6,187 @@ $(document).ready(function () {
     const indicatorId = [pathID]
 
 
+    const quarterChartBar = (quarter, year) =>{
+
+
+       let lastYearQuarter = quarter.filter((qr) => qr.for_datapoint__year_EC == year[1].year_EC).map((item, index) => {
+        return {
+            x:item.for_datapoint__year_EC + "/" + Number(index*4),
+            y:item.performance
+        }
+    })
+
+       let currentYearQuarter = quarter.filter((qr) => qr.for_datapoint__year_EC == year[0].year_EC).map((item, index) => {
+        return {
+            x:item.for_datapoint__year_EC + "/" + Number(index*4),
+            y:item.performance
+        }
+    })
+
+     
+       let data = [...lastYearQuarter, ...currentYearQuarter]
+    
+
+       let toQuarter = (val) =>{
+        return 1 ? val.split("/")[1] == Number("0") ? 1 : val.split("/")[1] == Number("4") ? 2 : val.split("/")[1] == Number("8") ? 3 : val.split("/")[1] == 12 ? 4 : null : null
+       }
+       var options = {
+        series: [{
+        name: "sales",
+        data: data,
+      }],
+       colors:['#40864b'],
+        chart: {
+        type: 'bar',
+        height: 380
+      },
+      xaxis: {
+        type: 'category',
+        labels: {
+          formatter: function(val) {
+            return "Q" + toQuarter(val)
+          }
+        },
+        group: {
+          style: {
+            fontSize: '10px',
+            fontWeight: 700
+          },
+          groups: [
+            { title: year[1].year_EC, cols: 4 },
+            { title: year[0].year_EC, cols: 4 }
+          ]
+        }
+      },
+      grid: {
+        show: false,
+        yaxis: {
+          lines: {
+            offsetX: -30
+          }
+        },
+        padding: {
+          left: 20
+        }
+      },
+      title: {
+          text: 'Current and Last Year quarterly performance result',
+      },
+      tooltip: {
+        x: {
+          formatter: function(val) {
+            return "Q" + toQuarter(val) + " : " + val
+          }  
+        }
+      },
+      };
+    
+        var chart = new ApexCharts(document.querySelector("#chart-quarter-bar"), options);
+        chart.render();
+    }
+
+
+    const yearChartLine = (data, indicator) =>{
+        let lastTenYear = data
+        lastTenYear.reverse()
+        lastTenYear = lastTenYear.slice(0,10).map((item) => {
+            return {
+                x:item.for_datapoint__year_EC,
+                y:item.performance
+            }
+        })
+
+        var options = {
+            series: [{
+            name: indicator.title_ENG,
+            data: lastTenYear,
+          }],
+          colors:['#40864b'],
+            chart: {
+            type: 'area',
+            height: 380
+          },
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            curve: 'straight'
+          },
+          
+          title: {
+            text: 'Last 10 years performance result (Annual)',
+            align: 'left',
+            style: {
+              fontSize: '14px'
+            }
+          },
+          xaxis: {
+            type: 'datetime',
+            axisBorder: {
+              show: false
+            },
+            axisTicks: {
+              show: false
+            }
+          },
+          yaxis: {
+            tickAmount: 4,
+            floating: false,
+          
+            labels: {
+              style: {
+                colors: '#8e8da4',
+              },
+              offsetY: -7,
+              offsetX: 0,
+            },
+            axisBorder: {
+              show: false,
+            },
+            axisTicks: {
+              show: false
+            }
+          },
+          fill: {
+            opacity: 0.5
+          },
+          tooltip: {
+            x: {
+              format: "yyyy",
+            },
+            fixed: {
+              enabled: false,
+              position: 'topRight'
+            }
+          },
+          grid: {
+            show: false,
+            yaxis: {
+              lines: {
+                offsetX: -30
+              }
+            },
+            padding: {
+              left: 20
+            }
+          }
+          };
+  
+          var chart = new ApexCharts(document.querySelector("#chart-year-line"), options);
+          chart.render();
+    }
+    
+
     const contractTable = (data) =>{
         AnnualTable(data)
         QuarterTable(data)
         MonthTable(data)
+
+
+        //chart
+        quarterChartBar(data.quarter_data_value, data.year)
+        yearChartLine(data.annual_data_value, data.indicator_lists[0])
+        
     }
 
     const AnnualTable = (data) =>{
@@ -29,7 +206,7 @@ $(document).ready(function () {
                <th scope="col" >Name</th>
                <th scope="col" >ስም</th>
                ` +
-               data.year.map((year) =>{ return ` <th scope="col">${year.year_EC} E.C </th>`})
+               data.year.reverse().map((year) =>{ return ` <th scope="col">${year.year_EC} E.C </th>`})
                + 
                `
          </tr>

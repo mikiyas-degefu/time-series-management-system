@@ -13,7 +13,6 @@ from Base.models import (
 from DataPortal.serializers import (
     TopicSerializers,
     CategorySerializers,
-    IndicatorSerializers,
     IndicatorWithDataSerializers
 )
 
@@ -35,8 +34,6 @@ def category_with_indicator(request, id):
     if request.method == 'GET':
         categories = Category.objects.filter(topic =  topic).select_related()
         serializer = CategorySerializers(categories, many=True)
-        import time
-        time.sleep(1)
         return Response(serializer.data)
     
 

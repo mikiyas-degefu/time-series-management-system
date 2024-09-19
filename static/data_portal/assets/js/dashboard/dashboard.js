@@ -115,7 +115,7 @@ $(document).ready(function () {
 
                         <!--Indicator Title-->
                         <div class="flex-grow-1 ms-3">
-                            <h6 class="mb-0">${indicator.title_ENG}</h6>
+                            <h6 class="mb-0">${indicator.title_ENG} (Annual)</h6>
                         </div>
 
 
