@@ -256,6 +256,13 @@ $(document).ready(function () {
         
         topicListHtml(topics) //contract the topic cards
 
+        //default category
+        handleCardSkeleton(true)
+        const defaultCategories = await fetchData(`/data-portal/api/category-with-indicator/19`)
+        handleCardSkeleton(false)
+        categoryHtml(defaultCategories)
+       
+
 
          //handle on topic clicked
         $("[name='topic-card']").click(async function () {
@@ -268,9 +275,7 @@ $(document).ready(function () {
             handleCardSkeleton(false)
 
             categoryHtml(categories)
-            
-
-
+        
 
               // handle detail category clicked
               $("[name='btn-modal-category-detail']").click(function(){
@@ -280,8 +285,7 @@ $(document).ready(function () {
 
                let category = categories.find((item) => item.id == categoryId)
                $("#modalCategoryLabel").text(category.name_ENG)  //update modal title 
-               console.log(category)
-               console.log(lastTenYear)
+
 
                let header = `
                     <tr>
@@ -299,7 +303,7 @@ $(document).ready(function () {
                 row += `
                     <tr>
                         <th scope="row">${Number(i)+1}</th>
-                        <td>${category.indicators[i].title_ENG}</td>
+                        <td>${category.indicators[i].title_ENG} <a href="/data-portal/detail-indicator/${category.indicators[i].id}/" class="float-end text-success"><i class="fa fa-eye"></i></a> </td>
                         <td>${category.indicators[i].title_AMH}</td>
                     `
                     for(let ye in lastTenYear){
@@ -307,25 +311,96 @@ $(document).ready(function () {
                         row+=`<td>${value ? value.performance : '-'}</td>`
                     }
                }
+
+            let graphValue = []
+            for(let ye of lastTenYear.reverse().slice(0,3)){
+                let data = []
+                for(let i of category.indicators){
+                    let value = i.annual_data.find((item) => item.for_datapoint == ye.year_GC)
+                    data.push(value ? value.performance : "0")
+                }
+
+                graphValue.push({
+                    name : ye.year_EC,
+                    data : data
+                })
+
+
+            }
                 
                
 
                $("#table-header-modal").html(header + "</tr>")
                $("#table-body-modal").html(row)
 
+               let cat = category.indicators.map((item) => item.title_ENG)
+               console.log(cat)
+
+
+
+               Highcharts.chart('modal-chart', {
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                    text: 'Last 5 Years',
+                    align: 'left'
+                },
+                xAxis: {
+                    categories: cat,
+                    title: {
+                        text: null
+                    },
+                    gridLineWidth: 1,
+                    lineWidth: 0
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Population (millions)',
+                        align: 'high'
+                    },
+                    labels: {
+                        overflow: 'justify'
+                    },
+                    gridLineWidth: 0
+                },
+                tooltip: {
+                    valueSuffix: ' millions'
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: '50%',
+                        dataLabels: {
+                            enabled: true
+                        },
+                        groupPadding: 0.1
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -40,
+                    y: 80,
+                    floating: true,
+                    borderWidth: 1,
+                    backgroundColor:
+                        Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+                    shadow: true
+                },
+                credits: {
+                    enabled: false
+                },
+                series: graphValue
+            });
+            
+
                      
                 
             })
 
         })
-
-
-
-
-
-        
-
-
 
 
 
