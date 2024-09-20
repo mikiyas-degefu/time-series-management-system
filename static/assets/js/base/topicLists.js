@@ -11,6 +11,29 @@ $(document).ready(function () {
 
 
 
+  const getColorHex = (colorClass) => {
+    switch (colorClass) {
+        case 'primary':
+            return '#007bff'; // Example primary color
+        case 'secondary':
+            return '#6c757d'; // Example secondary color
+        case 'success':
+            return '#28a745'; // Example success color
+        case 'danger':
+            return '#dc3545'; // Example danger color
+        case 'warning':
+            return '#ffc107'; // Example warning color
+        case 'info':
+            return '#17a2b8'; // Example info color
+        case 'dark':
+            return '#343a40'; // Example dark color
+        default:
+            return '#000000'; // Default color (black) or handle unknown cases
+    }
+};
+
+
+
   const categoryList = async (id) => {
     let url = `/recent_data_for_topic/${id}`;
     let [loading, response] = await useFetch(url);
@@ -22,216 +45,8 @@ $(document).ready(function () {
     $("#category_list").html(category_list);
   };
 
-  const quarterGraph = (id) => {
-    Apex = {
-      chart: {
-        toolbar: {
-          show: false
-        }
-      },
-      tooltip: {
-        shared: false
-      },
-    }
+ 
 
-    var optionsYear = {
-      chart: {
-        id: 'barYear',
-        height: 400,
-        width: '100%',
-        type: 'bar',
-      },
-      plotOptions: {
-        bar: {
-          distributed: true,
-          horizontal: true,
-          endingShape: 'arrow',
-          barHeight: '75%',
-          dataLabels: {
-            position: 'bottom'
-          }
-        }
-      },
-      dataLabels: {
-        enabled: true,
-        textAnchor: 'start',
-        style: {
-          colors: ['#fff']
-        },
-        formatter: function(val, opt) {
-          return opt.w.globals.labels[opt.dataPointIndex]
-        },
-        offsetX: 0,
-        dropShadow: {
-          enabled: true
-        }
-      },
-      colors: colors,
-      series: [{
-        data: makeData()
-      }],
-      states: {
-        normal: {
-          filter: {
-            type: 'desaturate'
-          }
-        },
-        active: {
-          allowMultipleDataPointsSelection: true,
-          filter: {
-            type: 'darken',
-            value: 1
-          }
-        }
-      },
-      tooltip: {
-        x: {
-          show: false
-        },
-        y: {
-          title: {
-            formatter: function(val, opts) {
-              return opts.w.globals.labels[opts.dataPointIndex]
-            }
-          }
-        }
-      },
-      title: {
-        text: 'Recent 10 years quarterly performance result',
-        offsetX: 15
-      },
-      subtitle: {
-        text: '(Click on year bar to see quarter details)',
-        offsetX: 15
-      },
-      yaxis: {
-        labels: {
-          show: false
-        }
-      },
-    }
-    var yearChart = new ApexCharts(
-      document.querySelector("#chart-year"),
-      optionsYear
-    );
-    yearChart.render();
-  
-    function updateQuarterChart(sourceChart, destChartIDToUpdate) {
-      var series = [];
-      var seriesIndex = 0;
-      var colors = []
-      if (sourceChart.w.globals.selectedDataPoints[0]) {
-        var selectedPoints = sourceChart.w.globals.selectedDataPoints;
-        for (var i = 0; i < selectedPoints[seriesIndex].length; i++) {
-          var selectedIndex = selectedPoints[seriesIndex][i];
-          var yearSeries = sourceChart.w.config.series[seriesIndex];
-          series.push({
-            name: yearSeries.data[selectedIndex].x,
-            data: yearSeries.data[selectedIndex].quarters
-          })
-          colors.push(yearSeries.data[selectedIndex].color)
-        }
-        if (series.length === 0) series = [{
-          data: []
-        }]
-        return ApexCharts.exec(destChartIDToUpdate, 'updateOptions', {
-          series: series,
-          colors: colors,
-          fill: {
-            colors: colors
-          }
-        })
-      }
-    }
-    var optionsQuarters = {
-      chart: {
-        id: 'barQuarter',
-        height: 400,
-        width: '100%',
-        type: 'bar',
-        stacked: true
-      },
-      plotOptions: {
-        bar: {
-          columnWidth: '50%',
-          horizontal: false
-        }
-      },
-      series: [{
-        data: []
-      }],
-      legend: {
-        show: false
-      },
-      grid: {
-        yaxis: {
-          lines: {
-            show: false,
-          }
-        },
-        xaxis: {
-          lines: {
-            show: true,
-          }
-        }
-      },
-      yaxis: {
-        labels: {
-          show: false
-        }
-      },
-      title: {
-        text: `Quarterly performance results`,
-        offsetX: 10
-      },
-      tooltip: {
-        x: {
-          formatter: function(val, opts) {
-            return opts.w.globals.seriesNames[opts.seriesIndex]
-          }
-        },
-        y: {
-          title: {
-            formatter: function(val, opts) {
-              return opts.w.globals.labels[opts.dataPointIndex]
-            }
-          }
-        }
-      }
-    }
-    var chartQuarters = new ApexCharts(
-      document.querySelector("#chart-quarter"),
-      optionsQuarters
-    )
-    chartQuarters.render();
-    yearChart.addEventListener('dataPointSelection', function(e, chart, opts) {
-      var quarterChartEl = document.querySelector("#chart-quarter");
-      var yearChartEl = document.querySelector("#chart-year");
-      if (opts.selectedDataPoints[0].length === 1) {
-        if (quarterChartEl.classList.contains("active")) {
-          updateQuarterChart(chart, 'barQuarter')
-        } else {
-          yearChartEl.classList.add("chart-quarter-activated")
-          quarterChartEl.classList.add("active");
-          updateQuarterChart(chart, 'barQuarter')
-        }
-      } else {
-        updateQuarterChart(chart, 'barQuarter')
-      }
-      if (opts.selectedDataPoints[0].length === 0) {
-        yearChartEl.classList.remove("chart-quarter-activated")
-        quarterChartEl.classList.remove("active");
-      }
-    })
-    yearChart.addEventListener('updated', function(chart) {
-      updateQuarterChart(chart, 'barQuarter')
-    })
-    document.querySelector("#model").addEventListener("change", function(e) {
-      yearChart.updateSeries([{
-        data: makeData()
-      }])
-    })
-  }
   const topicCard = (topic, color) => {
     return `
     <style>
@@ -267,9 +82,11 @@ $(document).ready(function () {
 
 
   const categoryCard = (category, color ) => {
-    
+
+
+     const hexColor = getColorHex(color);
      const options = {
-        colors: ["#40864b"],
+        colors: [hexColor],
         series: [
             {
                 name: "Performance",
@@ -330,7 +147,7 @@ $(document).ready(function () {
     };
     
     const yearChartId = `admin_chart_year_${category.id}`;
-    const quarterChartId = `admin_chart_quarter_${category.id}`;
+
     
     return `
        <h4 class="fw-bold text-${color} text-center">${category.name_ENG}</h4>
@@ -339,20 +156,20 @@ $(document).ready(function () {
                 <div class="col-lg-6">
                     <div id="${yearChartId}"></div>
                 </div>
-                <div class="col-lg-6">
-                    <div id="${quarterChartId}"></div>
-                </div>
+
+               
+              
                 
             </div>
             <script>
                 var chart_${yearChartId} = new ApexCharts(document.getElementById("${yearChartId}"), ${JSON.stringify(options)});
                 chart_${yearChartId}.render();
-                var cart_${quarterChartId} = new ApexCharts(document.getElementById("${quarterChartId}"), ${JSON.stringify(options)});
-                cart_${quarterChartId}.render();
+                
             </script>
         </div>
     `;
-};
+    };
+
 
   const fetchTopicLists = async () => {
     let url = "/topic_list/";
