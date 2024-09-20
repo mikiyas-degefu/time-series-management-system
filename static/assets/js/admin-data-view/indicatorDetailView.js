@@ -391,7 +391,7 @@ $(document).ready(function () {
     })
 
 
-    //handle value button clicked for quarterly
+    //handle va lue button clicked for quarterly
     $("[name='tableBodyQuarter']").on("click","button[name='btnIndicator']",function(){
         const buttonData = $(this).data()
         $("#IndicatorFormValue").val(buttonData.value)
