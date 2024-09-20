@@ -13,8 +13,16 @@ from Base.models import (
 from DataPortal.serializers import (
     TopicSerializers,
     CategorySerializers,
-    IndicatorWithDataSerializers
+    IndicatorWithDataSerializers,
+    DataPointSerializers
 )
+
+@api_view(['GET'])
+def data_points(request):
+    if request.method == 'GET':
+        data_points = DataPoint.objects.filter().order_by('-year_EC')[:10]
+        serializer = DataPointSerializers(data_points, many=True)
+        return Response(serializer.data)
 
 @api_view(['GET'])
 def topic_lists(request):

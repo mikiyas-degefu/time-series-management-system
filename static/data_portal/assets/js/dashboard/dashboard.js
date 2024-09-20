@@ -80,7 +80,18 @@ $(document).ready(function () {
             let color = randomColor()
             $("#category-card-list").append(
             `
-                <h4 class="text-center text-${color} mt-3">${item.name_ENG}</h4>
+                <h4 class="text-center text-${color} mt-3">${item.name_ENG} 
+                    <button 
+                        data-category-id="${item.id}" 
+                        type="button" 
+                        name="btn-modal-category-detail" 
+                        class="btn btn-sm btn-${color}" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#modalCategory"
+                        >
+                            <i class="fa fa-eye"></i>
+                    </button>
+                </h4>
                 <hr class="mb-5">
                 ${indicatorCard(item.indicators, color)} 
             `)
@@ -89,6 +100,7 @@ $(document).ready(function () {
                 cardGraph(indicator, color)
             }
         }
+
     }
 
     
@@ -252,10 +264,66 @@ $(document).ready(function () {
 
             handleCardSkeleton(true)
             const categories = await fetchData(`/data-portal/api/category-with-indicator/${cardData.id}`)
+            const lastTenYear = await fetchData(`/data-portal/api/data-points-last-five/`)
             handleCardSkeleton(false)
 
             categoryHtml(categories)
+            
+
+
+
+              // handle detail category clicked
+              $("[name='btn-modal-category-detail']").click(function(){
+                let data = $(this).data();
+                let categoryId = data.categoryId
+               
+
+               let category = categories.find((item) => item.id == categoryId)
+               $("#modalCategoryLabel").text(category.name_ENG)  //update modal title 
+               console.log(category)
+               console.log(lastTenYear)
+
+               let header = `
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Indicator (AMH)</th>
+                        <th scope="col">Indicator (ENG)</th>
+               `
+               for (let head of lastTenYear?.reverse()){
+                   header += `
+                      <th scope="col">${head.year_EC}</th>
+                   `
+               }
+               let row = ''
+               for(let i in category.indicators){
+                row += `
+                    <tr>
+                        <th scope="row">${Number(i)+1}</th>
+                        <td>${category.indicators[i].title_ENG}</td>
+                        <td>${category.indicators[i].title_AMH}</td>
+                    `
+                    for(let ye in lastTenYear){
+                        let value = category.indicators[i].annual_data.find((item) => item.for_datapoint == lastTenYear[ye].year_GC)
+                        row+=`<td>${value ? value.performance : '-'}</td>`
+                    }
+               }
+                
+               
+
+               $("#table-header-modal").html(header + "</tr>")
+               $("#table-body-modal").html(row)
+
+                     
+                
+            })
+
         })
+
+
+
+
+
+        
 
 
 

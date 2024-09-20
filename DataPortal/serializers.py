@@ -7,6 +7,12 @@ from Base.models import (
     DataPoint,
 )
 
+
+class DataPointSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = DataPoint
+        fields = '__all__'
+
 class TopicSerializers(serializers.ModelSerializer):
     category_count = serializers.IntegerField(read_only=True)
     class Meta:
