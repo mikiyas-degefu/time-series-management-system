@@ -103,7 +103,6 @@ $(document).ready(function () {
 
     }
 
-    
     const indicatorCard = (indicators, color) => {
         let card =  indicators.map((indicator) =>{
             return `
@@ -177,7 +176,6 @@ $(document).ready(function () {
 
         return card.length > 0 ?  card : `<p class="text-center text-danger">No data found</p>`
     }
-
 
     const cardGraph = (indicator, color) =>{
         
@@ -406,13 +404,24 @@ $(document).ready(function () {
         })
 
 
-        
-
-
-
     }
 
     getWays()
+
+
+     //handle on Search
+     $("#searchItemForm").on('submit', async function(e){
+        e.preventDefault()
+        let searchItem = $("#searchItemValue").val()
+
+        handleCardSkeleton(true)  //enable loading
+        const searchResult = await fetchData(`/data-portal/api/category-with-indicator/19?search=${searchItem}`)
+        handleCardSkeleton(false) //disable loading
+
+        categoryHtml(searchResult)
+        $("#topic-title").html('Search Result')  //change title of topic
+       
+    })
 
    
 
