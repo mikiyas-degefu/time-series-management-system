@@ -5,18 +5,23 @@ $(document).ready(function () {
 
     const indicatorId = [pathID]
 
+    function convertDateToTimestamp(year, month, day) {
+        // Parse the date string into a Date object
+        return  Date.UTC(year, month, day);
+      }
 
+      
     const quarterChartBar = (quarter, year) =>{
 
 
-       let lastYearQuarter = quarter.filter((qr) => qr.for_datapoint__year_EC == year[1].year_EC).map((item, index) => {
+       let lastYearQuarter = quarter?.filter((qr) => qr.for_datapoint__year_EC == year[1].year_EC).map((item, index) => {
         return {
             x:item.for_datapoint__year_EC + "/" + Number(index*4),
             y:item.performance
         }
     })
 
-       let currentYearQuarter = quarter.filter((qr) => qr.for_datapoint__year_EC == year[0].year_EC).map((item, index) => {
+       let currentYearQuarter = quarter?.filter((qr) => qr.for_datapoint__year_EC == year[0].year_EC).map((item, index) => {
         return {
             x:item.for_datapoint__year_EC + "/" + Number(index*4),
             y:item.performance
@@ -88,8 +93,8 @@ $(document).ready(function () {
 
     const yearChartLine = (data, indicator) =>{
         let lastTenYear = data
-        lastTenYear.reverse()
-        lastTenYear = lastTenYear.slice(0,10).map((item) => {
+        lastTenYear?.reverse()
+        lastTenYear = lastTenYear?.slice(0,10)?.map((item) => {
             return {
                 x:item.for_datapoint__year_EC,
                 y:item.performance
@@ -175,6 +180,89 @@ $(document).ready(function () {
           var chart = new ApexCharts(document.querySelector("#chart-year-line"), options);
           chart.render();
     }
+
+    const timeLineLine = (data) => {
+      let year =  data.year.slice( 0,5)
+      let all_value = [] 
+      let categories = []
+        for(let yr of year.reverse()){
+          for(let month of data.month){
+            let value = data.month_data_value.find((item) => item.for_datapoint__year_EC == yr.year_EC && item.for_month__number == month.number)
+            console.log(value)
+            if (value){
+              all_value.push(value.performance)
+              categories.push(`${value.for_month__number}/11/${value.for_datapoint__year_EC}`)
+            }
+          }
+        }
+
+
+        var options = {
+          series: [{
+          name: 'Performance',
+          data: all_value
+        }],
+          chart: {
+          height: 350,
+          type: 'line',
+        },
+        forecastDataPoints: {
+          count: 7
+        },
+        stroke: {
+          width: 5,
+          curve: 'smooth'
+        },
+        xaxis: {
+          type: 'datetime',
+          categories: categories,
+          tickAmount: 10,
+          labels: {
+            formatter: function(value, timestamp, opts) {
+              return opts.dateFormatter(new Date(timestamp), 'dd MMM')
+            }
+          }
+        },
+        title: {
+          text: 'Last 5 Years (Monthly)',
+          align: 'left',
+          style: {
+            fontSize: "16px",
+            color: '#666'
+          }
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shade: 'dark',
+            gradientToColors: [ '#FDD835'],
+            shadeIntensity: 1,
+            type: 'horizontal',
+            opacityFrom: 1,
+            opacityTo: 1,
+            stops: [0, 100, 100, 100]
+          },
+        },
+        grid: {
+          show: false,
+          yaxis: {
+            lines: {
+              offsetX: -30
+            }
+          },
+          padding: {
+            left: 20
+          }
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#container"), options);
+        chart.render();
+      
+      
+    
+
+    }
     
 
     const contractTable = (data) =>{
@@ -183,9 +271,11 @@ $(document).ready(function () {
         MonthTable(data)
 
 
+
         //chart
         quarterChartBar(data.quarter_data_value, data.year)
         yearChartLine(data.annual_data_value, data.indicator_lists[0])
+        timeLineLine(data)
         
     }
 
@@ -197,7 +287,7 @@ $(document).ready(function () {
             <th style="width:500px;"  class="text-light" scope="col" >Yearly</th>
             <th style="width:400px;" scope="col" ></th>
               ` +
-              data.year.map((year) =>{ return ` <th scope="col" style="width:100px;"></th>`})
+              data?.year?.map((year) =>{ return ` <th scope="col" style="width:100px;"></th>`})
               + 
               `
           </tr>

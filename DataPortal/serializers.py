@@ -7,6 +7,12 @@ from Base.models import (
     DataPoint,
 )
 
+
+class DataPointSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = DataPoint
+        fields = '__all__'
+
 class TopicSerializers(serializers.ModelSerializer):
     category_count = serializers.IntegerField(read_only=True)
     class Meta:
@@ -29,7 +35,7 @@ class IndicatorSerializers(serializers.ModelSerializer):
     
     class Meta:
         model = Indicator
-        fields = ('id', 'title_ENG', 'title_AMH', 'for_category', 'measurement_units', 'parent', 'annual_data')
+        fields = ('id', 'title_ENG', 'title_AMH', 'for_category', 'measurement_units', 'parent', 'annual_data', 'composite_key',)
 
 
 class CategorySerializers(serializers.ModelSerializer):
