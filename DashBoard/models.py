@@ -23,6 +23,7 @@ class Component(models.Model):
     html = models.TextField()
     js = models.TextField(null=True , blank=True)
     is_multiple = models.BooleanField(default=False , null=True , blank=True) 
+    path = models.CharField(max_length=100 , null=True , blank=True)
 
     def __str__(self):
         return self.name
