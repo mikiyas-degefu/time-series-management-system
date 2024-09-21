@@ -125,7 +125,7 @@
             {{dashboard.title}}
             {% for row in dashboard.row_list %}
               {% for col in row.col_list %}
-                 
+                 {% include col.component.path%}
                {% endfor %}
             {% endfor %}
         </div>

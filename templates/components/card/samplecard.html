@@ -1,3 +1,4 @@
+{% load static %}
 <div class="col-span-12" bis_skin_checked="1">
     <div class="card welcome-banner bg-primary-800" bis_skin_checked="1">
         <div class="absolute opacity-50 inset-0 z-10 bg-right-bottom bg-[length:100%] bg-no-repeat bg-[url('../images/widget/img-dropbox-bg.svg')]"
@@ -13,8 +14,7 @@
                     </div>
                 </div>
                 <div class="col-span-12 sm:col-span-6 text-center" bis_skin_checked="1">
-<img src="../assets/images/widget/welcome-banner.png" alt="img"
-                        class="img-fluid w-[200px] max-w-full mx-auto"></div>
+                    <img src="{% static 'dashboard/assets/images/widget/welcome-banner.png' %}" alt="img" class="img-fluid w-[200px] max-w-full mx-auto"></div>
             </div>
         </div>
     </div>
