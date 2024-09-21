@@ -18,9 +18,13 @@ component_category = {
 
 
 class Component(models.Model):
+    default = dict(
+        title="title", 
+    )
     name = models.CharField(max_length=50)
     category = models.CharField(choices=component_category , max_length=50)
-    is_multiple = models.BooleanField(default=False , null=True , blank=True) 
+    is_multiple = models.BooleanField(default=False , null=True , blank=True)
+    configuration = models.JSONField(default=dict,null=True , blank=True) 
     path = models.CharField(max_length=50 , null=True , blank=True)
 
     def __str__(self):
@@ -53,7 +57,7 @@ class Row(models.Model):
 class DashboardIndicator(models.Model):
     for_row = models.ForeignKey(Row , on_delete=models.CASCADE)
     indicator = models.ManyToManyField(Indicator , related_name='indicator')  
-    component = models.ForeignKey(Component ,  on_delete=models.CASCADE , related_name='component')
+    component = models.ForeignKey(Component ,  on_delete=models.SET_NULL , null = True , related_name='component')
 
     def __str__(self):
-        return str(self.for_row.rank) + ' ' + self.component.name  
+        return str(self.for_row.rank) 
