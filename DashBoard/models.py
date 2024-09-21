@@ -20,9 +20,8 @@ component_category = {
 class Component(models.Model):
     name = models.CharField(max_length=50)
     category = models.CharField(choices=component_category , max_length=50)
-    html = models.TextField()
-    js = models.TextField(null=True , blank=True)
     is_multiple = models.BooleanField(default=False , null=True , blank=True) 
+    path = models.CharField(max_length=50 , null=True , blank=True)
 
     def __str__(self):
         return self.name
