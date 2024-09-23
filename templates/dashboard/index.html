@@ -15,21 +15,25 @@
                 <!-- [ Main Content ] start -->
                 {{dashboard.title}}
               
-                <div class="grid grid-cols-12 gap-x-6">
-                        
+
+
+                   {% for row in rows %}
+
+                    <div class="grid grid-cols-12 gap-x-6">
+
+                        {% for col in row.col_list%}
+                          {% include col.component.path %}
+                        {% endfor%}
+
+                    </div> 
+
+
+                   {% endfor %}
                         
 
-                    {% include 'components/charts/bar.html' %}
-                    {% include 'components/charts/mixed_area_line_bar.html' %}
-                    {% include 'components/charts/pie_donut.html' %}
-                    {% include 'components/charts/pie.html' %}
-                    {% include 'components/charts/radial_bar_custom_angle.html' %}
-                    
-                    
 
-                   
-                </div>
-           
+                
+               
                
                 
 
