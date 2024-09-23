@@ -777,7 +777,6 @@ def edit_user(request):
         user.first_name = first_name
         user.last_name = last_name
         user.is_superuser = is_superuser
-        user.rank = rank
         user.username = username
         user.save()
         response = {'success' : True}
@@ -785,6 +784,12 @@ def edit_user(request):
         response = {'success' : False}
     return Response(response)  
   
+
+
+
+#################Dashboard####################  
+def dashboard_index(request):
+    return render(request, 'user-admin/dashboard-admin/index.html')
 
 
 
