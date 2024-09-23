@@ -3,6 +3,7 @@ from Base.models import(
     Topic,
     Category,
     Indicator,
+    Document
 )
 
 class TopicForm(forms.ModelForm):
@@ -39,4 +40,18 @@ class IndicatorForm(forms.ModelForm):
             'measurement_units': forms.TextInput(attrs={'class': 'form-control'}),
             'kpi_characteristics': forms.Select(attrs={'class': 'form-select'}),
             'is_dashboard_visible': forms.CheckboxInput(attrs={'class': 'form-check-input ml-3'}),
+        }
+
+
+class DocumentForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = ['title_ENG', 'title_AMH', 'topic', 'file']
+        widgets = {
+            'title_ENG': forms.TextInput(attrs={'class': 'form-control'}),
+            'title_AMH': forms.TextInput(attrs={'class': 'form-control'}),
+            'topic': forms.Select(attrs={'class': 'form-select'}),
+            'file' : forms.ClearableFileInput(attrs={
+                'class' : 'form-control'
+            })
         }
