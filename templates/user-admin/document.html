@@ -87,6 +87,9 @@
                                       <a href="/media/{{document.file}}" target="_blank" class="btn btn-outline-success mt-2 btn-sm btn-edit">
                                         <i class="fa fa-eye"></i>
                                       </a>
+                                      <a download="/media/{{document.file}}" href="/media/{{document.file}}" class="btn btn-outline-success mt-2 btn-sm btn-edit">
+                                        <i class="fa fa-download"></i>
+                                      </a>
                                       <a href="{% url 'document_edit' document.id %}" class="btn btn-outline-info mt-2 btn-sm btn-edit">
                                         <i class="fa fa-edit"></i>
                                       </a>
