@@ -122,12 +122,12 @@
    
     <div class="pc-container">
         <div class="pc-content"><!-- [ Main Content ] start -->
-            {{dashboard.title}}
-            {% for row in dashboard.row_list %}
-              {% for col in row.col_list %}
-                 {% include col.component.path%}
-               {% endfor %}
-            {% endfor %}
+            {{dashboard.title}} 
+                {% for row in dashboard.row_list %} 
+                {% for col in row.col_list %} 
+                {% include col.component.path %} 
+                {% endfor %} 
+                {% endfor %}
         </div>
     </div><!-- [ Main Content ] end -->
 
