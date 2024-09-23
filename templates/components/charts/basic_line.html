@@ -41,18 +41,6 @@
         var chart1 = new ApexCharts(document.querySelector("#line-chart-1"), options1);
         chart1.render();
     
-        // Line Chart 2
-        var seriesData = [];
-        var startDate = new Date("11 Feb 2017 GMT").getTime();
-        var range = { min: 10, max: 90 };
-        var count = 0;
     
-        while (count < 10) {
-            var xVal = startDate;
-            var yVal = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
-            seriesData.push({ x: xVal, y: yVal });
-            startDate += 864e5;
-            count++;
-        }
     });
     </script>
