@@ -29,11 +29,9 @@ class Component(models.Model):
     category = models.CharField(choices=component_category , max_length=50)
     is_multiple = models.BooleanField(default=False)
     is_range = models.BooleanField(default=False)
-    data_type = models.CharField(max_length=10,choices=data_type_options)
-    year = models.ForeignKey( DataPoint,on_delete=models.SET_NULL, null=True, blank=True)
-    data_range_start = models.CharField(max_length=10,  null=True, blank=True)
-    data_range_end = models.CharField(max_length=10,  null=True, blank=True)
-    configuration = models.JSONField(default=dict,null=True , blank=True) 
+    data_type = models.CharField(choices=data_type_options, max_length=10,null=True, blank=True)
+    #configuration = models.JSONField(default=dict,null=True , blank=True) 
+    image = models.ImageField(upload_to='components/', null=True, blank=True)
     path = models.CharField(max_length=50 , null=True , blank=True)
 
     def __str__(self):
@@ -67,6 +65,9 @@ class DashboardIndicator(models.Model):
     for_row = models.ForeignKey(Row , on_delete=models.CASCADE)
     indicator = models.ManyToManyField(Indicator , related_name='indicator')  
     component = models.ForeignKey(Component ,  on_delete=models.SET_NULL , null = True , related_name='component')
+    year = models.ForeignKey( DataPoint,on_delete=models.SET_NULL, null=True, blank=True)
+    data_range_start = models.CharField(max_length=10,  null=True, blank=True)
+    data_range_end = models.CharField(max_length=10,  null=True, blank=True)
 
     def __str__(self):
         return str(self.for_row.rank) 
