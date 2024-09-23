@@ -1,5 +1,6 @@
 from django.db import models
 from Base.models import Indicator
+from Base.models import DataPoint, Month, Quarter
 # Create your models here.
 
 
@@ -18,12 +19,20 @@ component_category = {
 
 
 class Component(models.Model):
-    default = dict(
-        title="title", 
+    data_type_options = (
+        ('year','year'),
+        ('month','month'),
+        ('quarter','quarter'),
     )
+    
     name = models.CharField(max_length=50)
     category = models.CharField(choices=component_category , max_length=50)
-    is_multiple = models.BooleanField(default=False , null=True , blank=True)
+    is_multiple = models.BooleanField(default=False)
+    is_range = models.BooleanField(default=False)
+    data_type = models.CharField(max_length=10,choices=data_type_options)
+    year = models.ForeignKey( DataPoint,on_delete=models.SET_NULL, null=True, blank=True)
+    data_range_start = models.CharField(max_length=10,  null=True, blank=True)
+    data_range_end = models.CharField(max_length=10,  null=True, blank=True)
     configuration = models.JSONField(default=dict,null=True , blank=True) 
     path = models.CharField(max_length=50 , null=True , blank=True)
 
