@@ -38,6 +38,12 @@ urlpatterns = [
     path('all_indicators/', all_indicators, name='all_indicators'),
 
 
+    #document
+    path('document/', document, name='document'),
+    path('document_edit/<str:id>', document_edit, name='document_edit'),
+    path('document_delete/<str:id>', document_delete, name='document_delete'),
+
+
 
     ##Dashboard
     path('admin_dashboard_index/', dashboard_index, name='admin-dashboard-index'),

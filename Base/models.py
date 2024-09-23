@@ -17,6 +17,9 @@ class Topic(models.Model):
 
     def __str__(self):
         return self.title_ENG
+    
+    def get_document_lists(self):
+        return Document.objects.filter(topic = self)
     class Meta:
         ordering = ['rank'] #Oldest First    
 

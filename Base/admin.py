@@ -14,10 +14,15 @@ from .resource import(
 from import_export.admin import ImportExportModelAdmin
 
 class TopicAdmin(ImportExportModelAdmin):
-    resource_classes = [TopicResource]
     list_display = ('title_ENG', 'title_AMH', 'created', 'is_dashboard', 'is_deleted', 'rank')
 
 admin.site.register(Topic, TopicAdmin)
+
+
+class DocumentAdmin(ImportExportModelAdmin):
+    list_display = ('title_ENG', 'title_AMH', 'topic', 'file')
+
+admin.site.register(Document, DocumentAdmin)
 
 
 class CategoryAdmin(ImportExportModelAdmin):

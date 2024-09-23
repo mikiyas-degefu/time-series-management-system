@@ -122,6 +122,13 @@ rel="stylesheet"
               </a>
             </li>
 
+            <li class="nav-item">
+              <a href="{% url "document" %}" class="nav-link {% if request.path == '/user-admin/document/' %}active{% endif %}">
+                <i class="bi bi-book ml-1"></i>
+                <p>Document</p>
+              </a>
+            </li>
+
           </ul>
         </li>
         </li>
@@ -132,13 +139,7 @@ rel="stylesheet"
           </a>
         </li>
        
-        {% comment %} <li class="nav-item ">
-          <a href="#" class="nav-link {% if request.path == '/user-admin/audit/' %}active{% endif %}">
-           <i class="nav-icon fas fa-history"></i> 
-          
-            <p>Audit-log</p>
-          </a>
-        </li> {% endcomment %}
+
 
 
         {% comment %} <li class="nav-item">

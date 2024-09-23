@@ -20,7 +20,8 @@ from Base.resource import (
 from .forms import(
     TopicForm,
     CategoryForm,
-    IndicatorForm
+    IndicatorForm,
+    DocumentForm
 )
 
 from Base.resource import(
@@ -38,7 +39,8 @@ from Base.models import (
     QuarterData,
     MonthData,
     Month,
-    Quarter
+    Quarter,
+    Document
 )
 import random
 
@@ -785,6 +787,70 @@ def edit_user(request):
     return Response(response)  
   
 
+
+#######Document#########
+def document(request):
+    form = DocumentForm(request.POST or None, request.FILES or None)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, '&#128532 Hello User, Document Successfully Added')
+            return redirect('document')
+        else:
+            messages.error(request, '&#128532 Hello User, An error occurred while Adding Document')
+    
+    topics = Topic.objects.filter(is_deleted = False)
+
+    if 'q' in request.GET:
+        q = request.GET['q']
+        documents = Document.objects.filter(Q(title_ENG__contains=q) | Q(title_AMH__contains=q)).values_list('topic__id', flat=True)
+        topics = Topic.objects.filter(is_deleted = False).filter(  Q(title_ENG__contains=q) | Q(title_AMH__contains=q) | Q(id__in=list(documents)) ).distinct()  
+
+
+    context ={
+        'form' : form,
+        'topics' : topics
+    }
+    return render(request, 'user-admin/document.html', context=context)
+
+
+
+def document_edit(request, id):
+    
+    try:
+        document = Document.objects.get(id=id)
+    except Document.DoesNotExist:
+        return HttpResponse("Document does not exist")
+    
+
+    form = DocumentForm(request.POST or None, request.FILES or None, instance=document)
+    
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, '&#128532 Hello User, Document Successfully Updated')
+            return redirect('document')
+        else:
+            messages.error(request, '&#128532 Hello User, An error occurred while Updating Document')
+    
+    context = {
+        'form' : form,
+        'document' : document
+    }
+    return render(request, 'user-admin/document_edit.html', context=context)
+
+
+def document_delete(request, id):
+    try:
+        document = Document.objects.get(id=id)
+        document.delete()
+    except Document.DoesNotExist:
+        return HttpResponse("Document does not exist")
+    
+    messages.success(request, '&#128532 Hello User, Document Successfully Deleted')
+    return redirect('document')
+    
 
 
 #################Dashboard####################  
