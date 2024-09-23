@@ -1,3 +1,5 @@
+{% load static %}
+
 <div class="col-span-12 md:col-span-6">
     <div class="card">
         <div class="card-header">
@@ -8,3 +10,19 @@
         </div>
     </div>
 </div>
+
+
+
+<script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>
+
+<script>
+    $(document).ready(()=>{
+        new ApexCharts(document.querySelector("#radialBar-chart-1"), {
+      chart: { height: 350, type: "radialBar" },
+      plotOptions: { radialBar: { hollow: { size: "70%" } } },
+      colors: ["#4680FF"],
+      series: [70],
+      labels: ["Cricket"],
+    }).render()
+    })
+</script>
