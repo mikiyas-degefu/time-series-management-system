@@ -14,20 +14,16 @@
             <div class="pc-content">
                 <!-- [ Main Content ] start -->
                 {{dashboard.title}}
-                {% for row in dashboard.row_list %}
-                    <div class="grid grid-cols-12 gap-x-6">
+              
+                <div class="grid grid-cols-12 gap-x-6">
                         
-                        {% for col in row.col_list %}
-                        {% include col.component.path%}
-                        {% endfor %}
+                        
+                    {% include 'components/charts/bar.html' %}
+                    
 
-                       
-                    </div>
-               
-                {% endfor %}
-
-
-               
+                   
+                </div>
+           
                
                 
 
@@ -38,5 +34,8 @@
        {% include 'dashboard/include/footer.html'%}
     </body>
     <!-- [Body] end -->
+
+    
    
+    
 </html>

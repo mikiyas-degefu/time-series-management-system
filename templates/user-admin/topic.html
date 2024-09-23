@@ -365,6 +365,8 @@
       $("#id_id").val(buttonData.id)
     })
 
+   
+
 
     $("#modalFormEditTopic").on('submit', function (e) {
       e.preventDefault()
@@ -374,6 +376,8 @@
       let icon = $("#id_icon").val()
       let is_dashboard = $("#id_is_dashboard").is(':checked')
       let id = $("#id_id").val()
+
+   
 
       
 
@@ -385,7 +389,7 @@
           'title_ENG': title_ENG,
           'title_AMH': title_AMH,
           'is_dashboard' : is_dashboard,
-          'rank' : 2,
+          'rank' : rank,
           'icon' : icon,
           csrfmiddlewaretoken: '{{csrf_token}}'
         },

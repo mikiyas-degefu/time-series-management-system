@@ -397,7 +397,8 @@ def edit_topic(request):
     title_ENG = request.POST['title_ENG']
     title_AMH = request.POST['title_AMH']
     is_dashboard = True if request.POST['is_dashboard'] == "true" else False
-    rank = request.POST['rank']
+    rank = int(request.POST.get('rank'))
+    print(rank)
     icons = request.POST.get('icon')
     try:
         topic = Topic.objects.get(id = id)
