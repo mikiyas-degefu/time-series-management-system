@@ -1,25 +1,75 @@
 {% load static %}
-<!doctype html>
-<html lang="en" class="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="ltr"
-    dir="ltr" data-pc-theme_contrast data-pc-theme="light">
-    <head>
-        {% include 'dashboard/include/head.html' %}
-    </head>
+<!DOCTYPE html>
+<html lang="en">
 
-    <body>
-        {% include 'dashboard/include/nav.html'%}  
-        {% include 'dashboard/include/header.html'%}              
 
-        <div class="pc-container">
-            <div class="pc-content">
-                <!-- [ Main Content ] start -->
-                
-                 <!-- [ Main Content ] end -->
-            </div>
+<!-- [Head] start -->
+<head>
+    <title>Home | MoPD Dashboard </title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,minimal-ui" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description"
+        content="Able Pro is trending dashboard template made using Bootstrap 5 design framework. Able Pro is available in Bootstrap, React, CodeIgniter, Angular,  and .net Technologies." />
+    <meta name="keywords"
+        content="Bootstrap admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard" />
+    <meta name="author" content="Phoenixcoded" />
+
+    {% include 'dashboard/include/head.html' %}
+</head>
+<!-- [Head] end -->
+
+
+<body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="ltr"
+    data-pc-theme_contrast="" data-pc-theme="light">
+    
+    <!-- [ Pre-loader ] start -->
+    <div class="loader-bg">
+        <div class="loader-track">
+            <div class="loader-fill"></div>
         </div>
-       
-       {% include 'dashboard/include/footer.html'%}
-    </body>
-    <!-- [Body] end -->
-   
+    </div>
+    <!-- [ Pre-loader ] End -->
+
+
+    {% include 'dashboard/include/sidebar.html' %}
+    {% include 'dashboard/include/header.html' %}
+    
+
+
+    <div class="pc-container">
+        <div class="pc-content">
+            <!-- [ Main Content ] start -->
+
+            <!-- [ Main Content ] end -->
+        </div>
+    </div>
+
+
+
+
+
+    <!-- [Page Specific JS] start -->
+    <script data-cfasync="false" src="../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="{% static 'dashboard/assets/js/plugins/apexcharts.min.js' %}"></script>
+    <script src="{% static 'dashboard/assets/js/pages/dashboard-default.js' %}"></script>
+
+
+    <!-- [Page Specific JS] end --><!-- Required Js -->
+    <script src="{% static 'dashboard/assets/js/plugins/popper.min.js' %}"></script>
+    <script src="{% static 'dashboard/assets/js/plugins/simplebar.min.js' %}"></script>
+    <script src="{% static 'dashboard/assets/js/plugins/bootstrap.min.js' %}"></script>
+    <script src="{% static 'dashboard/assets/js/fonts/custom-font.js' %}"></script>
+    <script src="{% static 'dashboard/assets/js/pcoded.js' %}"></script>
+    <script src="{% static 'dashboard/assets/js/plugins/feather.min.js' %}"></script>
+    <script> layout_change("light")</script>
+    <script>change_box_container("false");</script>
+    <script>layout_caption_change("true");</script>
+    <script>layout_rtl_change("false");</script>
+    <script>preset_change("preset-1");</script>
+    <script>main_layout_change("vertical");</script>
+
+
+</body>
+
 </html>
