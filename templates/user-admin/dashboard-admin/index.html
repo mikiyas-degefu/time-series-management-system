@@ -32,7 +32,71 @@
     <!-- [ Pre-loader ] End -->
 
 
-    {% include 'dashboard/include/sidebar.html' %}
+    <!-- [ Sidebar Menu ] start -->
+    <nav class="pc-sidebar">
+        <div class="navbar-wrapper">
+            <div class="m-header">
+
+                <a href="#" class="b-brand text-primary">
+                    <!-- ========   Change your logo from here   ============ -->
+                    <img src="{% static 'assets/image/EPDM-Logo-Final-Hi-res.png' %}" class="img-fluid logo-lg" alt="logo" />
+                </a>
+
+
+            </div>
+    
+            <div class="navbar-content">
+                <ul class="pc-navbar">
+    
+                    <li class="pc-item pc-caption">
+                        <label>Dashboards</label>
+                        <svg class="pc-icon">
+                            <use xlink:href="#custom-presentation-chart"></use>
+                        </svg>
+                    </li>
+    
+    
+                    <li class="pc-item pc-hasmenu active pc-trigger">
+    
+                        <a href="#" class="pc-link">
+                            <span class="pc-micon">
+                                <svg class="pc-icon"><use xlink:href="#custom-status-up"></use></svg>
+                            </span>
+                            <span class="pc-mtext">Charts</span>
+    
+                            <span class="pc-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </span>
+                        </a>
+    
+                        <ul class="pc-submenu" style="display: block; box-sizing: border-box;">
+                            {% for component in components%}
+                            <li class="pc-item active">
+                                <a class="pc-link" href="#">{{component.name}}</a>
+                                <div class="text-center">
+                                    <img src="/media/{{component.image}}" style="width: 150px;" class="img-fluid" alt="">
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+    
+    
+                    </li>
+    
+    
+                </ul>
+    
+    
+            </div>
+        </div>
+    </nav>
+    <!-- [ Sidebar Menu ] end -->
+
+
     {% include 'dashboard/include/header.html' %}
     
 
@@ -45,30 +109,7 @@
         </div>
     </div>
 
-
-
-
-
-    <!-- [Page Specific JS] start -->
-    <script data-cfasync="false" src="../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-    <script src="{% static 'dashboard/assets/js/plugins/apexcharts.min.js' %}"></script>
-    <script src="{% static 'dashboard/assets/js/pages/dashboard-default.js' %}"></script>
-
-
-    <!-- [Page Specific JS] end --><!-- Required Js -->
-    <script src="{% static 'dashboard/assets/js/plugins/popper.min.js' %}"></script>
-    <script src="{% static 'dashboard/assets/js/plugins/simplebar.min.js' %}"></script>
-    <script src="{% static 'dashboard/assets/js/plugins/bootstrap.min.js' %}"></script>
-    <script src="{% static 'dashboard/assets/js/fonts/custom-font.js' %}"></script>
-    <script src="{% static 'dashboard/assets/js/pcoded.js' %}"></script>
-    <script src="{% static 'dashboard/assets/js/plugins/feather.min.js' %}"></script>
-    <script> layout_change("light")</script>
-    <script>change_box_container("false");</script>
-    <script>layout_caption_change("true");</script>
-    <script>layout_rtl_change("false");</script>
-    <script>preset_change("preset-1");</script>
-    <script>main_layout_change("vertical");</script>
-
+    {% include 'dashboard/include/js.html'%}
 
 </body>
 

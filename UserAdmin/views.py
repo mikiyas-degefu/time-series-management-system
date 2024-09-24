@@ -6,6 +6,9 @@ from rest_framework.decorators import api_view
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from UserManagement.forms import CustomUserForm
 from UserManagement.models import CustomUser
+from DashBoard.models import (
+    Component
+)
 from Base.forms import (ImportFileForm, ImportFileIndicatorAddValueForm)
 from Base.resource import (
     handle_uploaded_Topic_file,
@@ -856,7 +859,11 @@ def document_delete(request, id):
 
 #################Dashboard####################  
 def dashboard_index(request):
-    return render(request, 'user-admin/dashboard-admin/index.html')
+    components = Component.objects.all()
+    context = {
+        'components' : components
+    }
+    return render(request, 'user-admin/dashboard-admin/index.html', context=context)
 
 
 
