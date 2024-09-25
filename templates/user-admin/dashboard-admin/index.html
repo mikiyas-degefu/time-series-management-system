@@ -16,6 +16,7 @@
         content="Bootstrap admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard" />
     <meta name="author" content="Phoenixcoded" />
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
+  
 
     {% include 'dashboard/include/head.html' %}
 </head>
@@ -43,23 +44,23 @@
 
 
     <!-- [ Sidebar Menu ] start -->
-    <nav class="pc-sidebar">
+    <nav class="pc-sidebar"  >
         <div class="navbar-wrapper">
-            <div class="m-header">
-
-                <a href="#" class="b-brand text-primary">
-                    <!-- ========   Change your logo from here   ============ -->
-                    <img src="{% static 'assets/image/EPDM-Logo-Final-Hi-res.png' %}" class="img-fluid logo-lg"
-                        alt="logo" />
-                </a>
-
-
+            <div class="text-center">
+                <img src="{% static 'assets/image/EPDM-Logo-Final-Hi-res.png' %}" style="width: 70px;" class="mt-3 img-fluid" alt="logo" />
             </div>
 
             <div class="navbar-content">
-                <ul class="pc-navbar">
 
-                    <li class="pc-item pc-caption">
+
+                <div class="text-center">
+                   <h3  class="bg-primary text-light p-3">{{dashboard.title | capfirst}}</h3>
+                </div>
+
+
+                <ul class="pc-navbar">
+    
+                    <li class="pc-item  pc-caption">
                         <label>Dashboards</label>
                         <svg class="pc-icon">
                             <use xlink:href="#custom-presentation-chart"></use>
@@ -68,7 +69,36 @@
 
 
                     <li class="pc-item pc-hasmenu active pc-trigger">
+    
+                        <a href="#" class="pc-link">
+                            <span class="pc-micon">
+                                <svg class="pc-icon"><use xlink:href="#custom-status-up"></use></svg>
+                            </span>
+                            <span class="pc-mtext">Row</span>
+    
+                            <span class="pc-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </span>
+                        </a>
+    
+                        <ul class="pc-submenu" style="display: block; box-sizing: border-box;">
+                            
+                            <li class="pc-item active">
+                                <a name="row" class="pc-link border" href="#">Full Width</a>
+                            </li>
 
+
+                        </ul>
+    
+                    </li>
+    
+    
+                    <li id="dvSource" class="pc-item pc-hasmenu  pc-trigger">
+    
                         <a href="#" class="pc-link">
                             <span class="pc-micon">
                                 <svg class="pc-icon">
@@ -117,17 +147,18 @@
                                 </svg>
                             </span>
                         </a>
-
-                        <ul class="pc-submenu dropArea" style="display: block; box-sizing: border-box;">
-                            {% for component in components %}
-                                <li class="pc-item active">
-                                    <a class="pc-link" href="#">
-                                        {{component.name}}
-                                        <img src="/media/{{component.image}}" draggable="true" style="width: 150px;"
-                                            class="img-fluid" alt="">
-                                    </a>
-                                </li>
+    
+                        <ul class="pc-submenu" style="display: block; box-sizing: border-box;">
+                            
+                            {% for component in components%}
+                            <li  class="pc-item active">
+                                <a class="pc-link" href="#">{{component.name}}</a>
+                                <div name="component" data-size="12" data-id="id_{{component.id}}" class="text-center">
+                                    <img src="/media/{{component.image}}" style="width: 150px;" class="img-fluid" alt="">
+                                </div>
+                            </li>
                             {% endfor %}
+
                         </ul>
 
 
@@ -139,9 +170,13 @@
 
 
             </div>
+
+
         </div>
     </nav>
     <!-- [ Sidebar Menu ] end -->
+
+    
 
 
     {% include 'dashboard/include/header.html' %}
@@ -149,14 +184,44 @@
 
 
     <div class="pc-container">
-        <div class="pc-content dropArea" name="box2">
 
+        <!-- [ Main Content ] start -->
+        <div class="pc-content">
+            <div id="droppable2" class="p-5"></div>
+        </div>
+
+            <!-- [ Main Content ] end -->
         </div>
     </div>
 
 
+    <!--Modal Add Dashboard-->
+    <div class="modal fade" id="modalAddDashboard" tabindex="-1" aria-labelledby="modalAddDashboardLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalAddDashboardLabel">Add Dashboard</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+           <form method="post">
+                 <div class="modal-body">
+                  {{form.as_p}}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+           </form>
+          </div>
+        </div>
+    </div>
 
     {% include 'dashboard/include/js.html'%}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.0/jquery-ui.min.js" integrity="sha512-MlEyuwT6VkRXExjj8CdBKNgd+e2H+aYZOCUaCrt9KRk6MlZDOs91V1yK22rwm8aCIsb5Ec1euL8f0g58RKT/Pg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="{% static 'dashboard/assets/js/custom/dashboard-admin.js' %}"></script>
 
 </body>
 

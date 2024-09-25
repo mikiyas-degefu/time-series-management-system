@@ -46,7 +46,8 @@ urlpatterns = [
 
 
     ##Dashboard
-    path('admin_dashboard_index/', dashboard_index, name='admin-dashboard-index'),
+    path('admin_dashboard_index/', custom_dashboard, name='custom-dashboard-index'),
+    path('admin_dashboard_index/<str:id>/', custom_dashboard_topic, name='custom-dashboard-topic'),
 
     ##Export data
     path('export_topic/', export_topic, name='export_topic'),
