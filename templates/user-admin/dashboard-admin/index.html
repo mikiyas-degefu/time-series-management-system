@@ -179,6 +179,7 @@
                  <input id="form_is_multiple" type="hidden" value="" name="is-multiple"  >
                  <input id="form_is_range" type="hidden" value="" name="is-range"  >
                  <input id="form_componentId" type="hidden" value=""  name="componentId"  >
+                 <input id="form_row-id" type="hidden" value=""  name="row-id"  >
                   {{form.as_p}}
                 </div>
                 <div class="modal-footer">
@@ -244,9 +245,41 @@
             let data_range_start = $("#id_data_range_start").val();
             let data_range_end = $("#id_data_range_end").val();
             let width = $("#id_width").val();
+            let rowId = $("#form_row-id").val();
+
+            console.log(indicator)
 
             let colSize = width == '25%' ? 'col-md-3' : (width == '33%' ? 'col-md-4' : (width == '50%' ? 'col-md-6' : (width == '100%' ? 'col-md-12' : '')));
             document.getElementById(`dragged_${componentId}`).className = colSize;
+
+            $.ajax({
+              type: 'POST',
+              url: `{% url "custom-dashboard-topic" dashboard.id %}`,
+              data: {
+                'isMultiple': isMultiple,
+                'isRange' : isRange,
+                'componentId' : componentId,
+                'indicator' : indicator.toString(),
+                'year' : year,
+                'data_range_start' : data_range_start,
+                'data_range_end' : data_range_end,
+                'rowId' : rowId,
+                'width' : width,
+                csrfmiddlewaretoken: '{{csrf_token}}'
+              },
+              success: function (response) {
+                if (response) {
+                  console.log("Created")
+                } else {
+                    console.log('err here')
+                }
+              },
+              error: function () {
+                console.log('err there')
+              }
+            });
+    
+            
     })
 
 

@@ -18,7 +18,7 @@ $(document).ready(()=>{
 
 
         //col
-        const handleAfterDropped = () =>{
+        const handleAfterDropped = (rowId) =>{
             $('[name="row"]').droppable({
                 accept: "[name='component']",
                 drop: function (event, ui) {
@@ -55,6 +55,7 @@ $(document).ready(()=>{
                                                     data-id="${draggable.data('id')}"
                                                     data-is-multiple="${draggable.data('isMultiple')}"
                                                     data-is-range="${draggable.data('isRange')}" 
+                                                    data-row-id = ${rowId}
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#modalAddDashboardRow" 
                                                     class="dropdown-item">
@@ -75,7 +76,7 @@ $(document).ready(()=>{
                     cardBody.appendTo(card);
                     draggable.clone().appendTo(cardBody);
                     card.find('img').css('width', '100%');
-                    card.find('img').css('height', '450px');
+                    //card.find('img').css('height', '450px');
                     card.appendTo(parentDiv);
             
                     // Append the parent div to the droppable element
@@ -118,7 +119,7 @@ $(document).ready(()=>{
                     // Append the parent div to the droppable element
                     parentDiv.appendTo(droppable);
             
-                    handleAfterDropped();
+                    handleAfterDropped(rowId);
                 
                   
                    } else {
@@ -140,6 +141,7 @@ $(document).ready(()=>{
         let isMultiple = $(this).data('isMultiple');
         let isRange = $(this).data('isRange');
         let componentId = $(this).data('id');
+        let rowId = $(this).data('rowId');
 
 
     
@@ -174,6 +176,7 @@ $(document).ready(()=>{
         $("#form_is_multiple").val(isMultiple)
         $("#form_is_range").val(isRange)
         $("#form_componentId").val(componentId);
+        $("#form_row-id").val(rowId);
 
     });
 
