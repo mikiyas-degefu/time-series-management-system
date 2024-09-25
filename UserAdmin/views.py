@@ -863,21 +863,66 @@ def document_delete(request, id):
 
 #################Dashboard####################  
 def custom_dashboard(request):
+    dashboards = Dashboard.objects.all()
     form = DashboardForm(request.POST or None)
+    if 'q' in request.GET:
+        q = request.GET['q']
+        dashboards = Dashboard.objects.filter( Q(title__contains=q))
+    
     if request.method == 'POST':
         if form.is_valid():
             form.save()
             messages.success(request, '&#128532 Hello User, Dashboard Successfully Added')
-            return redirect('custom-dashboard-topic', id = 1)
+            return redirect('custom-dashboard-index')
         else:
             messages.error(request, '&#128532 Hello User, An error occurred while Adding Dashboard')
+    paginator = Paginator(dashboards, 10) 
+    page_number = request.GET.get('page')
 
-    components = Component.objects.all()
+    try:
+        page = paginator.get_page(page_number)
+        try: count = (30 * (int(page_number) if page_number  else 1) ) - 30
+        except: count = (30 * (int(1) if page_number  else 1) ) - 30
+    except PageNotAnInteger:
+        # if page is not an integer, deliver the first page
+        page = paginator.page(1)
+        count = (30 * (int(1) if page_number  else 1) ) - 30
+    except EmptyPage:
+        # if the page is out of range, deliver the last page
+        page = paginator.page(paginator.num_pages)
+        count = (30 * (int(paginator.num_pages) if page_number  else 1) ) - 30        
     context = {
-        'components' : components,
+        'dashboards' : page,
         'form' : form,
     }
-    return render(request, 'user-admin/dashboard-admin/index.html', context=context)
+    return render(request, 'user-admin/dashboard-admin/dashboard_list.html', context=context)
+
+
+@api_view(['POST'])
+def edit_dashboard(request):    
+    id = request.POST['id'] 
+    title = request.POST['title']
+    description = request.POST['description'] 
+    print(id , title , description)
+    try:
+        dashboard = Dashboard.objects.get(id = id)
+        dashboard.title = title
+        dashboard.description = description
+        dashboard.save()
+        response = {'success' : True}
+    except:
+        response = {'success' : False}
+    return Response(response)  
+
+
+@login_required(login_url='login')
+def delete_dashboard(request, id):
+    dashboard = Dashboard.objects.get(id=id)    
+    dashboard.delete()
+    messages.success(request, '&#128532 Hello User, Dashboard Successfully Deleted')
+    return redirect('custom-dashboard-index')
+
+
 
 def custom_dashboard_topic(request,id):
     try:

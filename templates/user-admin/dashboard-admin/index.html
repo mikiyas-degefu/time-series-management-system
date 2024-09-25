@@ -68,35 +68,6 @@
                     </li>
 
 
-                    <li class="pc-item pc-hasmenu active pc-trigger">
-    
-                        <a href="#" class="pc-link">
-                            <span class="pc-micon">
-                                <svg class="pc-icon"><use xlink:href="#custom-status-up"></use></svg>
-                            </span>
-                            <span class="pc-mtext">Row</span>
-    
-                            <span class="pc-arrow">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
-                                    <polyline points="9 18 15 12 9 6"></polyline>
-                                </svg>
-                            </span>
-                        </a>
-    
-                        <ul class="pc-submenu" style="display: block; box-sizing: border-box;">
-                            
-                            <li class="pc-item active">
-                                <a name="row" class="pc-link border" href="#">Full Width</a>
-                            </li>
-
-
-                        </ul>
-    
-                    </li>
-    
-    
                     <li id="dvSource" class="pc-item pc-hasmenu  pc-trigger">
     
                         <a href="#" class="pc-link">
@@ -150,7 +121,7 @@
     
                         <ul class="pc-submenu" style="display: block; box-sizing: border-box;">
                             
-                            {% for component in components%}
+                            {% for component in components %}
                             <li  class="pc-item active">
                                 <a class="pc-link" href="#">{{component.name}}</a>
                                 <div name="component" data-size="12" data-id="id_{{component.id}}" class="text-center">
