@@ -1,24 +1,249 @@
 {% load static %}
-<!doctype html>
-<html lang="en" class="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="ltr"
-    dir="ltr" data-pc-theme_contrast data-pc-theme="light">
-    <head>
-        {% include 'dashboard/include/head.html' %}
-    </head>
+<!DOCTYPE html>
+<html lang="en">
 
-    <body>
-        {% include 'dashboard/include/nav.html'%}  
-        {% include 'dashboard/include/header.html'%}              
 
-        <div class="pc-container">
-            <div class="pc-content">
-                <!-- [ Main Content ] start -->
-                 <!-- [ Main Content ] end -->
+<!-- [Head] start -->
+
+<head>
+    <title>Home | MoPD Dashboard </title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,minimal-ui" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description"
+        content="Able Pro is trending dashboard template made using Bootstrap 5 design framework. Able Pro is available in Bootstrap, React, CodeIgniter, Angular,  and .net Technologies." />
+    <meta name="keywords"
+        content="Bootstrap admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard" />
+    <meta name="author" content="Phoenixcoded" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
+
+    {% include 'dashboard/include/head.html' %}
+</head>
+<!-- [Head] end -->
+<style>
+    .pc-content {
+        min-height: 100vh;
+    }
+
+    .pc-content img {
+        width: 500px;
+    }
+</style>
+
+<body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="ltr"
+    data-pc-theme_contrast="" data-pc-theme="light">
+
+    <!-- [ Pre-loader ] start -->
+    <div class="loader-bg">
+        <div class="loader-track">
+            <div class="loader-fill"></div>
+        </div>
+    </div>
+    <!-- [ Pre-loader ] End -->
+
+
+    <!-- [ Sidebar Menu ] start -->
+    <nav class="pc-sidebar">
+        <div class="navbar-wrapper">
+            <div class="m-header">
+
+                <a href="#" class="b-brand text-primary">
+                    <!-- ========   Change your logo from here   ============ -->
+                    <img src="{% static 'assets/image/EPDM-Logo-Final-Hi-res.png' %}" class="img-fluid logo-lg"
+                        alt="logo" />
+                </a>
+
+
+            </div>
+
+            <div class="navbar-content">
+                <ul class="pc-navbar">
+
+                    <li class="pc-item pc-caption">
+                        <label>Dashboards</label>
+                        <svg class="pc-icon">
+                            <use xlink:href="#custom-presentation-chart"></use>
+                        </svg>
+                    </li>
+
+
+                    <li class="pc-item pc-hasmenu active pc-trigger">
+
+                        <a href="#" class="pc-link">
+                            <span class="pc-micon">
+                                <svg class="pc-icon">
+                                    <use xlink:href="#custom-status-up"></use>
+                                </svg>
+                            </span>
+                            <span class="pc-mtext">Rows</span>
+
+                            <span class="pc-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-right">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </span>
+                        </a>
+
+                        <ul class="pc-submenu dropArea box1" style="display: block; box-sizing: border-box;">
+
+                            <li class="pc-item active dropArea box1">
+                                <div class="row p-3 m-2 border" draggable="true" name="full_row">
+                                    <p>Row</p>
+                                </div>
+                            </li>
+                        </ul>
+
+
+                    </li>
+
+
+                    <li class="pc-item pc-hasmenu active pc-trigger">
+
+                        <a href="#" class="pc-link">
+                            <span class="pc-micon">
+                                <svg class="pc-icon">
+                                    <use xlink:href="#custom-status-up"></use>
+                                </svg>
+                            </span>
+                            <span class="pc-mtext">Charts</span>
+
+                            <span class="pc-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-right">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </span>
+                        </a>
+
+                        <ul class="pc-submenu dropArea" style="display: block; box-sizing: border-box;">
+                            {% for component in components %}
+                                <li class="pc-item active">
+                                    <a class="pc-link" href="#">
+                                        {{component.name}}
+                                        <img src="/media/{{component.image}}" draggable="true" style="width: 150px;"
+                                            class="img-fluid" alt="">
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+
+                    </li>
+
+
+
+                </ul>
+
+
             </div>
         </div>
-       
-       {% include 'dashboard/include/footer.html'%}
-    </body>
-    <!-- [Body] end -->
+    </nav>
+    <!-- [ Sidebar Menu ] end -->
+
+
+    {% include 'dashboard/include/header.html' %}
+
+
+
+    <div class="pc-container">
+        <div class="pc-content dropArea" name="box2">
+
+        </div>
+    </div>
+
+
+
+    {% include 'dashboard/include/js.html'%}
+
+</body>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.0/jquery-ui.min.js"
+    integrity="sha512-MlEyuwT6VkRXExjj8CdBKNgd+e2H+aYZOCUaCrt9KRk6MlZDOs91V1yK22rwm8aCIsb5Ec1euL8f0g58RKT/Pg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+
+    let get = (tag) => document.querySelector(tag);
+    let draggingTarget = null;
+
+    // 拖拉目標
+    document.addEventListener("dragstart", function (event) {
+        // console.log(event.target);
+        draggingTarget = event.target;
+    });
+
+    $("[name='box2'], [name='row'] ").on("dragover", function (event) {
+        event.preventDefault();
+    });
+
+    const addRow = () => {
+        $("[name='box2'], [name='row']").on("drop", function (event) {
+        let newTarget = draggingTarget.cloneNode(true);
+        let tempContainer = document.createElement('div');
+        if (newTarget.getAttribute('name') == 'full_row') {
+            tempContainer.innerHTML = `
+               
+                        ${newTarget.outerHTML}
+                   
+                `;
+                this.appendChild(tempContainer)
+                console.log(tempContainer)
+                
+        }else{
+            console.log("newTarget");
+            tempContainer.innerHTML = `
+                <div id="resizable" class="col-6">
+                    <div class="card">
+                        ${newTarget.outerHTML}
+                    </div>
+                </div>
+            `;
+            $('[name="full_row"]').append(tempContainer)
+            console.log(tempContainer)
+        }
+
+
+
+        // Append the child nodes of the container element to the target element
+        
+           
+              
+    })
    
+    
+    }
+
+
+    addRow()
+    
+
+    function findImageElement(node) {
+        if (node.tagName === 'IMG') {
+            return node;
+        } else {
+            let image = node.querySelector('img');
+            if (image) {
+                return image;
+            } else {
+                let children = node.children;
+                for (let i = 0; i < children.length; i++) {
+                    let found = findImageElement(children[i]);
+                    if (found) {
+                        return found;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+</script>
+
 </html>

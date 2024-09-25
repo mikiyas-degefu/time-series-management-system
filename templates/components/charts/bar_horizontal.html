@@ -1,5 +1,5 @@
 {% load static %}
-<div class="col-span-12 md:col-span-6">
+<div class="col-lg-6">
     <div class="card">
         <div class="card-header">
             <h5>Bar chart horizontal</h5>
@@ -16,7 +16,7 @@
     $(document).ready(function () {
     "use strict"
     new ApexCharts(document.querySelector("#bar-chart-3"), {
-        chart: { height: 350, type: "bar" },
+        chart: { height: 50, type: "bar" },
         plotOptions: {
           bar: { horizontal: !0, dataLabels: { position: "top" } },
         },

@@ -1,51 +1,65 @@
 {% load static %}
-<!doctype html>
-<html lang="en" class="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="ltr"
-    dir="ltr" data-pc-theme_contrast data-pc-theme="light">
-    <head>
-        {% include 'dashboard/include/head.html' %}
-    </head>
-
-    <body>
-        {% include 'dashboard/include/nav.html'%}        
-        {% include 'dashboard/include/header.html'%}        
-
-        <div class="pc-container">
-            <div class="pc-content">
-                <!-- [ Main Content ] start -->
-                {{dashboard.title}}
-              
+<!DOCTYPE html>
+<html lang="en">
 
 
-                   {% for row in rows %}
+<!-- [Head] start -->
+<head>
+    <title>Home | MoPD Dashboard </title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,minimal-ui" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description"
+        content="Able Pro is trending dashboard template made using Bootstrap 5 design framework. Able Pro is available in Bootstrap, React, CodeIgniter, Angular,  and .net Technologies." />
+    <meta name="keywords"
+        content="Bootstrap admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard" />
+    <meta name="author" content="Phoenixcoded" />
 
-                    <div class="grid grid-cols-12 gap-x-6">
-
-                        {% for col in row.col_list%}
-                          {% include col.component.path %}
-                        {% endfor%}
-
-                    </div> 
+    {% include 'dashboard/include/head.html' %}
+</head>
+<!-- [Head] end -->
 
 
-                   {% endfor %}
-                        
-
-
-                
-               
-               
-                
-
-                 <!-- [ Main Content ] end -->
-            </div>
+<body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="ltr"
+    data-pc-theme_contrast="" data-pc-theme="light">
+    
+    <!-- [ Pre-loader ] start -->
+    <div class="loader-bg">
+        <div class="loader-track">
+            <div class="loader-fill"></div>
         </div>
-       
-       {% include 'dashboard/include/footer.html'%}
-    </body>
-    <!-- [Body] end -->
+    </div>
+    <!-- [ Pre-loader ] End -->
 
+
+    {% include 'dashboard/include/sidebar.html' %}
+    {% include 'dashboard/include/header.html' %}
     
-   
-    
+
+
+    <div class="pc-container">
+        <div class="pc-content">
+            <!-- [ Main Content ] start -->
+
+            {% for row in rows %}
+
+            <div class="row">
+
+                {% for col in row.col_list%}
+                  {% include col.component.path %}
+                {% endfor%}
+
+            </div> 
+
+
+           {% endfor %}
+            <!-- [ Main Content ] end -->
+        </div>
+    </div>
+
+    {% include 'dashboard/include/js.html'%}
+
+
+</body>
+
 </html>
