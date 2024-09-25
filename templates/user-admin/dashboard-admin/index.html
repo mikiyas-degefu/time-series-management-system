@@ -247,7 +247,6 @@
             let width = $("#id_width").val();
             let rowId = $("#form_row-id").val();
 
-            console.log(indicator)
 
             let colSize = width == '25%' ? 'col-md-3' : (width == '33%' ? 'col-md-4' : (width == '50%' ? 'col-md-6' : (width == '100%' ? 'col-md-12' : '')));
             document.getElementById(`dragged_${componentId}`).className = colSize;
@@ -259,7 +258,7 @@
                 'isMultiple': isMultiple,
                 'isRange' : isRange,
                 'componentId' : componentId,
-                'indicator' : indicator.toString(),
+                'indicator' : indicator,
                 'year' : year,
                 'data_range_start' : data_range_start,
                 'data_range_end' : data_range_end,
@@ -268,7 +267,7 @@
                 csrfmiddlewaretoken: '{{csrf_token}}'
               },
               success: function (response) {
-                if (response) {
+                if (response.success) {
                   console.log("Created")
                 } else {
                     console.log('err here')

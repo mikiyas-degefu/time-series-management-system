@@ -1,5 +1,15 @@
 $(document).ready(()=>{
     $( function() {
+
+        //generate unique id
+        function* generateId() {
+            let i = 0;
+            while (true) {
+                yield i++;
+            }
+        }
+
+        const idGen = generateId(); 
        
         $("[name='component']").draggable({
             revert: "invalid",
@@ -56,6 +66,7 @@ $(document).ready(()=>{
                                                     data-is-multiple="${draggable.data('isMultiple')}"
                                                     data-is-range="${draggable.data('isRange')}" 
                                                     data-row-id = ${rowId}
+                                                    id = "col_${idGen.next().value}"
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#modalAddDashboardRow" 
                                                     class="dropdown-item">
@@ -138,6 +149,7 @@ $(document).ready(()=>{
 
     // Event delegation to handle dynamically added elements
     $(document).on('click', "[name='btn-edit']", function() {
+
         let isMultiple = $(this).data('isMultiple');
         let isRange = $(this).data('isRange');
         let componentId = $(this).data('id');
@@ -177,6 +189,7 @@ $(document).ready(()=>{
         $("#form_is_range").val(isRange)
         $("#form_componentId").val(componentId);
         $("#form_row-id").val(rowId);
+
 
     });
 

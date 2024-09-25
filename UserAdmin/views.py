@@ -948,8 +948,33 @@ def custom_dashboard_topic(request,id):
             return JsonResponse( response)
         
         if 'isMultiple' in request.POST:
-            print(request.POST['indicator'].split(','))
-            response = {'success' : True}
+            try:
+                component = Component.objects.get(id = request.POST['componentId'])
+            except Component.DoesNotExist:
+                return HttpResponse("Component does not exist")
+            
+            try:
+                row = Row.objects.get(id = request.POST['rowId'])
+            except Row.DoesNotExist:
+                return HttpResponse("Row does not exist")
+            
+            try:
+                indicators = Indicator.objects.filter(id__in = request.POST.getlist('indicator[]'))
+            except Indicator.DoesNotExist:
+                return HttpResponse("Indicator does not exist")
+
+            width = request.POST['width'] 
+            
+            dashboard_indicator = DashboardIndicator()
+            dashboard_indicator.component = component
+            dashboard_indicator.for_row = row
+            dashboard_indicator.width = width
+            dashboard_indicator.save()
+            dashboard_indicator.indicator.add(*indicators)
+           
+
+
+            response = {'success' : True, 'id' : dashboard_indicator.id}
             return JsonResponse(response)
 
 
