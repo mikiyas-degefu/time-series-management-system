@@ -30,7 +30,7 @@ $(document).ready(()=>{
                     //${draggable.data('size')}
             
                     // Create a new parent div
-                    let parentDiv = $(`<div name="col_component" class="col-md-6 row-col"></div>`);
+                    let parentDiv = $(`<div name="col_component" id="dragged_${draggable.data('id')}" class="col-md-6 row-col"></div>`);
                     let card = $(`<div class="card"></div>`);
                     let cardBody = $(`
                             <div class="card-body">
@@ -75,13 +75,11 @@ $(document).ready(()=>{
                     cardBody.appendTo(card);
                     draggable.clone().appendTo(cardBody);
                     card.find('img').css('width', '100%');
-                    card.find('img').css('height', '250px');
+                    card.find('img').css('height', '450px');
                     card.appendTo(parentDiv);
             
                     // Append the parent div to the droppable element
                     parentDiv.appendTo(droppable);
-
-                    console.log(draggable.data('id'))
     
                     //draggable.css({top: '5px', left: '5px'});
                   
@@ -140,11 +138,15 @@ $(document).ready(()=>{
     // Event delegation to handle dynamically added elements
     $(document).on('click', "[name='btn-edit']", function() {
         let isMultiple = $(this).data('isMultiple');
-        let idRange = $(this).data('isRange');
+        let isRange = $(this).data('isRange');
         let componentId = $(this).data('id');
 
+
+    
+
         //handle form type
-        if(idRange == 'True'){
+        if(isRange == 'True'){
+           
             $("#id_year").parent().hide()
             $("#id_data_range_start").parent().show()
             $("#id_data_range_end").parent().show()
@@ -164,13 +166,19 @@ $(document).ready(()=>{
 
             } else {
                 $("#form-configuration").trigger("reset");
-                $('#id_indicator').removeAttr('multiple');
+                $('#id_indicator').removeAttr('multiple').addClass('form-select');
             }
 
-        
 
+             //assign value to form
+        $("#form_is_multiple").val(isMultiple)
+        $("#form_is_range").val(isRange)
+        $("#form_componentId").val(componentId);
 
     });
+
+
+   
 
 
 

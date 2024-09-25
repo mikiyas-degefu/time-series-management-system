@@ -95,7 +95,7 @@
                 
 
 
-                    <li class="pc-item pc-hasmenu active pc-trigger">
+                    <li class="pc-item pc-hasmenu close pc-trigger">
 
                         <a href="#" class="pc-link">
                             <span class="pc-micon">
@@ -121,7 +121,7 @@
                                 <a class="pc-link" href="#">{{component.name}}</a>
                                 <div 
                                     name="component"
-                                    data-id="id_{{component.id}}"
+                                    data-id="{{component.id}}"
                                     data-is-multiple="{{component.is_multiple}}"
                                     data-is-range="{{component.is_range}}" 
                                     class="text-center">
@@ -176,11 +176,14 @@
             </div>
            <form id="form-configuration" method="post">
                  <div class="modal-body">
+                 <input id="form_is_multiple" type="hidden" value="" name="is-multiple"  >
+                 <input id="form_is_range" type="hidden" value="" name="is-range"  >
+                 <input id="form_componentId" type="hidden" value=""  name="componentId"  >
                   {{form.as_p}}
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
            </form>
           </div>
@@ -226,7 +229,27 @@
           console.error(error);  // Log the error if something goes wrong
           return null;  // Return null in case of an error
         }
-};
+    };
+
+
+     //handle on modal col submit
+     $("#form-configuration").on('submit', (e)=>{
+            e.preventDefault();
+
+            let isMultiple = $("#form_is_multiple").val();
+            let isRange = $("#form_is_range").val();
+            let componentId = $("#form_componentId").val();
+            let indicator = $("#id_indicator").val();
+            let year = $("#id_year").val();
+            let data_range_start = $("#id_data_range_start").val();
+            let data_range_end = $("#id_data_range_end").val();
+            let width = $("#id_width").val();
+
+            let colSize = width == '25%' ? 'col-md-3' : (width == '33%' ? 'col-md-4' : (width == '50%' ? 'col-md-6' : (width == '100%' ? 'col-md-12' : '')));
+            document.getElementById(`dragged_${componentId}`).className = colSize;
+    })
+
+
     </script>
     <script src="{% static 'dashboard/assets/js/custom/dashboard-admin.js' %}"></script>
 
