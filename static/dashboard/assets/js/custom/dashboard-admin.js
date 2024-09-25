@@ -50,7 +50,8 @@ $(document).ready(()=>{
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <button 
-                                                    type="button" 
+                                                    type="button"
+                                                    name="btn-edit" 
                                                     data-id="${draggable.data('id')}"
                                                     data-is-multiple="${draggable.data('isMultiple')}"
                                                     data-is-range="${draggable.data('isRange')}" 
@@ -92,7 +93,7 @@ $(document).ready(()=>{
 
                     $( '[name="row"]').disableSelection(); //disable text selection on drag selection
 
-
+                
                 }
     
                 
@@ -100,8 +101,6 @@ $(document).ready(()=>{
 
 
         }
-
-
 
         //row
         $('#droppable2').droppable({
@@ -121,7 +120,9 @@ $(document).ready(()=>{
                     // Append the parent div to the droppable element
                     parentDiv.appendTo(droppable);
             
-                    handleAfterDropped(); 
+                    handleAfterDropped();
+                
+                  
                    } else {
                      console.error("Failed to get ID");
                    }
@@ -129,22 +130,48 @@ $(document).ready(()=>{
                  } catch (error) {
                    console.error("Error during drop handling:", error);
                  }
-                
-        
             }
           });
-          
-
-
-        
-
-
-
-       
-      
-        
-       
-
+    
         
     } );
+
+
+    // Event delegation to handle dynamically added elements
+    $(document).on('click', "[name='btn-edit']", function() {
+        let isMultiple = $(this).data('isMultiple');
+        let idRange = $(this).data('isRange');
+        let componentId = $(this).data('id');
+
+        //handle form type
+        if(idRange == 'True'){
+            $("#id_year").parent().hide()
+            $("#id_data_range_start").parent().show()
+            $("#id_data_range_end").parent().show()
+        }else{
+            $("#id_year").parent().show()
+            $("#id_data_range_start").parent().hide()
+            $("#id_data_range_end").parent().hide()
+        }
+        
+
+        
+        let isMultipleSelect = isMultiple == 'True' ? true : false; // Set your condition here
+
+            if (isMultipleSelect) {
+                $("#form-configuration").trigger("reset");
+                $('#id_indicator').attr('multiple', 'multiple').addClass('form-select');
+
+            } else {
+                $("#form-configuration").trigger("reset");
+                $('#id_indicator').removeAttr('multiple');
+            }
+
+        
+
+
+    });
+
+
+
 })

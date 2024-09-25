@@ -158,7 +158,7 @@
 
         <!-- [ Main Content ] start -->
         <div class="pc-content">
-            <div id="droppable2" class=" pt-5 pb-5"></div>
+            <div id="droppable2" name="drop-element" class=" pt-5 pb-5"></div>
         </div>
 
             <!-- [ Main Content ] end -->
@@ -174,7 +174,7 @@
               <h5 class="modal-title" id="modalAddDashboardRowLabel">Add Dashboard</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-           <form method="post">
+           <form id="form-configuration" method="post">
                  <div class="modal-body">
                   {{form.as_p}}
                 </div>
@@ -193,14 +193,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.0/jquery-ui.min.js" integrity="sha512-MlEyuwT6VkRXExjj8CdBKNgd+e2H+aYZOCUaCrt9KRk6MlZDOs91V1yK22rwm8aCIsb5Ec1euL8f0g58RKT/Pg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="text/javascript">
         //handle on change
-        new MultiSelectTag("id_indicator", {
-            rounded: true, // default true
-            shadow: true, // default false
-            placeholder: "Search", // default Search...
-            onChange: function (values) {
-              console.log(values);
-            },
-        });
+        
 
     
         //handle backend row created

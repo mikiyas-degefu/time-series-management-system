@@ -17,8 +17,10 @@ class DashboardIndicatorForm(forms.ModelForm):
         model = DashboardIndicator
         exclude = ('for_row', 'for_dashboard', 'component', 'rank')
         widgets = {
+            #'indicator' : forms.Select(attrs={'class': 'form-control'}),
             'year' : forms.Select(attrs={'class': 'form-control'}),
             'data_range_start' : forms.TextInput(attrs={'class': 'form-control'}),
             'data_range_end' : forms.TextInput(attrs={'class': 'form-control'}),
             'width' : forms.Select(attrs={'class': 'form-control'}),
+            
         }
