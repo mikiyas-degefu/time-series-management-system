@@ -41,8 +41,8 @@ class Component(models.Model):
 class Dashboard(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
-    color = models.CharField(choices=colors , max_length=50)
-    icon = models.CharField(max_length=30)
+    color = models.CharField(choices=colors , max_length=50, null=True, blank=True)
+    icon = models.CharField(max_length=30, null=True, blank=True)
 
     def row_list(self):
         return Row.objects.filter(for_dashboard=self)

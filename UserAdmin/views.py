@@ -7,7 +7,10 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from UserManagement.forms import CustomUserForm
 from UserManagement.models import CustomUser
 from DashBoard.models import (
-    Component
+    Component,
+    Dashboard,
+    DashboardIndicator,
+    Row,
 )
 from Base.forms import (ImportFileForm, ImportFileIndicatorAddValueForm)
 from Base.resource import (
@@ -49,6 +52,7 @@ import random
 
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required
+from DashBoard.forms import DashboardForm
 
 
 
@@ -858,10 +862,34 @@ def document_delete(request, id):
 
 
 #################Dashboard####################  
-def dashboard_index(request):
+def custom_dashboard(request):
+    form = DashboardForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, '&#128532 Hello User, Dashboard Successfully Added')
+            return redirect('custom-dashboard-topic', id = 1)
+        else:
+            messages.error(request, '&#128532 Hello User, An error occurred while Adding Dashboard')
+
     components = Component.objects.all()
     context = {
-        'components' : components
+        'components' : components,
+        'form' : form,
+    }
+    return render(request, 'user-admin/dashboard-admin/index.html', context=context)
+
+def custom_dashboard_topic(request,id):
+    try:
+        dashboard = Dashboard.objects.get(id=id)
+    except Dashboard.DoesNotExist:
+        return HttpResponse("Dashboard does not exist")
+    
+    components = Component.objects.all()
+    
+    context = {
+        'dashboard' : dashboard,
+        'components' : components,
     }
     return render(request, 'user-admin/dashboard-admin/index.html', context=context)
 
