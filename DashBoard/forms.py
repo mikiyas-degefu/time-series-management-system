@@ -1,5 +1,5 @@
 from django import forms
-from .models import Dashboard
+from .models import Dashboard, DashboardIndicator
 
 
 class DashboardForm(forms.ModelForm):
@@ -10,3 +10,9 @@ class DashboardForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'})
         }
+
+
+class DashboardIndicatorForm(forms.ModelForm):
+    class Meta:
+        model = DashboardIndicator
+        fields = '__all__'

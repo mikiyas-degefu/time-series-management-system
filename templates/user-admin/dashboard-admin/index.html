@@ -47,16 +47,9 @@
     <nav class="pc-sidebar"  >
         <div class="navbar-wrapper">
             <div class="text-center">
-                <img src="{% static 'assets/image/EPDM-Logo-Final-Hi-res.png' %}" style="width: 70px;" class="mt-3 img-fluid" alt="logo" />
-            </div>
-
+                <h3  class="bg-primary text-light p-3">{{dashboard.title | capfirst}}</h3>
+             </div>
             <div class="navbar-content">
-
-
-                <div class="text-center">
-                   <h3  class="bg-primary text-light p-3">{{dashboard.title | capfirst}}</h3>
-                </div>
-
 
                 <ul class="pc-navbar">
     
@@ -97,36 +90,7 @@
                     </li>
     
     
-                    <li id="dvSource" class="pc-item pc-hasmenu  pc-trigger">
-    
-                        <a href="#" class="pc-link">
-                            <span class="pc-micon">
-                                <svg class="pc-icon">
-                                    <use xlink:href="#custom-status-up"></use>
-                                </svg>
-                            </span>
-                            <span class="pc-mtext">Rows</span>
-
-                            <span class="pc-arrow">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="feather feather-chevron-right">
-                                    <polyline points="9 18 15 12 9 6"></polyline>
-                                </svg>
-                            </span>
-                        </a>
-
-                        <ul class="pc-submenu dropArea box1" style="display: block; box-sizing: border-box;">
-
-                            <li class="pc-item active dropArea box1">
-                                <div class="row p-3 m-2 border" draggable="true" name="full_row">
-                                    <p>Row</p>
-                                </div>
-                            </li>
-                        </ul>
-
-
-                    </li>
+                
 
 
                     <li class="pc-item pc-hasmenu active pc-trigger">
@@ -221,94 +185,44 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.0/jquery-ui.min.js" integrity="sha512-MlEyuwT6VkRXExjj8CdBKNgd+e2H+aYZOCUaCrt9KRk6MlZDOs91V1yK22rwm8aCIsb5Ec1euL8f0g58RKT/Pg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+    <script type="text/javascript">
+        //handle backend row created
+        const handleRowCreated = async () => {
+        try {
+          let id = await new Promise((resolve, reject) => {
+            $.ajax({
+              type: 'POST',
+              url: `{% url "custom-dashboard-topic" dashboard.id %}`,
+              data: {
+                'rank': 1,
+                csrfmiddlewaretoken: '{{csrf_token}}'
+              },
+              success: function (response) {
+                if (response.success) {
+                  resolve(response.row);  // Resolve with the row ID
+                } else {
+                  reject("Error: Failed to get ID");
+                }
+              },
+              error: function () {
+                reject("Error: AJAX request failed");
+              }
+            });
+          });
+      
+          return id;  // Return the ID after successful AJAX call
+      
+        } catch (error) {
+          console.error(error);  // Log the error if something goes wrong
+          return null;  // Return null in case of an error
+        }
+};
+    </script>
     <script src="{% static 'dashboard/assets/js/custom/dashboard-admin.js' %}"></script>
 
 </body>
 
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.0/jquery-ui.min.js"
-    integrity="sha512-MlEyuwT6VkRXExjj8CdBKNgd+e2H+aYZOCUaCrt9KRk6MlZDOs91V1yK22rwm8aCIsb5Ec1euL8f0g58RKT/Pg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script>
-
-    let get = (tag) => document.querySelector(tag);
-    let draggingTarget = null;
-
-    // 拖拉目標
-    document.addEventListener("dragstart", function (event) {
-        // console.log(event.target);
-        draggingTarget = event.target;
-    });
-
-    $("[name='box2'], [name='row'] ").on("dragover", function (event) {
-        event.preventDefault();
-    });
-
-    const addRow = () => {
-        $("[name='box2'], [name='row']").on("drop", function (event) {
-        let newTarget = draggingTarget.cloneNode(true);
-        let tempContainer = document.createElement('div');
-        if (newTarget.getAttribute('name') == 'full_row') {
-            tempContainer.innerHTML = `
-               
-                        ${newTarget.outerHTML}
-                   
-                `;
-                this.appendChild(tempContainer)
-                console.log(tempContainer)
-                
-        }else{
-            console.log("newTarget");
-            tempContainer.innerHTML = `
-                <div id="resizable" class="col-6">
-                    <div class="card">
-                        ${newTarget.outerHTML}
-                    </div>
-                </div>
-            `;
-            $('[name="full_row"]').append(tempContainer)
-            console.log(tempContainer)
-        }
-
-
-
-        // Append the child nodes of the container element to the target element
-        
-           
-              
-    })
-   
-    
-    }
-
-
-    addRow()
-    
-
-    function findImageElement(node) {
-        if (node.tagName === 'IMG') {
-            return node;
-        } else {
-            let image = node.querySelector('img');
-            if (image) {
-                return image;
-            } else {
-                let children = node.children;
-                for (let i = 0; i < children.length; i++) {
-                    let found = findImageElement(children[i]);
-                    if (found) {
-                        return found;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-</script>
 
 </html>

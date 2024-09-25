@@ -52,7 +52,10 @@ import random
 
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required
-from DashBoard.forms import DashboardForm
+from DashBoard.forms import(
+    DashboardForm,
+    DashboardIndicatorForm
+)
 
 
 
@@ -886,12 +889,27 @@ def custom_dashboard_topic(request,id):
         return HttpResponse("Dashboard does not exist")
     
     components = Component.objects.all()
-    
+    form = DashboardIndicatorForm(request.POST or None)
+
+    if request.method == 'POST':
+        #save row
+        if 'rank' in request.POST:
+            row = Row()
+            row.for_dashboard = dashboard
+            row.rank = request.POST['rank']
+            row.save()
+
+            response = {'success' : True, 'row' : row.id }
+            return JsonResponse( response)
+
+
     context = {
         'dashboard' : dashboard,
         'components' : components,
+        'form' : form
     }
     return render(request, 'user-admin/dashboard-admin/index.html', context=context)
+
 
 
 
