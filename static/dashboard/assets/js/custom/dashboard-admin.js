@@ -152,15 +152,13 @@ $(document).ready(()=>{
 
         let isMultiple = $(this).data('isMultiple');
         let isRange = $(this).data('isRange');
-        let componentId = $(this).data('id');
-        let rowId = $(this).data('rowId');
+        let colId = $(this).attr('id');
 
 
     
 
         //handle form type
         if(isRange == 'True'){
-           
             $("#id_year").parent().hide()
             $("#id_data_range_start").parent().show()
             $("#id_data_range_end").parent().show()
@@ -184,11 +182,8 @@ $(document).ready(()=>{
             }
 
 
-             //assign value to form
-        $("#form_is_multiple").val(isMultiple)
-        $("#form_is_range").val(isRange)
-        $("#form_componentId").val(componentId);
-        $("#form_row-id").val(rowId);
+        //assign value to form
+        $("#form_col_id").val(colId);
 
 
     });

@@ -158,7 +158,7 @@
 
         <!-- [ Main Content ] start -->
         <div class="pc-content">
-            <div id="droppable2" name="drop-element" class=" pt-5 pb-5"></div>
+            <div id="droppable2" name="drop-element" class=" " style="height:100vh;"></div>
         </div>
 
             <!-- [ Main Content ] end -->
@@ -176,10 +176,7 @@
             </div>
            <form id="form-configuration" method="post">
                  <div class="modal-body">
-                 <input id="form_is_multiple" type="hidden" value="" name="is-multiple"  >
-                 <input id="form_is_range" type="hidden" value="" name="is-range"  >
-                 <input id="form_componentId" type="hidden" value=""  name="componentId"  >
-                 <input id="form_row-id" type="hidden" value=""  name="row-id"  >
+                 <input id="form_col_id" type="hidden" value=""  name="col-id"  >
                   {{form.as_p}}
                 </div>
                 <div class="modal-footer">
@@ -237,24 +234,31 @@
      $("#form-configuration").on('submit', (e)=>{
             e.preventDefault();
 
-            let isMultiple = $("#form_is_multiple").val();
-            let isRange = $("#form_is_range").val();
-            let componentId = $("#form_componentId").val();
+            let colId = $("#form_col_id").val();  // Get the column ID
+
+            let isMultiple = $(`#${colId}`).data('isMultiple')
+            let isRange =$(`#${colId}`).data('isRange');
+            let componentId = $(`#${colId}`).data('id');
+            let rowId = $(`#${colId}`).data('rowId');
+
             let indicator = $("#id_indicator").val();
             let year = $("#id_year").val();
             let data_range_start = $("#id_data_range_start").val();
             let data_range_end = $("#id_data_range_end").val();
             let width = $("#id_width").val();
-            let rowId = $("#form_row-id").val();
-
+            
+            
+    
 
             let colSize = width == '25%' ? 'col-md-3' : (width == '33%' ? 'col-md-4' : (width == '50%' ? 'col-md-6' : (width == '100%' ? 'col-md-12' : '')));
             document.getElementById(`dragged_${componentId}`).className = colSize;
+
 
             $.ajax({
               type: 'POST',
               url: `{% url "custom-dashboard-topic" dashboard.id %}`,
               data: {
+                'dashboardId' : $(`#${colId}`).data('col-id') ? $(`#${colId}`).data('col-id') : null,
                 'isMultiple': isMultiple,
                 'isRange' : isRange,
                 'componentId' : componentId,
@@ -268,7 +272,17 @@
               },
               success: function (response) {
                 if (response.success) {
-                  console.log("Created")
+                  console.log("Created", response.id)
+
+                  //assign real data to col
+                  $(`#${colId}`).data('col-id', response.id) 
+                  $(`#${colId}`).data('col-indicator-id', indicator) 
+                  $(`#${colId}`).data('col-year-id', year) 
+                  $(`#${colId}`).data('col-width', width)
+                  
+                  
+
+                  console.log($(`#${colId}`).data())
                 } else {
                     console.log('err here')
                 }

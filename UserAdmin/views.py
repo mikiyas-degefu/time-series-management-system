@@ -948,6 +948,7 @@ def custom_dashboard_topic(request,id):
             return JsonResponse( response)
         
         if 'isMultiple' in request.POST:
+            
             try:
                 component = Component.objects.get(id = request.POST['componentId'])
             except Component.DoesNotExist:
@@ -962,13 +963,28 @@ def custom_dashboard_topic(request,id):
                 indicators = Indicator.objects.filter(id__in = request.POST.getlist('indicator[]'))
             except Indicator.DoesNotExist:
                 return HttpResponse("Indicator does not exist")
-
-            width = request.POST['width'] 
             
-            dashboard_indicator = DashboardIndicator()
+            try:
+                year = DataPoint.objects.get(id = request.POST['year'])
+            except DataPoint.DoesNotExist:
+                return HttpResponse("Year does not exist")
+
+            width = request.POST['width']
+
+            #check if dashboard indicator exists
+            if request.POST['dashboardId']:
+                try:
+                    dashboard_indicator = DashboardIndicator.objects.get(id = request.POST['dashboardId'])
+                except DashboardIndicator.DoesNotExist:
+                    return HttpResponse("Dashboard Indicator does not exist")
+            else:
+                dashboard_indicator = DashboardIndicator()
+
+
             dashboard_indicator.component = component
             dashboard_indicator.for_row = row
             dashboard_indicator.width = width
+            dashboard_indicator.year = year
             dashboard_indicator.save()
             dashboard_indicator.indicator.add(*indicators)
            
