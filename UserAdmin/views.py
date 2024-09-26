@@ -986,7 +986,7 @@ def custom_dashboard_topic(request,id):
             dashboard_indicator.width = width
             dashboard_indicator.year = year
             dashboard_indicator.save()
-            dashboard_indicator.indicator.add(*indicators)
+            dashboard_indicator.indicator.add(*indicators) #save all indicator to dashboard b/c of m-to-m relation
            
 
 

@@ -38,9 +38,10 @@ $(document).ready(()=>{
                     $(this).addClass( "bg-success" ).find( "p" ).html('');
 
                     //${draggable.data('size')}
-            
+                    let colId =idGen.next().value
+
                     // Create a new parent div
-                    let parentDiv = $(`<div name="col_component" id="dragged_${draggable.data('id')}" class="col-md-6 row-col"></div>`);
+                    let parentDiv = $(`<div name="col_component" id="dragged_col_${colId}" class="col-md-6 row-col"></div>`);
                     let card = $(`<div class="card"></div>`);
                     let cardBody = $(`
                             <div class="card-body">
@@ -66,7 +67,7 @@ $(document).ready(()=>{
                                                     data-is-multiple="${draggable.data('isMultiple')}"
                                                     data-is-range="${draggable.data('isRange')}" 
                                                     data-row-id = ${rowId}
-                                                    id = "col_${idGen.next().value}"
+                                                    id = "col_${colId}"
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#modalAddDashboardRow" 
                                                     class="dropdown-item">
@@ -155,6 +156,12 @@ $(document).ready(()=>{
         let colId = $(this).attr('id');
 
 
+       
+        
+
+
+
+
     
 
         //handle form type
@@ -184,6 +191,29 @@ $(document).ready(()=>{
 
         //assign value to form
         $("#form_col_id").val(colId);
+
+
+        //assign form value if exist
+        let colIndicatorId = $(this).data('colIndicatorId') ? $(this).data('colIndicatorId') : null;
+        let colYearId = $(this).data('colYearId') ? $(this).data('colYearId') : null;
+        let colWidth = $(this).data('colWidth') ? $(this).data('colWidth') : null;
+        
+        
+        
+        if(colIndicatorId){
+            $("#id_indicator").val(colIndicatorId);
+        }
+        if(colYearId){
+            $("#id_year").val(colYearId);
+        }
+        if(colWidth){
+            $("#id_width").val(colWidth );
+        }
+
+
+       
+       
+
 
 
     });

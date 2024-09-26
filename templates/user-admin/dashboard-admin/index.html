@@ -251,7 +251,7 @@
     
 
             let colSize = width == '25%' ? 'col-md-3' : (width == '33%' ? 'col-md-4' : (width == '50%' ? 'col-md-6' : (width == '100%' ? 'col-md-12' : '')));
-            document.getElementById(`dragged_${componentId}`).className = colSize;
+            document.getElementById(`dragged_${colId}`).className = colSize;
 
 
             $.ajax({
@@ -279,6 +279,8 @@
                   $(`#${colId}`).data('col-indicator-id', indicator) 
                   $(`#${colId}`).data('col-year-id', year) 
                   $(`#${colId}`).data('col-width', width)
+
+                  $('#modalAddDashboardRow').modal('hide'); //Hide Modal
                   
                   
 
