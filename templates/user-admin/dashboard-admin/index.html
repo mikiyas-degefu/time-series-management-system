@@ -125,6 +125,7 @@
                                     data-id="{{component.id}}"
                                     data-is-multiple="{{component.is_multiple}}"
                                     data-is-range="{{component.is_range}}" 
+                                    data-is-single-year="{{component.is_single_year}}"
                                     data-has-title="{{component.has_title}}"
                                     data-has-description="{{component.has_description}}"
                                     class="text-center">
@@ -263,6 +264,8 @@
             let year = $("#id_year").val();
             let data_range_start = $("#id_data_range_start").val();
             let data_range_end = $("#id_data_range_end").val();
+
+            console.log(data_range_start, data_range_end)
             let width = $("#id_width").val();
             
             
@@ -284,8 +287,8 @@
                 'componentId' : componentId,
                 'indicator' : indicator,
                 'year' : year,
-                'data_range_start' : data_range_start,
-                'data_range_end' : data_range_end,
+                'data_range_start' : data_range_start || null,
+                'data_range_end' : data_range_end || null,
                 'rowId' : rowId,
                 'width' : width,
                 csrfmiddlewaretoken: '{{csrf_token}}'
@@ -293,12 +296,18 @@
               success: function (response) {
                 if (response.success) {
                   console.log("Created", response.id)
-
+                  console.log(colId)
                   //assign real data to col
                   $(`#${colId}`).data('col-id', response.id) 
                   $(`#${colId}`).data('col-indicator-id', indicator) 
                   $(`#${colId}`).data('col-year-id', year) 
                   $(`#${colId}`).data('col-width', width)
+                  $(`#${colId}`).data('col-title', title)
+                  $(`#${colId}`).data('col-description', description)
+                  $(`#${colId}`).data('col-data-range-start', data_range_start) 
+                  $(`#${colId}`).data('col-data-range-end', data_range_end) 
+
+           
 
                    //show succuss message
                    showToast('&#128515 Hello, User', 'Successfully component created', 'success')
@@ -309,11 +318,11 @@
 
                   console.log($(`#${colId}`).data())
                 } else {
-                    console.log('err here')
+                    console.log('here eeeee err here')
                 }
               },
-              error: function () {
-                console.log('err there')
+              error: function (err) {
+                console.log(err)
               }
             });
     

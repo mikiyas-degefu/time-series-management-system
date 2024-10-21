@@ -21,7 +21,7 @@ class DashboardIndicatorForm(forms.ModelForm):
             'title' : forms.TextInput(attrs={'class' : 'form-control'}),
             'description' : forms.Textarea(attrs={'class' : 'form-control'}),
             'year' : forms.Select(attrs={'class': 'form-control'}),
-            'data_range_start' : forms.TextInput(attrs={'class': 'form-control'}),
-            'data_range_end' : forms.TextInput(attrs={'class': 'form-control'}),
+            'data_range_start' : forms.Select(attrs={'class': 'form-control'}),
+            'data_range_end' : forms.Select(attrs={'class': 'form-control'}),
             'width' : forms.Select(attrs={'class': 'form-control'}),        
         }

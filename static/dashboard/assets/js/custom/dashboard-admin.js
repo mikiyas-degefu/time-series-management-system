@@ -65,6 +65,7 @@ $(document).ready(()=>{
                                                     name="btn-edit" 
                                                     data-id="${draggable.data('id')}"
                                                     data-is-multiple="${draggable.data('isMultiple')}"
+                                                    data-is-single-year="${draggable.data('isSingleYear')}"
                                                     data-is-range="${draggable.data('isRange')}" 
                                                     data-row-id = "${rowId}"
                                                     data-has-title="${draggable.data('hasTitle')}"
@@ -158,6 +159,7 @@ $(document).ready(()=>{
         let colId = $(this).attr('id');
         let hasTitle = $(this).data('hasTitle') == 'True' ? true : false
         let hasDescription = $(this).data('hasDescription') == 'True' ? true : false
+        let isSingleYear = $(this).data('isSingleYear') == 'True' ? true : false 
 
 
         //handle form type
@@ -173,6 +175,7 @@ $(document).ready(()=>{
 
         hasTitle ? $("#id_title").show().prev().show() : $("#id_title").hide().prev().hide() 
         hasDescription ? $("#id_description").show().prev().show() : $("#id_description").hide().prev().hide() 
+        isSingleYear ? $("#id_year").show().prev().show() : $("#id_year").hide().prev().hide()
         
 
         
@@ -196,16 +199,18 @@ $(document).ready(()=>{
         let colIndicatorId = $(this).data('colIndicatorId')|| null;
         let colYearId = $(this).data('colYearId') || null;
         let colWidth = $(this).data('colWidth') || null;
+        let colTitle = $(this).data('colTitle') || null;
+        let colDescription = $(this).data('colDescription') || null;
+        let colDataRangeStart = $(this).data('colDataRangeStart') || null;
+        let colDataRangeEnd = $(this).data('colDataRangeEnd') || null;        
         
-        
-        if(colIndicatorId){
-            $("#id_indicator").val(colIndicatorId);
-        }
-        if(colYearId){
-            $("#id_year").val(colYearId);
-        }
-        if(colWidth){
-            $("#id_width").val(colWidth );
-        }
+        $("#id_indicator").val(colIndicatorId)
+        $("#id_year").val(colYearId);
+        $("#id_width").val(colWidth);
+        $("#id_title").val(colTitle);
+        $("#id_description").val(colDescription);
+        $("#id_data_range_start").val(colDataRangeStart);
+        $("#id_data_range_end").val(colDataRangeEnd);
+
     });
 })
