@@ -63,39 +63,39 @@
                     </li>
 
 
-                    <li id="dvSource" class="pc-item pc-hasmenu  pc-trigger">
+                    <li class="pc-item pc-hasmenu active pc-trigger">
     
                         <a href="#" class="pc-link">
                             <span class="pc-micon">
-                                <svg class="pc-icon">
-                                    <use xlink:href="#custom-status-up"></use>
-                                </svg>
+                                <svg class="pc-icon"><use xlink:href="#custom-status-up"></use></svg>
                             </span>
-                            <span class="pc-mtext">Rows</span>
-
+                            <span class="pc-mtext">Row</span>
+    
                             <span class="pc-arrow">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="feather feather-chevron-right">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
                                     <polyline points="9 18 15 12 9 6"></polyline>
                                 </svg>
                             </span>
                         </a>
-
-                        <ul class="pc-submenu dropArea box1" style="display: block; box-sizing: border-box;">
-
-                            <li class="pc-item active dropArea box1">
-                                <div class="row p-3 m-2 border" draggable="true" name="full_row">
-                                    <p>Row</p>
-                                </div>
+    
+                        <ul class="pc-submenu" style="display: block; box-sizing: border-box;">
+                            
+                            <li class="pc-item active">
+                                <a name="row" class="pc-link border" href="#">Full Width</a>
                             </li>
+
+
                         </ul>
-
-
+    
                     </li>
+    
+    
+                
 
 
-                    <li class="pc-item pc-hasmenu active pc-trigger">
+                    <li class="pc-item pc-hasmenu close pc-trigger">
 
                         <a href="#" class="pc-link">
                             <span class="pc-micon">
@@ -116,12 +116,12 @@
     
                         <ul class="pc-submenu" style="display: block; box-sizing: border-box;">
                             
-                            {% for component in components %}
+                            {% for component in components%}
                             <li  class="pc-item active">
                                 <a class="pc-link" href="#">{{component.name}}</a>
                                 <div 
                                     name="component"
-                                    data-id="id_{{component.id}}"
+                                    data-id="{{component.id}}"
                                     data-is-multiple="{{component.is_multiple}}"
                                     data-is-range="{{component.is_range}}" 
                                     class="text-center">
@@ -158,7 +158,7 @@
 
         <!-- [ Main Content ] start -->
         <div class="pc-content">
-            <div id="droppable2" name="drop-element" class=" pt-5 pb-5"></div>
+            <div id="droppable2" name="drop-element" class=" " style="height:100vh;"></div>
         </div>
 
             <!-- [ Main Content ] end -->
@@ -176,11 +176,12 @@
             </div>
            <form id="form-configuration" method="post">
                  <div class="modal-body">
+                 <input id="form_col_id" type="hidden" value=""  name="col-id"  >
                   {{form.as_p}}
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
            </form>
           </div>
@@ -226,7 +227,77 @@
           console.error(error);  // Log the error if something goes wrong
           return null;  // Return null in case of an error
         }
-};
+    };
+
+
+     //handle on modal col submit
+     $("#form-configuration").on('submit', (e)=>{
+            e.preventDefault();
+
+            let colId = $("#form_col_id").val();  // Get the column ID
+
+            let isMultiple = $(`#${colId}`).data('isMultiple')
+            let isRange =$(`#${colId}`).data('isRange');
+            let componentId = $(`#${colId}`).data('id');
+            let rowId = $(`#${colId}`).data('rowId');
+
+            let indicator = $("#id_indicator").val();
+            let year = $("#id_year").val();
+            let data_range_start = $("#id_data_range_start").val();
+            let data_range_end = $("#id_data_range_end").val();
+            let width = $("#id_width").val();
+            
+            
+    
+
+            let colSize = width == '25%' ? 'col-md-3' : (width == '33%' ? 'col-md-4' : (width == '50%' ? 'col-md-6' : (width == '100%' ? 'col-md-12' : '')));
+            document.getElementById(`dragged_${colId}`).className = colSize;
+
+
+            $.ajax({
+              type: 'POST',
+              url: `{% url "custom-dashboard-topic" dashboard.id %}`,
+              data: {
+                'dashboardId' : $(`#${colId}`).data('col-id') ? $(`#${colId}`).data('col-id') : null,
+                'isMultiple': isMultiple,
+                'isRange' : isRange,
+                'componentId' : componentId,
+                'indicator' : indicator,
+                'year' : year,
+                'data_range_start' : data_range_start,
+                'data_range_end' : data_range_end,
+                'rowId' : rowId,
+                'width' : width,
+                csrfmiddlewaretoken: '{{csrf_token}}'
+              },
+              success: function (response) {
+                if (response.success) {
+                  console.log("Created", response.id)
+
+                  //assign real data to col
+                  $(`#${colId}`).data('col-id', response.id) 
+                  $(`#${colId}`).data('col-indicator-id', indicator) 
+                  $(`#${colId}`).data('col-year-id', year) 
+                  $(`#${colId}`).data('col-width', width)
+
+                  $('#modalAddDashboardRow').modal('hide'); //Hide Modal
+                  
+                  
+
+                  console.log($(`#${colId}`).data())
+                } else {
+                    console.log('err here')
+                }
+              },
+              error: function () {
+                console.log('err there')
+              }
+            });
+    
+            
+    })
+
+
     </script>
     <script src="{% static 'dashboard/assets/js/custom/dashboard-admin.js' %}"></script>
 

@@ -1,5 +1,15 @@
 $(document).ready(()=>{
     $( function() {
+
+        //generate unique id
+        function* generateId() {
+            let i = 0;
+            while (true) {
+                yield i++;
+            }
+        }
+
+        const idGen = generateId(); 
        
         $("[name='component']").draggable({
             revert: "invalid",
@@ -18,7 +28,7 @@ $(document).ready(()=>{
 
 
         //col
-        const handleAfterDropped = () =>{
+        const handleAfterDropped = (rowId) =>{
             $('[name="row"]').droppable({
                 accept: "[name='component']",
                 drop: function (event, ui) {
@@ -28,9 +38,10 @@ $(document).ready(()=>{
                     $(this).addClass( "bg-success" ).find( "p" ).html('');
 
                     //${draggable.data('size')}
-            
+                    let colId =idGen.next().value
+
                     // Create a new parent div
-                    let parentDiv = $(`<div name="col_component" class="col-md-6 row-col"></div>`);
+                    let parentDiv = $(`<div name="col_component" id="dragged_col_${colId}" class="col-md-6 row-col"></div>`);
                     let card = $(`<div class="card"></div>`);
                     let cardBody = $(`
                             <div class="card-body">
@@ -55,6 +66,8 @@ $(document).ready(()=>{
                                                     data-id="${draggable.data('id')}"
                                                     data-is-multiple="${draggable.data('isMultiple')}"
                                                     data-is-range="${draggable.data('isRange')}" 
+                                                    data-row-id = ${rowId}
+                                                    id = "col_${colId}"
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#modalAddDashboardRow" 
                                                     class="dropdown-item">
@@ -75,13 +88,11 @@ $(document).ready(()=>{
                     cardBody.appendTo(card);
                     draggable.clone().appendTo(cardBody);
                     card.find('img').css('width', '100%');
-                    card.find('img').css('height', '250px');
+                    //card.find('img').css('height', '450px');
                     card.appendTo(parentDiv);
             
                     // Append the parent div to the droppable element
                     parentDiv.appendTo(droppable);
-
-                    console.log(draggable.data('id'))
     
                     //draggable.css({top: '5px', left: '5px'});
                   
@@ -120,7 +131,7 @@ $(document).ready(()=>{
                     // Append the parent div to the droppable element
                     parentDiv.appendTo(droppable);
             
-                    handleAfterDropped();
+                    handleAfterDropped(rowId);
                 
                   
                    } else {
@@ -139,12 +150,22 @@ $(document).ready(()=>{
 
     // Event delegation to handle dynamically added elements
     $(document).on('click', "[name='btn-edit']", function() {
+
         let isMultiple = $(this).data('isMultiple');
-        let idRange = $(this).data('isRange');
-        let componentId = $(this).data('id');
+        let isRange = $(this).data('isRange');
+        let colId = $(this).attr('id');
+
+
+       
+        
+
+
+
+
+    
 
         //handle form type
-        if(idRange == 'True'){
+        if(isRange == 'True'){
             $("#id_year").parent().hide()
             $("#id_data_range_start").parent().show()
             $("#id_data_range_end").parent().show()
@@ -164,13 +185,41 @@ $(document).ready(()=>{
 
             } else {
                 $("#form-configuration").trigger("reset");
-                $('#id_indicator').removeAttr('multiple');
+                $('#id_indicator').removeAttr('multiple').addClass('form-select');
             }
 
+
+        //assign value to form
+        $("#form_col_id").val(colId);
+
+
+        //assign form value if exist
+        let colIndicatorId = $(this).data('colIndicatorId') ? $(this).data('colIndicatorId') : null;
+        let colYearId = $(this).data('colYearId') ? $(this).data('colYearId') : null;
+        let colWidth = $(this).data('colWidth') ? $(this).data('colWidth') : null;
         
+        
+        
+        if(colIndicatorId){
+            $("#id_indicator").val(colIndicatorId);
+        }
+        if(colYearId){
+            $("#id_year").val(colYearId);
+        }
+        if(colWidth){
+            $("#id_width").val(colWidth );
+        }
+
+
+       
+       
+
 
 
     });
+
+
+   
 
 
 
