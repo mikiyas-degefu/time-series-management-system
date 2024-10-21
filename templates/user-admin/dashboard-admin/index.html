@@ -18,7 +18,9 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
     <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/js/multi-select-tag.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-select-tag.css"/>
-  
+    <script src="https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.js"></script> <link
+  href="https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.css"
+  rel="stylesheet">
 
     {% include 'dashboard/include/head.html' %}
 </head>
@@ -234,6 +236,16 @@
      $("#form-configuration").on('submit', (e)=>{
             e.preventDefault();
 
+            showToast = (title, body, cssClass) => {
+                  $.toast({
+                    heading: title,
+                    text: body,
+                    showHideTransition: 'slide',
+                    icon: cssClass,
+                    position: 'top-right',
+                  })
+            }
+
             let colId = $("#form_col_id").val();  // Get the column ID
 
             let isMultiple = $(`#${colId}`).data('isMultiple')
@@ -280,7 +292,10 @@
                   $(`#${colId}`).data('col-year-id', year) 
                   $(`#${colId}`).data('col-width', width)
 
+                   //show succuss message
+                   showToast('&#128515 Hello, User', 'Successfully Updated', 'success')
                   $('#modalAddDashboardRow').modal('hide'); //Hide Modal
+
                   
                   
 
