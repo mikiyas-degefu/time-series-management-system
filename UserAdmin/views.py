@@ -947,7 +947,7 @@ def custom_dashboard_topic(request,id):
             response = {'success' : True, 'row' : row.id }
             return JsonResponse( response)
         
-        if 'isMultiple' in request.POST:
+        if 'dashboardId' in request.POST:
             
             try:
                 component = Component.objects.get(id = request.POST['componentId'])
@@ -970,6 +970,8 @@ def custom_dashboard_topic(request,id):
                 return HttpResponse("Year does not exist")
 
             width = request.POST['width']
+            title = request.POST['title']
+            description = request.POST['description']
 
             #check if dashboard indicator exists
             if request.POST['dashboardId']:
@@ -980,7 +982,9 @@ def custom_dashboard_topic(request,id):
             else:
                 dashboard_indicator = DashboardIndicator()
 
-
+            #save data
+            dashboard_indicator.title = title if component.has_title else None
+            dashboard_indicator.description = title if component.has_description else None
             dashboard_indicator.component = component
             dashboard_indicator.for_row = row
             dashboard_indicator.width = width
@@ -988,8 +992,6 @@ def custom_dashboard_topic(request,id):
             dashboard_indicator.save()
             dashboard_indicator.indicator.add(*indicators) #save all indicator to dashboard b/c of m-to-m relation
            
-
-
             response = {'success' : True, 'id' : dashboard_indicator.id}
             return JsonResponse(response)
 

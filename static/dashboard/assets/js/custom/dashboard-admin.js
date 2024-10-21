@@ -66,7 +66,9 @@ $(document).ready(()=>{
                                                     data-id="${draggable.data('id')}"
                                                     data-is-multiple="${draggable.data('isMultiple')}"
                                                     data-is-range="${draggable.data('isRange')}" 
-                                                    data-row-id = ${rowId}
+                                                    data-row-id = "${rowId}"
+                                                    data-has-title="${draggable.data('hasTitle')}"
+                                                    data-has-description="${draggable.data('hasDescription')}"
                                                     id = "col_${colId}"
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#modalAddDashboardRow" 
@@ -154,15 +156,9 @@ $(document).ready(()=>{
         let isMultiple = $(this).data('isMultiple');
         let isRange = $(this).data('isRange');
         let colId = $(this).attr('id');
+        let hasTitle = $(this).data('hasTitle') == 'True' ? true : false
+        let hasDescription = $(this).data('hasDescription') == 'True' ? true : false
 
-
-       
-        
-
-
-
-
-    
 
         //handle form type
         if(isRange == 'True'){
@@ -174,6 +170,9 @@ $(document).ready(()=>{
             $("#id_data_range_start").parent().hide()
             $("#id_data_range_end").parent().hide()
         }
+
+        hasTitle ? $("#id_title").show().prev().show() : $("#id_title").hide().prev().hide() 
+        hasDescription ? $("#id_description").show().prev().show() : $("#id_description").hide().prev().hide() 
         
 
         
@@ -194,10 +193,9 @@ $(document).ready(()=>{
 
 
         //assign form value if exist
-        let colIndicatorId = $(this).data('colIndicatorId') ? $(this).data('colIndicatorId') : null;
-        let colYearId = $(this).data('colYearId') ? $(this).data('colYearId') : null;
-        let colWidth = $(this).data('colWidth') ? $(this).data('colWidth') : null;
-        
+        let colIndicatorId = $(this).data('colIndicatorId')|| null;
+        let colYearId = $(this).data('colYearId') || null;
+        let colWidth = $(this).data('colWidth') || null;
         
         
         if(colIndicatorId){
@@ -209,18 +207,5 @@ $(document).ready(()=>{
         if(colWidth){
             $("#id_width").val(colWidth );
         }
-
-
-       
-       
-
-
-
     });
-
-
-   
-
-
-
 })
