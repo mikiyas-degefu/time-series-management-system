@@ -18,8 +18,9 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
     <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/js/multi-select-tag.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-select-tag.css"/>
-  
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.css">
+    
+    
     {% include 'dashboard/include/head.html' %}
 </head>
 <!-- [Head] end -->
@@ -124,6 +125,9 @@
                                     data-id="{{component.id}}"
                                     data-is-multiple="{{component.is_multiple}}"
                                     data-is-range="{{component.is_range}}" 
+                                    data-is-single-year="{{component.is_single_year}}"
+                                    data-has-title="{{component.has_title}}"
+                                    data-has-description="{{component.has_description}}"
                                     class="text-center">
                                     <img src="/media/{{component.image}}" style="width: 150px;" class="img-fluid" alt="">
                                 </div>
@@ -190,13 +194,15 @@
 
     {% include 'dashboard/include/js.html'%}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.0/jquery-ui.min.js" integrity="sha512-MlEyuwT6VkRXExjj8CdBKNgd+e2H+aYZOCUaCrt9KRk6MlZDOs91V1yK22rwm8aCIsb5Ec1euL8f0g58RKT/Pg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script type="text/javascript">
-        //handle on change
-        
 
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.0/jquery-ui.min.js" integrity="sha512-MlEyuwT6VkRXExjj8CdBKNgd+e2H+aYZOCUaCrt9KRk6MlZDOs91V1yK22rwm8aCIsb5Ec1euL8f0g58RKT/Pg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.js"></script>
     
+    <script type="text/javascript">
+         
+         
         //handle backend row created
         const handleRowCreated = async () => {
         try {
@@ -230,11 +236,22 @@
     };
 
 
-     //handle on modal col submit
+     //handle on modal col[component] submit
      $("#form-configuration").on('submit', (e)=>{
             e.preventDefault();
 
+            const showToast = (title, body, cssClass) => {
+               $.toast({
+                heading: title,
+                text: body,
+                showHideTransition: 'slide',
+                icon: cssClass,
+                position: 'top-right',
+              })
+            }
+
             let colId = $("#form_col_id").val();  // Get the column ID
+            console.log('col-id',colId)
 
             let isMultiple = $(`#${colId}`).data('isMultiple')
             let isRange =$(`#${colId}`).data('isRange');
@@ -242,9 +259,13 @@
             let rowId = $(`#${colId}`).data('rowId');
 
             let indicator = $("#id_indicator").val();
+            let title = $("#id_title").val()
+            let description = $("#id_description").val()
             let year = $("#id_year").val();
             let data_range_start = $("#id_data_range_start").val();
             let data_range_end = $("#id_data_range_end").val();
+
+            console.log(data_range_start, data_range_end)
             let width = $("#id_width").val();
             
             
@@ -261,11 +282,13 @@
                 'dashboardId' : $(`#${colId}`).data('col-id') ? $(`#${colId}`).data('col-id') : null,
                 'isMultiple': isMultiple,
                 'isRange' : isRange,
+                'title' : title || null,
+                'description' : description || null,
                 'componentId' : componentId,
                 'indicator' : indicator,
                 'year' : year,
-                'data_range_start' : data_range_start,
-                'data_range_end' : data_range_end,
+                'data_range_start' : data_range_start || null,
+                'data_range_end' : data_range_end || null,
                 'rowId' : rowId,
                 'width' : width,
                 csrfmiddlewaretoken: '{{csrf_token}}'
@@ -273,24 +296,33 @@
               success: function (response) {
                 if (response.success) {
                   console.log("Created", response.id)
-
+                  console.log(colId)
                   //assign real data to col
                   $(`#${colId}`).data('col-id', response.id) 
                   $(`#${colId}`).data('col-indicator-id', indicator) 
                   $(`#${colId}`).data('col-year-id', year) 
                   $(`#${colId}`).data('col-width', width)
+                  $(`#${colId}`).data('col-title', title)
+                  $(`#${colId}`).data('col-description', description)
+                  $(`#${colId}`).data('col-data-range-start', data_range_start) 
+                  $(`#${colId}`).data('col-data-range-end', data_range_end) 
 
+           
+
+                   //show succuss message
+                   showToast('&#128515 Hello, User', 'Successfully component created', 'success')
                   $('#modalAddDashboardRow').modal('hide'); //Hide Modal
+
                   
                   
 
                   console.log($(`#${colId}`).data())
                 } else {
-                    console.log('err here')
+                    console.log('here eeeee err here')
                 }
               },
-              error: function () {
-                console.log('err there')
+              error: function (err) {
+                console.log(err)
               }
             });
     
@@ -299,6 +331,8 @@
 
 
     </script>
+
+
     <script src="{% static 'dashboard/assets/js/custom/dashboard-admin.js' %}"></script>
 
 </body>

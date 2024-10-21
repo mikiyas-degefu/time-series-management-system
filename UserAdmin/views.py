@@ -947,29 +947,32 @@ def custom_dashboard_topic(request,id):
             response = {'success' : True, 'row' : row.id }
             return JsonResponse( response)
         
-        if 'isMultiple' in request.POST:
+        if 'dashboardId' in request.POST:
             
             try:
                 component = Component.objects.get(id = request.POST['componentId'])
             except Component.DoesNotExist:
                 return HttpResponse("Component does not exist")
+           
             
             try:
                 row = Row.objects.get(id = request.POST['rowId'])
             except Row.DoesNotExist:
                 return HttpResponse("Row does not exist")
             
+            
             try:
                 indicators = Indicator.objects.filter(id__in = request.POST.getlist('indicator[]'))
             except Indicator.DoesNotExist:
                 return HttpResponse("Indicator does not exist")
             
-            try:
-                year = DataPoint.objects.get(id = request.POST['year'])
-            except DataPoint.DoesNotExist:
-                return HttpResponse("Year does not exist")
-
-            width = request.POST['width']
+        
+            
+            width = request.POST['width'] 
+            title = request.POST['title'] or None
+            description = request.POST['description'] or None
+            data_range_start = request.POST['data_range_start'] or None
+            data_range_end = request.POST['data_range_end'] or None
 
             #check if dashboard indicator exists
             if request.POST['dashboardId']:
@@ -980,16 +983,33 @@ def custom_dashboard_topic(request,id):
             else:
                 dashboard_indicator = DashboardIndicator()
 
+            #save data
+            dashboard_indicator.title = title if component.has_title else None
+            dashboard_indicator.description = description if component.has_description else None
+            
+            if component.is_range:
+                try:
+                    data_range_start_ec = DataPoint.objects.get(id = data_range_start)
+                    data_range_end_ec = DataPoint.objects.get(id = data_range_end)
+                    dashboard_indicator.data_range_start = data_range_start_ec
+                    dashboard_indicator.data_range_end = data_range_end_ec
+                except:
+                    return HttpResponse("Dashboard data_range_start does not exist")
+            elif component.is_single_year:
+                try:
+                    year = DataPoint.objects.get(id = request.POST['year'])
+                    dashboard_indicator.year = year
+                except DataPoint.DoesNotExist:
+                    return HttpResponse("Year does not exist")
+            
 
+            
             dashboard_indicator.component = component
             dashboard_indicator.for_row = row
             dashboard_indicator.width = width
-            dashboard_indicator.year = year
             dashboard_indicator.save()
             dashboard_indicator.indicator.add(*indicators) #save all indicator to dashboard b/c of m-to-m relation
            
-
-
             response = {'success' : True, 'id' : dashboard_indicator.id}
             return JsonResponse(response)
 
