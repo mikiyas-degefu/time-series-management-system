@@ -7,5 +7,5 @@ urlpatterns = [
 
 
     ###Api
-    path('components/', api.components),
+    path('components/<str:id>', api.components),
 ]

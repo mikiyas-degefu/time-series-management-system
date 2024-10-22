@@ -1,31 +1,22 @@
-from DashBoard.serializer import( 
-    ComponentSerializer, 
-    DashboardIndicatorSerializer,
-    AnnualDataSerializers
-    
-    )
-
 from Base.models import (
     AnnualData
 )
 from DashBoard.models import Component, DashboardIndicator
 from rest_framework.decorators import api_view
+from rest_framework import status
 from rest_framework.response import Response
-
+from DashBoard.models import *
+from ..serializer import DashboardSerializer
 
 @api_view(['GET'])
-def components(request):
+def components(request,id):
+    try:
+        dashboard = Dashboard.objects.get(id = id)
+    except Dashboard.DoesNotExist:
+        return Response({'message' : 'Not Found'}, status=status.HTTP_404_NOT_FOUND)
+    
     if request.method == 'GET':
-        dashboard_indicators = DashboardIndicator.objects.all().first()
-        indicator_list = dashboard_indicators.indicator.all()
-        if(not dashboard_indicators.component.is_range):
-            annual_data = AnnualData.objects.filter(indicator__in = indicator_list, for_datapoint__year_EC = 2017)
-            annual_data_serializer = AnnualDataSerializers(annual_data, many=True)
-        dashboard_indicators_serializer = DashboardIndicatorSerializer(dashboard_indicators)
-
-        context = {
-            'col' : dashboard_indicators_serializer.data,
-            'annual_data' : annual_data_serializer.data
-        }
-        return Response(context)
+        serializer = DashboardSerializer(dashboard)
+        return Response(serializer.data)
+    
 
