@@ -1,6 +1,8 @@
 from django.db import models
 from Base.models import Indicator
-from Base.models import DataPoint, Month, Quarter
+from Base.models import DataPoint, Month, Quarter,AnnualData
+
+
 # Create your models here.
 
 
@@ -36,7 +38,7 @@ class Component(models.Model):
     data_type = models.CharField(choices=data_type_options, max_length=10,null=True, blank=True)
     #configuration = models.JSONField(default=dict,null=True , blank=True) 
     image = models.ImageField(upload_to='components/', null=True, blank=True)
-    path = models.CharField(max_length=50 , null=True , blank=True)
+    path = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
@@ -56,7 +58,7 @@ class Dashboard(models.Model):
 
 class Row(models.Model):
     rank = models.IntegerField()
-    for_dashboard = models.ForeignKey(Dashboard , on_delete=models.CASCADE , related_name='dashBoard')
+    for_dashboard = models.ForeignKey(Dashboard , on_delete=models.CASCADE , related_name='rows')
 
     def col_list(self):
         return DashboardIndicator.objects.filter(for_row=self)
@@ -68,10 +70,10 @@ class Row(models.Model):
 sizes = (('25%', '25%'), ('33%', '33%'), ('50%', '50%'), ('100%', '100%'))
 
 class DashboardIndicator(models.Model):
-    for_row = models.ForeignKey(Row , on_delete=models.CASCADE)
+    for_row = models.ForeignKey(Row , on_delete=models.CASCADE, related_name='cols')
     indicator = models.ManyToManyField(Indicator , related_name='indicator')  
     component = models.ForeignKey(Component ,  on_delete=models.SET_NULL , null = True , related_name='component')
-    year = models.ForeignKey( DataPoint,on_delete=models.SET_NULL, null=True, blank=True)
+    year = models.ForeignKey( DataPoint,on_delete=models.SET_NULL, null=True, blank=True, related_name="year")
     title = models.CharField(max_length=200, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     data_range_start = models.ForeignKey(DataPoint,null=True, blank=True, related_name="dateStartDataPoint" ,on_delete=models.SET_NULL)
@@ -81,3 +83,11 @@ class DashboardIndicator(models.Model):
 
     def __str__(self):
         return str(self.for_row.rank) 
+    
+
+    def get_annual_value(self,start_date=None, end_date=None, year=None):
+        indicator = self.indicator.all()
+        if (start_date and end_date) and not year:
+            annual = AnnualData.objects.filter(indicator__in = indicator ,for_datapoint__year_EC__range=(start_date, end_date))
+            return annual
+

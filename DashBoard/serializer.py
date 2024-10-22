@@ -1,33 +1,49 @@
 from rest_framework import serializers
-from .models import Component, DashboardIndicator
-from Base.models import Indicator, AnnualData
+from .models import *
+from Base.models import Indicator, AnnualData 
 
-
-class IndicatorSerializers(serializers.ModelSerializer):
-    
-    class Meta:
-        model = Indicator
-        fields = ('id', 'title_ENG', 'title_AMH',)
-
-
-class AnnualDataSerializers(serializers.ModelSerializer):
-    for_datapoint = serializers.SlugRelatedField(read_only=True, slug_field='year_GC')
+class AnnualSerializer(serializers.ModelSerializer):
+    for_datapoint = serializers.SlugRelatedField(slug_field='year_EC', read_only=True)
     class Meta:
         model = AnnualData
-        fields = '__all__'
+        fields = ['performance', 'indicator', 'for_datapoint']
+    
+
+class IndicatorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Indicator
+        fields = ['id', 'title_ENG']
 
 
 
 class ComponentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Component
-        fields = '__all__'
-
-
-class DashboardIndicatorSerializer(serializers.ModelSerializer):
-    component = ComponentSerializer()
-    indicator = IndicatorSerializers(many=True, read_only=True)
-
+    indicator = IndicatorSerializer(many=True)
+    data_range_start = serializers.SlugRelatedField(slug_field='year_EC', read_only=True)
+    data_range_end = serializers.SlugRelatedField(slug_field='year_EC', read_only=True)
+    year = serializers.SlugRelatedField(slug_field='year_EC', read_only=True)
+    component = serializers.SlugRelatedField(slug_field='path', read_only=True)
+    annual_value = serializers.SerializerMethodField()
     class Meta:
         model = DashboardIndicator
+        fields = '__all__'
+
+    def get_annual_value(self,obj):
+        if obj.component.is_range:
+            start_date = obj.data_range_start.year_EC
+            end_date = obj.data_range_end.year_EC
+            annual = obj.get_annual_value(start_date=start_date, end_date=end_date)
+            serializer  = AnnualSerializer(annual, many=True)
+            return serializer.data
+        return None
+
+class RowSerializer(serializers.ModelSerializer):
+    cols = ComponentSerializer(many=True)
+    class Meta:
+        model = Row
+        fields = '__all__'
+
+class DashboardSerializer(serializers.ModelSerializer):
+    rows = RowSerializer(many=True)
+    class Meta:
+        model = Dashboard
         fields = '__all__'

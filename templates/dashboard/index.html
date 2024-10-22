@@ -29,6 +29,7 @@
             <div class="loader-fill"></div>
         </div>
     </div>
+    
     <!-- [ Pre-loader ] End -->
 
 
@@ -38,21 +39,9 @@
 
 
     <div class="pc-container">
-        <div class="pc-content">
+        <div class="pc-content" id="pc-content">
             <!-- [ Main Content ] start -->
-
-            {% for row in rows %}
-
-            <div class="row">
-
-                {% for col in row.col_list%}
-                  {% include col.component.path %}
-                {% endfor%}
-
-            </div> 
-
-
-           {% endfor %}
+           
             <!-- [ Main Content ] end -->
         </div>
     </div>
@@ -61,5 +50,10 @@
 
 
 </body>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'dashboard/assets/js/components/components.js' %}"></script>
 
 </html>
