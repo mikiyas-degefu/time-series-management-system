@@ -220,7 +220,8 @@
                             <!--Col Delete  Button-->
                           <button 
                             type="button" 
-                            name="btn-delate" 
+                            name="btn-delete"
+                            data-col-id="{{col.id}}" 
                             data-bs-toggle="modal" 
                             data-bs-target="#removeComponent"
                             class="dropdown-item">
@@ -231,11 +232,7 @@
 
                         
                       </div>
-
-                      
                     </div>
-
-                  
                   </div>
 
                   <div 
@@ -302,6 +299,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
+                <input id="delete_input_col_id" type="hidden">
                Are you sure you want to remove this component?
               </div>
               <div class="modal-footer">

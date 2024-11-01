@@ -187,5 +187,13 @@ $(document).ready(() => {
         $("#id_data_range_end").val(colDataRangeEnd);
 
     });
+
+    //handle on component remove 
+    $(document).on('click', "[name='btn-delete']", function () {
+        const colID = $(this).data('colId')
+        $('#delete_input_col_id').val(colID)
+       // $(`#dragged_col_${colID}`).remove() //remove from html
+    });
+    
 });
 })
