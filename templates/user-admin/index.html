@@ -76,152 +76,37 @@
           </div>
 
 
+          <form class="d-flex col-8 mx-auto">
+            <input class="form-control p-4 me-2" name="q" type="text" placeholder="Search" >
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+
+        
+
+          <!--Topic Card Start -->
+          <p>Topic lists</p>
+          <div id="topic_list" class="row">
+           </div>
+          <!--Topic Card End-->
+
+          <div id="category_list" class="row">
+          </div>
+
+         
+          <!--Filter Category Start-->
+          <div id="filter_category" >
           
-        <!--Topics lists-->
-        <h6 class="text-secondary"> Topics </h6>
-        <div class="row mb-2">
-            <div class="col-lg-10">
-              <form>
-                <div class="col-12 d-flex align-items-center">
-                  <input type="text" name="q" class="form-control ps-5 pe-5 m-3 d-block" placeholder="Search key word" />
-                  <button class="btn btn-primary">
-                    <i class="fas fa-search ms-2"></i>
-                  </button>
-                </div>
-              </form>
-            </div>
-            {% if topics %}
-            {% for topic in topics %}
-            <div class="col-lg-3 mb-3">
-                <a class="text-primary text-decoration-none" href="{% url 'index' topic.id %}">
-                    <div class="card shadow card-custom bg-{{topic.color}}">
-                        <div class="card-body d-flex flex-column justify-content-between">
-                          {% if topic.color == 'dark' %}
-                           
-                          <p class="card-title mb-0 text-white">{{ topic.title_ENG }} <i class="fa fa-{{ topic.icon.name }} float-right" style="font-size: 35px;"></i>
-                           <br> <span class="h5">  {{ topic.num_categories }} Category </span>
-                          </p>
-                         
-                          
-                      {% else %}
-                       
-                      <p class="card-title mb-0 text-black">{{ topic.title_ENG }} <i class="fa fa-{{ topic.icon.name }} float-right" style="font-size: 35px;"></i>
-                       <br> <span class="h5">  {{ topic.num_categories }} Category </span>
-                      </p>
-                      
-                      {% endif %}
-                        </div>
-                    </div>
-                </a>
-            </div>
-            {% endfor %}
-            {% endif %}
-        </div>
+          </div>
+          <!--Filter Category End-->
 
-       
-        {% if cat_indicator %}
-        <h1 class="text-center mt-5 text-info">{{ selected_topic }}</h1>.
-        {% for category in cat_indicator %}
-              <h5 class="text-center mt-5 text-secondary">Categories : {{ category.cat_name_ENG }}</h5>
-              <hr>
-    
-              <table class="m-0 p-0 table table-bordered table-hover table-responsive"> 
-            <thead> 
-                <tr style="background-color: #40864b;">
-                    <th class="text-light" colspan="100">Yearly</th>
-                </tr> 
-                <tr style="background-color: #9fdfa9;"> 
-                    <th scope="col">Indicator (English)</th> 
-                    <th scope="col">Indicator (Amharic)</th> 
-                    {% for year_data in category.indicators.0.annual_data_values %}
-                        <th scope="col">{{ year_data.for_datapoint__year_EC }}</th> 
-                    {% endfor %}
-                </tr> 
-            </thead> 
-            <tbody> 
-                {% for indicator in category.indicators %}
-                    <tr> 
-                        <th scope="row"> 
-                            {{ indicator.title_ENG }}  
-                            <br>
-                            <a href="{% url "data_view_indicator_detail" indicator.id %}"><i class="fas fa-eye text-success"></i></a>  
-                        </th> 
-                        <th>{{ indicator.title_AMH }}</th> 
-                        {% for year_data in indicator.annual_data_values %}
-                            <td>{{ year_data.performance }}</td>
-                        {% endfor %}
-                    </tr> 
-                {% endfor %}
-            </tbody> 
-              </table> 
-        {% endfor %}
-        {% else %}
-            <h3 class="text-center mt-5 text-danger">No data found</h3>
-            <hr>
-        {% endif %}
+          <!--Annual Table Start-->
+          <div id="annualTable">
 
+          
+          
+          </div>
 
-
-
-
-        {% comment %} <!--Random month category-->
-         <div class="row justify-content-center">
-          <h6 class="text-secondary mt-4"> Random month category </h6>
-            <div class="col-lg-12">
-              <figure class="random_month_category">
-                <div id="random_month_category"></div>
-               
-            </figure>
-
-            </div>
-         </div>
-
-
-         
-
-         <!-- Random year category-->
-         <div class="row justify-content-center">
-          <h6 class="text-secondary mt-4"> Random year category </h6>
-            <div class="col-lg-6">
-              <figure class="random_year_category">
-                <div id="random_year_category1"></div>
-                
-            </figure>
-
-            </div>
-            <div class="col-lg-6">
-              <figure class="random_year_category">
-                <div id="random_year_category2"></div>
-               
-            </figure>
-
-            </div>
-         </div>
-
-            <!--Topic category and indicator count  -->
-         <div class="row justify-content-center">
-          <h6 class="text-secondary mt-4"> Topic category and indicator count </h6>
-            <div class="col-lg-12">
-              <figure class="topic_category_indicator">
-                <div id="topic_category_indicator"></div>
-            </figure>
-
-            </div>
-         </div>
-         
-
-
-
-         <!--Random Category indicator Data -->
-         <div class="row justify-content-center">
-          <h6 class="text-secondary mt-4"> Random Category indicator Data </h6>
-            <div class="col-lg-10">
-
-            </div>
-         </div> {% endcomment %}
-
-
-
+          
         </div>
       </div>
 
@@ -230,6 +115,10 @@
 
     {% include 'user-admin/include/footer.html'%}
     {% include 'user-admin/include/highchart.html'%}
+
+
+    <script src="{% static 'assets/js/hooks/useFetch.js' %}"></script>
+    <script src="{% static 'assets/js/base/topicLists.js' %}"></script>
 
     <!--Chart -->
     <script src="{% static 'assets/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
@@ -245,8 +134,11 @@
     
 
     {% include 'user-admin/include/footer_js.html'%}
-  </body>
-  <script>
 
-  </script>
+
+  </body>
+ 
+  
+
+
 </html>

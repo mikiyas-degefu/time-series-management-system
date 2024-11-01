@@ -1,6 +1,6 @@
 $(document).ready(function () {
     let urlPath = window.location.pathname;
-    let pathID = urlPath.replace("/indicator_detail_view/", "").replace("/", "");
+    let pathID = urlPath.replace("/user-admin/indicator_detail_view/", "").replace("/", "");
     let URL = `/filter_indicator_detail_annual_value/${pathID}`
 
     const indicatorId = [pathID]

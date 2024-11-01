@@ -300,6 +300,7 @@ def detail_indicator_with_children(request, id):
 @login_required(login_url='login')
 @api_view(['GET'])
 def indicator_graph(request, id):
+   print(id)
    if request.method == 'GET':
       indicator = Indicator.objects.filter(id=id, is_deleted=False).select_related().first()
 

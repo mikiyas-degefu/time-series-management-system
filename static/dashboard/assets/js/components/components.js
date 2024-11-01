@@ -1,4 +1,3 @@
-console.log('================')
 
 const size = {
   '50%' : 'col-md-6',
@@ -50,7 +49,6 @@ const bar_horizontal_stacked = () => {
            }
         }
       )
-    console.log(data)
     var options = {
       series: data,
       chart: {
@@ -99,7 +97,25 @@ const bar_horizontal_stacked = () => {
     // Function logic for bar_stacked
   };
   
-  const bar = (id) => {
+  const bar = (id, component) => {
+    const newComponent = component
+  
+    newComponent.annual_value.sort((a, b) => {
+      if (a.for_datapoint < b.for_datapoint) return -1
+      return 1
+    })
+  
+    const years = Array.from(new Set(newComponent?.annual_value?.map((item) => item.for_datapoint)))
+    const data = newComponent.indicator.map((indicator) => {
+      let annual = newComponent.annual_value.filter((item) => item.indicator === indicator.id).map((item) => item.performance)
+      return {
+        name: indicator.title_ENG,
+        data: annual
+      }
+    })
+  
+  
+  
     new ApexCharts(document.querySelector(`#${id}`), {
       chart: { height: 350, type: "bar" },
       plotOptions: {
@@ -108,13 +124,12 @@ const bar_horizontal_stacked = () => {
       dataLabels: { enabled: !1 },
       colors: ["#2CA87F", "#4680FF", "#13c2c2"],
       stroke: { show: !0, width: 2, colors: ["transparent"] },
-      series: [
-        { name: "Net Profit", data: [44, 55, 57, 56, 61, 58, 63] },
-        { name: "Revenue", data: [76, 85, 101, 98, 87, 105, 91] },
-        { name: "Free Cash Flow", data: [35, 41, 36, 26, 45, 48, 52] },
-      ],
+      series: data,
+      title: {
+        text: newComponent.title
+      },
       xaxis: {
-        categories: ["Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+        categories: years,
       },
       fill: { opacity: 1 },
       tooltip: {
@@ -127,13 +142,64 @@ const bar_horizontal_stacked = () => {
     }).render()
   };
   
-  const basic_line = () => {
-    // Function logic for basic_line
+  
+  const basic_line = (id, component) => {
+    const newComponent = component
+  
+    newComponent.annual_value.sort((a, b) => {
+      if (a.for_datapoint < b.for_datapoint) return -1
+      return 1
+    })
+
+
+    const years = Array.from(new Set(newComponent?.annual_value?.map((item) => String(item.for_datapoint))))
+    const data = newComponent.indicator.map((indicator) => {
+      let annual = newComponent.annual_value.filter((item) => item.indicator === indicator.id).map((item) => item.performance)
+      return {
+        name: indicator.title_ENG,
+        data: annual
+      }
+    })
+
+    var options = {
+      series: [{
+        name: data[0].name,
+        data: data[0].data
+    }],
+      chart: {
+      height: 350,
+      type: 'line',
+      zoom: {
+        enabled: false
+      }
+    },
+    dataLabels: {
+      enabled: false
+    },
+    stroke: {
+      curve: 'straight'
+    },
+    title: {
+      text: newComponent.title,
+      align: 'left'
+    },
+    grid: {
+      row: {
+        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+        opacity: 0.5
+      },
+    },
+    xaxis: {
+      categories: years,
+    }
+    };
+
+    var chart = new ApexCharts(document.querySelector(`#${id}`), options);
+    chart.render();
   };
   
   const different_line_area = () => {
-    // Function logic for different_line_area
-  };
+    };
   
   const mixed_area_line_bar = () => {
     // Function logic for mixed_area_line_bar
@@ -159,8 +225,94 @@ const bar_horizontal_stacked = () => {
     // Function logic for pie
   };
   
-  const different_line = () => {
-    // Function logic for different_line
+  const different_line = (id , component) => {
+    console.log(component)
+    const newComponent = component
+  
+    newComponent.annual_value.sort((a, b) => {
+      if (a.for_datapoint < b.for_datapoint) return -1
+      return 1
+    })
+
+
+    const years = Array.from(new Set(newComponent?.annual_value?.map((item) => String(item.for_datapoint))))
+    const data = newComponent.indicator.map((indicator) => {
+      let annual = newComponent.annual_value.filter((item) => item.indicator === indicator.id).map((item) => item.performance)
+      return {
+        name: indicator.title_ENG,
+        data: annual
+      }
+    })
+
+    var options = {
+      series: data,
+      chart: {
+      height: 350,
+      type: 'line',
+      zoom: {
+        enabled: false
+      },
+    },
+    dataLabels: {
+      enabled: false
+    },
+    stroke: {
+      width: [5, 7, 5],
+      curve: 'straight',
+      dashArray: [0, 8, 5]
+    },
+    title: {
+      text: newComponent.title,
+      align: 'left'
+    },
+    legend: {
+      tooltipHoverFormatter: function(val, opts) {
+        return val + ' - <strong>' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + '</strong>'
+      }
+    },
+    markers: {
+      size: 0,
+      hover: {
+        sizeOffset: 6
+      }
+    },
+    xaxis: {
+      categories: years,
+    },
+    tooltip: {
+      y: [
+        {
+          title: {
+            formatter: function (val) {
+              return val + " (mins)"
+            }
+          }
+        },
+        {
+          title: {
+            formatter: function (val) {
+              return val + " per session"
+            }
+          }
+        },
+        {
+          title: {
+            formatter: function (val) {
+              return val;
+            }
+          }
+        }
+      ]
+    },
+    grid: {
+      borderColor: '#f1f1f1',
+    }
+    };
+
+    var chart = new ApexCharts(document.querySelector(`#${id}`), options);
+    chart.render();
+  
+
   };
   
   const banner = () => {

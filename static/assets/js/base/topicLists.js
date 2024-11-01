@@ -178,7 +178,7 @@ $(document).ready(function () {
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <a  href="/indicator_detail_view/${indicator.id}" class="text-${color}">${indicator.title_ENG} (Annual) <span> <i class="fa fa-eye float-end text-${color}"></i> </span> </a>
+                                <a  href="/user-admin/indicator_detail_view/${indicator.id}" class="text-${color}">${indicator.title_ENG} (Annual) <span> <i class="fa fa-eye float-end text-${color}"></i> </span> </a>
                             </div>
                         </div>
                         <div class="bg-body mt-3 rounded ">
