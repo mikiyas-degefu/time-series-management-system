@@ -190,15 +190,15 @@
                           <button 
                             type="button" 
                             name="btn-edit" 
-                            data-id="{{col.id}}"
+                            id="col_{{col.id}}"
+                            data-id="{{col.component.id}}"
                             data-is-multiple="{{col.component.is_multiple}}" 
                             data-is-single-year="{{col.component.is_single_year}}"
                             data-is-range="{{col.component.is_range}}" 
-                            data-row-id="{{row.ids}}"
+                            data-row-id="{{row.id}}"
                             data-has-title="{{col.component.has_title}}" 
                             data-has-indicator="{{col.component.has_indicator}}"
                             data-has-description="{{col.component.has_description}}" 
-                            id="col_{{col.id}}"
                             data-col-id="{{col.id}}"
                             data-col-indicator-id="{{1}}"
                             data-col-width="{{col.width}}"
@@ -343,6 +343,7 @@
             let isMultiple = $(`#${colId}`).data('isMultiple')
             let isRange =$(`#${colId}`).data('isRange');
             let componentId = $(`#${colId}`).data('id');
+            console.log(`${colId} component-id=`, componentId)
             let rowId = $(`#${colId}`).data('rowId');
 
             let indicator = $("#id_indicator").val();
@@ -383,6 +384,7 @@
                 csrfmiddlewaretoken: '{{csrf_token}}'
               },
               success: function (response) {
+                console.log(response)
                 if (response.success) {
                   console.log("Created", response.id)
                   console.log(colId)
@@ -408,7 +410,7 @@
                   console.log($(`#${colId}`).data())
 
                 } else {
-                    console.log('here eeeee err here')
+                    console.error('here eeeee err here')
                 }
               },
               error: function (err) {

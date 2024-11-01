@@ -964,12 +964,14 @@ def custom_dashboard_topic(request,id):
         if 'dashboardId' in request.POST:
             
             try:
+                print( request.POST['componentId'])
                 component = Component.objects.get(id = request.POST['componentId'])
             except Component.DoesNotExist:
                 return HttpResponse("Component does not exist")
            
             
             try:
+                print( request.POST['rowId'])
                 row = Row.objects.get(id = request.POST['rowId'])
             except Row.DoesNotExist:
                 return HttpResponse("Row does not exist")
