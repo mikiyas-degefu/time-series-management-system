@@ -69,6 +69,7 @@ $(document).ready(()=>{
                                                     data-is-range="${draggable.data('isRange')}" 
                                                     data-row-id = "${rowId}"
                                                     data-has-title="${draggable.data('hasTitle')}"
+                                                    data-has-indicator=${draggable.data('hasIndicator')}
                                                     data-has-description="${draggable.data('hasDescription')}"
                                                     id = "col_${colId}"
                                                     data-bs-toggle="modal" 
@@ -160,6 +161,7 @@ $(document).ready(()=>{
         let hasTitle = $(this).data('hasTitle') == 'True' ? true : false
         let hasDescription = $(this).data('hasDescription') == 'True' ? true : false
         let isSingleYear = $(this).data('isSingleYear') == 'True' ? true : false 
+        let hasIndicator = $(this).data('hasIndicator') == 'True' ? true : false
 
 
         //handle form type
@@ -176,6 +178,7 @@ $(document).ready(()=>{
         hasTitle ? $("#id_title").show().prev().show() : $("#id_title").hide().prev().hide() 
         hasDescription ? $("#id_description").show().prev().show() : $("#id_description").hide().prev().hide() 
         isSingleYear ? $("#id_year").show().prev().show() : $("#id_year").hide().prev().hide()
+        hasIndicator ? $("#id_indicator").show().prev().show() : $("#id_indicator").hide().prev().hide()
         
 
         

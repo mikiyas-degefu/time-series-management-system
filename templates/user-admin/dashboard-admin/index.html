@@ -128,6 +128,7 @@
                                     data-is-single-year="{{component.is_single_year}}"
                                     data-has-title="{{component.has_title}}"
                                     data-has-description="{{component.has_description}}"
+                                    data-has-indicator="{{component.has_indicator}}"
                                     class="text-center">
                                     <img src="/media/{{component.image}}" style="width: 150px;" class="img-fluid" alt="">
                                 </div>
@@ -259,6 +260,8 @@
             let rowId = $(`#${colId}`).data('rowId');
 
             let indicator = $("#id_indicator").val();
+            indicator = isMultiple ? indicator : [indicator]
+            console.log(indicator)
             let title = $("#id_title").val()
             let description = $("#id_description").val()
             let year = $("#id_year").val();

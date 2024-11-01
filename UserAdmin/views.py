@@ -970,11 +970,7 @@ def custom_dashboard_topic(request,id):
             except Row.DoesNotExist:
                 return HttpResponse("Row does not exist")
             
-            
-            try:
-                indicators = Indicator.objects.filter(id__in = request.POST.getlist('indicator[]'))
-            except Indicator.DoesNotExist:
-                return HttpResponse("Indicator does not exist")
+        
             
         
             
@@ -1011,6 +1007,17 @@ def custom_dashboard_topic(request,id):
                     dashboard_indicator.year = year
                 except DataPoint.DoesNotExist:
                     return HttpResponse("Year does not exist")
+            if component.is_multiple:
+                try:
+                    indicators = Indicator.objects.filter(id__in = request.POST.getlist('indicator[]'))
+                except Indicator.DoesNotExist:
+                    return HttpResponse("Indicator does not exist")
+            else:
+                try:
+                    indicators = Indicator.objects.filter(id = request.POST['indicator'])
+                except Indicator.DoesNotExist:
+                    return HttpResponse("Indicator does not exist")
+
             
 
             

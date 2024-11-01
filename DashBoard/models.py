@@ -35,8 +35,8 @@ class Component(models.Model):
     is_single_year =  models.BooleanField(default=False)
     has_title = models.BooleanField(default=True)
     has_description = models.BooleanField(default=False)
+    has_indicator = models.BooleanField(default=True)
     data_type = models.CharField(choices=data_type_options, max_length=10,null=True, blank=True)
-    #configuration = models.JSONField(default=dict,null=True , blank=True) 
     image = models.ImageField(upload_to='components/', null=True, blank=True)
     path = models.CharField(max_length=50, unique=True)
 
@@ -71,7 +71,7 @@ sizes = (('25%', '25%'), ('33%', '33%'), ('50%', '50%'), ('100%', '100%'))
 
 class DashboardIndicator(models.Model):
     for_row = models.ForeignKey(Row , on_delete=models.CASCADE, related_name='cols')
-    indicator = models.ManyToManyField(Indicator , related_name='indicator')  
+    indicator = models.ManyToManyField(Indicator,blank=True ,related_name='indicator')  
     component = models.ForeignKey(Component ,  on_delete=models.SET_NULL , null = True , related_name='component')
     year = models.ForeignKey( DataPoint,on_delete=models.SET_NULL, null=True, blank=True, related_name="year")
     title = models.CharField(max_length=200, null=True, blank=True)
