@@ -383,27 +383,31 @@
             let isMultiple = $(`#${colId}`).data('isMultiple')
             let isRange =$(`#${colId}`).data('isRange');
             let componentId = $(`#${colId}`).data('id');
-            console.log(`${colId} component-id=`, componentId)
-            let rowId = $(`#${colId}`).data('rowId');
+            
+            let rowId = $(`#${colId}`).data('rowId') || null;
 
             let indicator = $("#id_indicator").val();
             indicator = isMultiple ? indicator : [indicator]
-            console.log(indicator)
+
             let title = $("#id_title").val()
             let description = $("#id_description").val()
             let year = $("#id_year").val();
             let data_range_start = $("#id_data_range_start").val();
             let data_range_end = $("#id_data_range_end").val();
 
-
-            let width = $("#id_width").val();
-            
-            
-    
+            let width = $("#id_width").val();    
 
             let colSize = width == '25%' ? 'col-md-3' : (width == '33%' ? 'col-md-4' : (width == '50%' ? 'col-md-6' : (width == '100%' ? 'col-md-12' : '')));
-            document.getElementById(`dragged_${colId}`).className = colSize;
+            console.log(colId, "aftttttt")
+            try{
+              document.getElementById(`dragged_${colId}`).className = colSize;
+            }catch{
+              document.getElementById(`dragged_${colId}`).className = colSize;
+            }
+            
 
+
+  
 
             $.ajax({
               type: 'POST',
@@ -425,10 +429,8 @@
               },
 
               success: function (response) {
-                console.log(response)
                 if (response.success) {
-                  console.log("Created", response.id)
-                  console.log(indicator)
+
                   //assign real data to col
                   $(`#${colId}`).data('col-id', response.id) 
                   $(`#${colId}`).data('col-indicator-id', indicator) 
@@ -438,22 +440,30 @@
                   $(`#${colId}`).data('col-description', description)
                   $(`#${colId}`).data('col-data-range-start', data_range_start) 
                   $(`#${colId}`).data('col-data-range-end', data_range_end)
-                  
-                  //update delete button data to component created true
-                  $(`#delete_btn_${colId}`).attr("data-is-created", "True");
 
-                  //update data of col-id
-                  $(`#delete_btn_${colId}`).attr("data-col-id", response.id);
 
-                  //update id of col 
-                  $(`#dragged_${colId}`).attr("id", `dragged_col_${response.id}`);
+                  try{
+                    //for update button
+                    $(`#${colId}`).attr("id", `col_${response.id}`);
 
+                    //for delete button
+                    //update delete button data to component created true
+                    $(`#delete_btn_${colId}`).attr("data-is-created", "True");
+
+                    //update data of col-id
+                    $(`#delete_btn_${colId}`).attr("data-col-id", response.id);
+                     //update id of col 
+                     $(`#dragged_${colId}`).attr("id", `dragged_col_${response.id}`);
+
+                    
+                  }catch{
+                    console.log("ID Updated failed!")
+                  }
+                 
                    //show succuss message
                    showToast('&#128515 Hello, User', 'Successfully component created', 'success')
-                  $('#modalAddDashboardRow').modal('hide'); //Hide Modal
+                   $('#modalAddDashboardRow').modal('hide'); //Hide Modal
 
-                
-                  console.log($(`#${colId}`).data())
 
                 } else {
                     console.error('here eeeee err here')
