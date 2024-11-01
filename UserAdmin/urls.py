@@ -1,8 +1,14 @@
 from django.urls import path
 from .views import *
 
+
 urlpatterns = [
-    path('<int:id>', index, name='index'),
+    path('', index, name='index'),
+   
+  
+    path('indicator_detail_view/<str:id>/', indicator_detail_view, name='indicator_detail_view'),
+
+
     path('topic/', topic, name='topic'),
     path('delete_topic/<int:id>', delete_topic, name='delete_topic'),
     path('edit_topic/', edit_topic, name='edit_topic'),

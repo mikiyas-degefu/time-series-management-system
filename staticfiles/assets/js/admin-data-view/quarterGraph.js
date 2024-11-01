@@ -1,7 +1,7 @@
    
 
     let urlPath = window.location.pathname;
-    let pathID = urlPath.replace("/indicator_detail_view/", "").replace("/", "");
+    let pathID = urlPath.replace("/user-admin/indicator_detail_view/", "").replace("/", "");
 
 
     async function fetchData(pathID) {
@@ -141,7 +141,7 @@
           }
         },
         title: {
-          text: 'Recent 10 years quarterly performance result',
+          text: 'Recent 10 ---------- years quarterly performance result',
           offsetX: 15
         },
         subtitle: {

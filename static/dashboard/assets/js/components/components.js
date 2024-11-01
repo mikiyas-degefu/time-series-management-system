@@ -1,3 +1,4 @@
+
 const size = {
   '50%': 'col-md-6',
   '33%': 'col-md-4',
@@ -32,27 +33,25 @@ const bar_horizontal_stacked = () => {
   }).render()
 };
 
-const bar_horizontal = (id, component) => {
-
-  const newComponent = component
-
-  newComponent.annual_value.sort((a, b) => {
-    if (a.for_datapoint < b.for_datapoint) return -1
-    return 1
-  })
-
-  const years = Array.from(new Set(newComponent?.annual_value?.map((item) => item.for_datapoint)))
-  const data = newComponent.indicator.map((indicator) => {
-    let annual = newComponent.annual_value.filter((item) => item.indicator === indicator.id).map((item) => item.performance)
-    return {
-      name: indicator.title_ENG,
-      data: annual
-    }
-  }
-  )
-  var options = {
-    series: data,
-    chart: {
+const bar_horizontal = (id , component) => {
+    
+    const newComponent = component
+    newComponent.annual_value.sort((a, b) => {
+      if(a.for_datapoint < b.for_datapoint) return -1
+      return 1
+    })
+    const years = Array.from(new Set(newComponent?.annual_value?.map((item) => item.for_datapoint)))
+    const data = newComponent.indicator.map((indicator) => {
+           let annual =   newComponent.annual_value.filter((item) => item.indicator === indicator.id).map((item) => item.performance)
+           return {
+               name: indicator.title_ENG,
+               data: annual
+           }
+        }
+      )
+    var options = {
+      series: data,
+      chart: {
       type: 'bar',
       height: 430
     },
@@ -94,9 +93,6 @@ const bar_horizontal = (id, component) => {
 
 };
 
-const bar_stacked = () => {
-  // Function logic for bar_stacked
-};
 
 const bar = (id, component) => {
   const newComponent = component
@@ -143,9 +139,6 @@ const bar = (id, component) => {
   }).render()
 };
 
-const basic_line = () => {
-  // Function logic for basic_line
-};
 
 const different_line_area = () => {
   // Function logic for different_line_area
@@ -196,10 +189,6 @@ const banner = (id, component) => {
 )
 };
 
-const list_with_category = () => {
-  // Function logic for list_with_category
-};
-
 const progress_card = () => {
   // Function logic for progress_card
 };
@@ -211,10 +200,80 @@ const rate_card = () => {
 const simple_card = () => {
   // Function logic for simple_card
 };
+  
+  const bar_stacked = () => {
+    // Function logic for bar_stacked
+  };
+  
+  
+  
+  const basic_line = (id, component) => {
+    const newComponent = component
+  
+    newComponent.annual_value.sort((a, b) => {
+      if (a.for_datapoint < b.for_datapoint) return -1
+      return 1
+    })
 
-const top_list = () => {
-  // Function logic for top_list
-};
+
+    const years = Array.from(new Set(newComponent?.annual_value?.map((item) => String(item.for_datapoint))))
+    const data = newComponent.indicator.map((indicator) => {
+      let annual = newComponent.annual_value.filter((item) => item.indicator === indicator.id).map((item) => item.performance)
+      return {
+        name: indicator.title_ENG,
+        data: annual
+      }
+    })
+
+    var options = {
+      series: [{
+        name: data[0].name,
+        data: data[0].data
+    }],
+      chart: {
+      height: 350,
+      type: 'line',
+      zoom: {
+        enabled: false
+      }
+    },
+    dataLabels: {
+      enabled: false
+    },
+    stroke: {
+      curve: 'straight'
+    },
+    title: {
+      text: newComponent.title,
+      align: 'left'
+    },
+    grid: {
+      row: {
+        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+        opacity: 0.5
+      },
+    },
+    xaxis: {
+      categories: years,
+    }
+    };
+
+    var chart = new ApexCharts(document.querySelector(`#${id}`), options);
+    chart.render();
+  };
+  
+ 
+
+  
+  const list_with_category = () => {
+    // Function logic for list_with_category
+  };
+  
+  
+  
+  const top_list = () => {
+    // Function logic for top_list
+  };
 
 
 const fetchData = async () => {
