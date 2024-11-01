@@ -154,7 +154,6 @@ $(document).ready(()=>{
 
     // Event delegation to handle dynamically added elements
     $(document).on('click', "[name='btn-edit']", function() {
-
         let isMultiple = $(this).data('isMultiple');
         let isRange = $(this).data('isRange');
         let colId = $(this).attr('id');

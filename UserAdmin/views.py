@@ -933,6 +933,10 @@ def custom_dashboard_topic(request,id):
     except Dashboard.DoesNotExist:
         return HttpResponse("Dashboard does not exist")
     
+    ## Previous Dashboard lists 
+    rows = Row.objects.filter(for_dashboard = dashboard).select_related()
+
+
     components = Component.objects.all()
     form = DashboardIndicatorForm(request.POST or None)
 
@@ -960,11 +964,8 @@ def custom_dashboard_topic(request,id):
             except Row.DoesNotExist:
                 return HttpResponse("Row does not exist")
             
-        
             
-        
-            
-            width = request.POST['width'] 
+            width = request.POST['width'] or None
             title = request.POST['title'] or None
             description = request.POST['description'] or None
             data_range_start = request.POST['data_range_start'] or None
@@ -1002,20 +1003,26 @@ def custom_dashboard_topic(request,id):
                     indicators = Indicator.objects.filter(id__in = request.POST.getlist('indicator[]'))
                 except Indicator.DoesNotExist:
                     return HttpResponse("Indicator does not exist")
-            else:
+            elif not component.is_multiple and component.has_indicator:
                 try:
                     indicators = Indicator.objects.filter(id = request.POST['indicator'])
                 except Indicator.DoesNotExist:
                     return HttpResponse("Indicator does not exist")
+            else:
+                indicators = None
+                
 
-            
-
+        
             
             dashboard_indicator.component = component
             dashboard_indicator.for_row = row
             dashboard_indicator.width = width
             dashboard_indicator.save()
-            dashboard_indicator.indicator.add(*indicators) #save all indicator to dashboard b/c of m-to-m relation
+            try:
+                dashboard_indicator.indicator.clear()
+                dashboard_indicator.indicator.add(*indicators) #save all indicator to dashboard b/c of m-to-m relation
+            except:
+                pass
            
             response = {'success' : True, 'id' : dashboard_indicator.id}
             return JsonResponse(response)
@@ -1024,7 +1031,8 @@ def custom_dashboard_topic(request,id):
     context = {
         'dashboard' : dashboard,
         'components' : components,
-        'form' : form
+        'form' : form,
+        'rows' : rows
     }
     return render(request, 'user-admin/dashboard-admin/index.html', context=context)
 
