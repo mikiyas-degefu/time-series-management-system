@@ -1,5 +1,6 @@
 from django.shortcuts import render , redirect, HttpResponse
 from django.db.models import Q
+import json
 from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -297,7 +298,6 @@ def data_view_indicator_detail(request, id):
                     value = MonthData.objects.filter(indicator__id = indicator_id, for_datapoint__year_EC = year_id, for_month__number = month_id).first()
                     value.performance = new_value
                     value.save()
-                    print("month-update")
                 except:
                     try:
                         indicator = Indicator.objects.get(id = indicator_id)
@@ -420,7 +420,6 @@ def edit_topic(request):
     title_AMH = request.POST['title_AMH']
     is_dashboard = True if request.POST['is_dashboard'] == "true" else False
     rank = int(request.POST.get('rank'))
-    print(rank)
     icons = request.POST.get('icon')
     try:
         topic = Topic.objects.get(id = id)
@@ -638,7 +637,6 @@ def all_indicators(request):
                     messages.success(request, '😀 Hello User, Indicator Successfully Added')
                     return redirect('all_indicators')
             elif 'fileIndicator' in request.POST:
-                print("hreee")
                 formFile = ImportFileForm(request.POST, request.FILES)
                 if formFile.is_valid():
                     file = request.FILES['file']
@@ -916,7 +914,6 @@ def edit_dashboard(request):
     id = request.POST['id'] 
     title = request.POST['title']
     description = request.POST['description'] 
-    print(id , title , description)
     try:
         dashboard = Dashboard.objects.get(id = id)
         dashboard.title = title
@@ -964,14 +961,12 @@ def custom_dashboard_topic(request,id):
         if 'dashboardId' in request.POST:
             
             try:
-                print( request.POST['componentId'])
                 component = Component.objects.get(id = request.POST['componentId'])
             except Component.DoesNotExist:
                 return HttpResponse("Component does not exist")
            
             
             try:
-                print( request.POST['rowId'])
                 row = Row.objects.get(id = request.POST['rowId'])
             except Row.DoesNotExist:
                 return HttpResponse("Row does not exist")
@@ -1038,6 +1033,21 @@ def custom_dashboard_topic(request,id):
            
             response = {'success' : True, 'id' : dashboard_indicator.id}
             return JsonResponse(response)
+        
+    elif request.method == 'DELETE':
+        data = json.loads(request.body)
+        component_id = data.get('id')
+        try:
+            component_indicator = DashboardIndicator.objects.get(id = component_id)
+        except DashboardIndicator.DoesNotExist:
+            return HttpResponse("Component does not exist")
+        
+        #delete component
+        component_indicator.delete()
+
+        #return succuss message
+        response = {'success' : True}
+        return JsonResponse(response)
 
 
     context = {

@@ -210,32 +210,6 @@ $(document).ready(() => {
         $(`#delete_input_id_created`).val(isCreated)
     });
 
-    $("#delete_modal").on('submit', async function(e){
-        e.preventDefault()
-        const showToast = (title, body, cssClass) => {
-            $.toast({
-             heading: title,
-             text: body,
-             showHideTransition: 'slide',
-             icon: cssClass,
-             position: 'top-right',
-           })
-         }
 
-        const colID = $("#delete_input_col_id").val()
-        const isCreated = $(`#delete_input_id_created`).val() == 'True' ? true : false
-
-        if(isCreated){
-
-        }
-
-        //show succuss message
-        showToast('&#128515 Hello, User', 'Successfully component removed', 'success')
-        
-        $(`#dragged_col_${colID}`).remove() //remove from html
-        $('#removeComponent').modal('hide'); //Hide Modal
-       
-    })
-    
 });
 })

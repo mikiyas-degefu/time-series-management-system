@@ -363,8 +363,8 @@
     };
 
 
-     //handle on modal col[component] submit
-     $("#form-configuration").on('submit', (e)=>{
+         //handle on modal col[component] submit
+         $("#form-configuration").on('submit', (e)=>{
             e.preventDefault();
 
             const showToast = (title, body, cssClass) => {
@@ -423,6 +423,7 @@
                 'width' : width,
                 csrfmiddlewaretoken: '{{csrf_token}}'
               },
+
               success: function (response) {
                 console.log(response)
                 if (response.success) {
@@ -444,9 +445,7 @@
                    showToast('&#128515 Hello, User', 'Successfully component created', 'success')
                   $('#modalAddDashboardRow').modal('hide'); //Hide Modal
 
-                  
-                  
-
+                
                   console.log($(`#${colId}`).data())
 
                 } else {
@@ -457,11 +456,64 @@
                 console.log(err)
               }
             });
-    
+          })
+
+        
+        //handle on col-delete 
+        $("#delete_modal").on('submit', async function(e){
+        e.preventDefault()
+        //toast message
+        const showToast = (title, body, cssClass) => {
+            $.toast({
+             heading: title,
+             text: body,
+             showHideTransition: 'slide',
+             icon: cssClass,
+             position: 'top-right',
+           })
+         }
+
+        const colID = $("#delete_input_col_id").val()
+        const isCreated = $(`#delete_input_id_created`).val() == 'True' ? true : false
+
+        if(isCreated){
+          $.ajax({
+            type: 'DELETE',
+            url: `{% url "custom-dashboard-topic" dashboard.id %}`,
+            headers: {
+              'X-CSRFToken': '{{ csrf_token }}'  // add CSRF token to headers
+            },
+            data: JSON.stringify({ 'id': colID }),
+            success: function (response) {
+                if (response.success) {
+                     //show succuss message
+                     showToast('&#128515 Hello, User', 'Successfully component removed', 'success')
             
+                    $(`#dragged_col_${colID}`).remove() //remove from html
+                    $('#removeComponent').modal('hide'); //Hide Modal
+
+                } else {
+                    // Show error message
+                    showToast('&#128577; Oops!', 'Failed to remove the component', 'error');
+                }
+            },
+            error: function () {
+                // Show error message
+                showToast('&#128577; Oops!', 'Failed to remove the component', 'error');
+            }
+          });
+        }else{
+          console.log("here", isCreated)
+            //show succuss message
+            showToast('&#128515 Hello, User', 'Successfully component removed', 'success')
+            
+            $(`#dragged_col_${colID}`).remove() //remove from html
+            $('#removeComponent').modal('hide'); //Hide Modal
+        }
+
+
     })
-
-
+    
     </script>
 
         <script
