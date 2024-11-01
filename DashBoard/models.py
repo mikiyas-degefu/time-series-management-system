@@ -64,7 +64,7 @@ class Row(models.Model):
         return DashboardIndicator.objects.filter(for_row=self)
 
     def __str__(self):
-        return str(self.rank) + ' ' + self.for_dashboard.title
+        return str(self.rank) + ' ' + self.for_dashboard.title + ' ' + str(self.id)
 
 
 sizes = (('25%', '25%'), ('33%', '33%'), ('50%', '50%'), ('100%', '100%'))
