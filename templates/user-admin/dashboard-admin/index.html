@@ -168,6 +168,7 @@
             
             {% for col in row.cols.all%}
             <div name="col_component" id="dragged_col_{{col.id}}" class="col-md-{% if col.width == '100%' %}12{% elif col.width == '50%' %}6{% elif col.width == '33%' %}4{% elif col.width == '25%' %}3{% else %}12{% endif %}">
+            
               <div class="card">
                 <div class="card-body">
                   <!--card header-->
@@ -178,16 +179,17 @@
                       <p class="mb-0"></p>
                     </div>
 
-                    <!--Edit Button-->
+                    <!--Detail Button-->
                     <div class="flex-shrink-0 ms-3">
                       <div class="dropdown">
-                        <a
-                          class="avtar avtar-s btn-link-primary dropdown-toggle arrow-none"
+                        <a class="avtar avtar-s btn-link-primary dropdown-toggle arrow-none"
                           href="#" data-bs-toggle="dropdown"
                           aria-haspopup="true" aria-expanded="false">
                           <i class="ti ti-dots-vertical f-18"></i>
                         </a>
+                      
                         <div class="dropdown-menu dropdown-menu-end">
+                          <!--Col edit button-->
                           <button 
                             type="button" 
                             name="btn-edit" 
@@ -214,10 +216,26 @@
                                 xlink:href="#custom-flash"></use></svg>
                             Edit
                           </button>
+
+                            <!--Col Delete  Button-->
+                          <button 
+                            type="button" 
+                            name="btn-delate" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#removeComponent"
+                            class="dropdown-item">
+                            <i class="text-danger ti ti-x f-20 "></i>
+                            <span class="text-danger">Delete</span>
+                          </button>
                         </div>
+
+                        
                       </div>
+
+                      
                     </div>
 
+                  
                   </div>
 
                   <div 
@@ -271,6 +289,25 @@
                     changes</button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Delete Col -->
+        <div class="modal fade" id="removeComponent" tabindex="-1" aria-labelledby="removeComponentLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="removeComponentLabel">Delete Modal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+               Are you sure you want to remove this component?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger">Save changes</button>
+              </div>
             </div>
           </div>
         </div>
