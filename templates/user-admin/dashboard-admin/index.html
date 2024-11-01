@@ -395,7 +395,7 @@
             let data_range_start = $("#id_data_range_start").val();
             let data_range_end = $("#id_data_range_end").val();
 
-            console.log(data_range_start, data_range_end)
+
             let width = $("#id_width").val();
             
             
@@ -437,9 +437,16 @@
                   $(`#${colId}`).data('col-title', title)
                   $(`#${colId}`).data('col-description', description)
                   $(`#${colId}`).data('col-data-range-start', data_range_start) 
-                  $(`#${colId}`).data('col-data-range-end', data_range_end) 
+                  $(`#${colId}`).data('col-data-range-end', data_range_end)
+                  
+                  //update delete button data to component created true
+                  $(`#delete_btn_${colId}`).attr("data-is-created", "True");
 
-           
+                  //update data of col-id
+                  $(`#delete_btn_${colId}`).attr("data-col-id", response.id);
+
+                  //update id of col 
+                  $(`#dragged_${colId}`).attr("id", `dragged_col_${response.id}`);
 
                    //show succuss message
                    showToast('&#128515 Hello, User', 'Successfully component created', 'success')
@@ -488,7 +495,7 @@
                 if (response.success) {
                      //show succuss message
                      showToast('&#128515 Hello, User', 'Successfully component removed', 'success')
-            
+                     console.log(`#dragged_col_${colID}`)
                     $(`#dragged_col_${colID}`).remove() //remove from html
                     $('#removeComponent').modal('hide'); //Hide Modal
 
@@ -503,7 +510,7 @@
             }
           });
         }else{
-          console.log("here", isCreated)
+         
             //show succuss message
             showToast('&#128515 Hello, User', 'Successfully component removed', 'success')
             

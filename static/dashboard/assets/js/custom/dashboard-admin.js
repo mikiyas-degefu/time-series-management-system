@@ -74,6 +74,7 @@ $(document).ready(() => {
                                         <button 
                                           type="button" 
                                           name="btn-delete"
+                                          id="delete_btn_col_${colId}"
                                           data-col-id="${colId}" 
                                           data-is-created="False"
                                           data-bs-toggle="modal" 
