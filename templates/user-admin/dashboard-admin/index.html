@@ -222,6 +222,7 @@
                             type="button" 
                             name="btn-delete"
                             data-col-id="{{col.id}}" 
+                            data-is-created="True"
                             data-bs-toggle="modal" 
                             data-bs-target="#removeComponent"
                             class="dropdown-item">
@@ -298,14 +299,17 @@
                 <h5 class="modal-title" id="removeComponentLabel">Delete Modal</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div class="modal-body">
-                <input id="delete_input_col_id" type="hidden">
-               Are you sure you want to remove this component?
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger">Save changes</button>
-              </div>
+              <form id="delete_modal" method="post">
+                <div class="modal-body">
+                  <input id="delete_input_col_id" type="hidden">
+                  <input id="delete_input_id_created" type="hidden">
+                 Are you sure you want to remove this component?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-danger">Save changes</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>

@@ -69,6 +69,20 @@ $(document).ready(() => {
                                             <svg class="pc-icon"><use xlink:href="#custom-flash"></use></svg> 
                                             Edit
                                         </button>
+
+                                        <!--Col Delete  Button-->
+                                        <button 
+                                          type="button" 
+                                          name="btn-delete"
+                                          data-col-id="${colId}" 
+                                          data-is-created="False"
+                                          data-bs-toggle="modal" 
+                                          data-bs-target="#removeComponent"
+                                          class="dropdown-item">
+                                          <i class="text-danger ti ti-x f-20 "></i>
+                                          <span class="text-danger">Delete</span>
+                                        </button>
+
                                     </div>
                                 </div>
                             </div>
@@ -191,9 +205,37 @@ $(document).ready(() => {
     //handle on component remove 
     $(document).on('click', "[name='btn-delete']", function () {
         const colID = $(this).data('colId')
+        const isCreated = $(this).data('isCreated')
         $('#delete_input_col_id').val(colID)
-       // $(`#dragged_col_${colID}`).remove() //remove from html
+        $(`#delete_input_id_created`).val(isCreated)
     });
+
+    $("#delete_modal").on('submit', async function(e){
+        e.preventDefault()
+        const showToast = (title, body, cssClass) => {
+            $.toast({
+             heading: title,
+             text: body,
+             showHideTransition: 'slide',
+             icon: cssClass,
+             position: 'top-right',
+           })
+         }
+
+        const colID = $("#delete_input_col_id").val()
+        const isCreated = $(`#delete_input_id_created`).val() == 'True' ? true : false
+
+        if(isCreated){
+
+        }
+
+        //show succuss message
+        showToast('&#128515 Hello, User', 'Successfully component removed', 'success')
+        
+        $(`#dragged_col_${colID}`).remove() //remove from html
+        $('#removeComponent').modal('hide'); //Hide Modal
+       
+    })
     
 });
 })
