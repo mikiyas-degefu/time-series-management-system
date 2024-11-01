@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_tags %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -200,7 +201,7 @@
                             data-has-indicator="{{col.component.has_indicator}}"
                             data-has-description="{{col.component.has_description}}" 
                             data-col-id="{{col.id}}"
-                            data-col-indicator-id="{{1}}"
+                            data-col-indicator-id="{{ col.indicator.all|get_ids }}"
                             data-col-width="{{col.width}}"
                             data-col-title="{{col.title}}"
                             data-col-description="{{col.description}}"
@@ -387,7 +388,7 @@
                 console.log(response)
                 if (response.success) {
                   console.log("Created", response.id)
-                  console.log(colId)
+                  console.log(indicator)
                   //assign real data to col
                   $(`#${colId}`).data('col-id', response.id) 
                   $(`#${colId}`).data('col-indicator-id', indicator) 
