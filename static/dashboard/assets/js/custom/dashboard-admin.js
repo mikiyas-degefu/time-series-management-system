@@ -112,7 +112,7 @@ $(document).ready(() => {
         
                 if (rowId) {
                     let parentDiv = $(`
-                        <div name="row" id="${rowId}" class="row p-5 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
+                        <div name="row" id="${rowId}" data-rank="${rank}" class="row p-5 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
                             
                             <div class="d-flex align-items-center justify-content-between mb-3">
                                 <small id="rank-text-${rowId}" class="mb-0">rank - ${rank}</small>

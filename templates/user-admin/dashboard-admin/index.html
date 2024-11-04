@@ -160,11 +160,11 @@
 
       <!-- [ Main Content ] start -->
       <div class="pc-content">
-        <div id="droppable2" name="drop-element" style="height:100vh;"  class="ui-droppable">
+        <div id="droppable2" name="drop-element" style="padding-bottom: 140px;"  class="ui-droppable ">
 
           <!-- Start Editable components-->
           {% for row in rows%}
-          <div name="row" id="{{row.id}}" class="row p-5 bg-gray-300 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
+          <div name="row" id="{{row.id}}" data-rank="{{row.rank}}" class="row p-5 bg-gray-300 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
 
             <div class="d-flex align-items-center justify-content-between mb-3">
               <small id="rank-text-{{row.id}}" class="mb-0">rank - {{row.rank}}</small>
@@ -639,10 +639,14 @@
                       showToast('&#128515 Hello, User', 'Successfully row rank updated!', 'success')
                       //find the element by its name and row id 
                       let element = $(`[name="btn-rank-row"][data-row-id="${rowID}"]`);
-                      element.attr('data-row-rank', `${rank}`) //update data of button
-
+                      element.attr('data-row-rank', rank) //update data of button
+                      $(`#${rowID}`).attr('data-rank', rank) //update row rank 
                       $(`#rank-text-${rowID}`).html(`rank - ${rank}`) //update rank small text 
+                      sortRow()//sort row
                       $('#modalRowRank').modal('hide'); //Hide Modal
+                     
+
+
                   } else {
                       // Show error message
                       showToast('&#128577; Oops!', `Failed to updated ${response.message}`, 'error');
@@ -653,9 +657,24 @@
                   showToast('&#128577; Oops!', 'Failed to remove the row', 'error');
               }
             });
-
-
         })
+
+
+        /**
+         * Sort row based on its rank
+         */
+        const sortRow =() =>{
+          let items = $('#droppable2 [name="row"]');
+
+          // Sort the items based on their data-rank attribute
+          items.sort(function(a, b) {
+              return $(a).data('rank') - $(b).data('rank'); // Ascending order
+          });
+
+          //updated the html 
+          $('#droppable2').empty().append(items);
+
+        }
     
     </script>
 
