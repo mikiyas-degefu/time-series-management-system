@@ -34,6 +34,11 @@ class ComponentSerializer(serializers.ModelSerializer):
             annual = obj.get_annual_value(start_date=start_date, end_date=end_date)
             serializer  = AnnualSerializer(annual, many=True)
             return serializer.data
+        else:
+            year = obj.year.year_EC
+            annual = obj.get_annual_value(year=year)
+            serializer  = AnnualSerializer(annual, many=True)
+            return serializer.data    
         return None
 
 class RowSerializer(serializers.ModelSerializer):
