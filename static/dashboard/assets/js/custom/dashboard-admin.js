@@ -122,6 +122,15 @@ $(document).ready(() => {
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end">
                                         <button 
+                                            class="dropdown-item" 
+                                            name="btn-rank-row" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#modalRowRank"
+                                            data-row-id="${rowId}"
+                                            data-row-rank=${rank}
+                                            >Edit row
+                                        </button>
+                                        <button 
                                             class="dropdown-item text-danger" 
                                             name="btn-delete-row" 
                                             data-bs-toggle="modal" 

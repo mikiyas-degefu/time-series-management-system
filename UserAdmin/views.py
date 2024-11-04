@@ -941,7 +941,7 @@ def custom_dashboard_topic(request,id):
         return HttpResponse("Dashboard does not exist")
     
     ## Previous Dashboard lists 
-    rows = Row.objects.filter(for_dashboard = dashboard).select_related()
+    rows = Row.objects.filter(for_dashboard = dashboard).order_by('rank').select_related()
 
 
     components = Component.objects.all()
