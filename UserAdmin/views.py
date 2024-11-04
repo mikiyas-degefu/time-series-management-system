@@ -948,23 +948,24 @@ def custom_dashboard_topic(request,id):
         return HttpResponse("Dashboard does not exist")
     
     ## Previous Dashboard lists 
-    rows = Row.objects.filter(for_dashboard = dashboard).select_related()
+    rows = Row.objects.filter(for_dashboard = dashboard).order_by('rank').select_related()
 
 
     components = Component.objects.all()
     form = DashboardIndicatorForm(request.POST or None)
 
     if request.method == 'POST':
-        #save row
+        #create row
         if 'rank' in request.POST:
             row = Row()
             row.for_dashboard = dashboard
-            row.rank = request.POST['rank']
+            row.rank = rows.count()+1
             row.save()
 
-            response = {'success' : True, 'row' : row.id }
+            response = {'success' : True, 'row' : row.id, 'rank' : row.rank }
             return JsonResponse( response)
         
+        #create components
         if 'dashboardId' in request.POST:
             
             try:
@@ -1025,9 +1026,6 @@ def custom_dashboard_topic(request,id):
             else:
                 indicators = None
                 
-
-        
-            
             dashboard_indicator.component = component
             dashboard_indicator.for_row = row
             dashboard_indicator.width = width
@@ -1043,18 +1041,33 @@ def custom_dashboard_topic(request,id):
         
     elif request.method == 'DELETE':
         data = json.loads(request.body)
-        component_id = data.get('id')
-        try:
-            component_indicator = DashboardIndicator.objects.get(id = component_id)
-        except DashboardIndicator.DoesNotExist:
-            return HttpResponse("Component does not exist")
-        
-        #delete component
-        component_indicator.delete()
 
-        #return succuss message
-        response = {'success' : True}
-        return JsonResponse(response)
+        if data.get('isRow'):
+            row_id = data.get('id')
+            try:
+                row = Row.objects.get(id=row_id)
+            except Row.DoesNotExist:
+                return HttpResponse("Row does not exist")
+
+            #delete row 
+            row.delete()
+            #return succuss message
+            response = {'success' : True}
+            return JsonResponse(response)
+        
+        elif data.get('isCol'):
+            component_id = data.get('id')
+            try:
+                component_indicator = DashboardIndicator.objects.get(id = component_id)
+            except DashboardIndicator.DoesNotExist:
+                return HttpResponse("Component does not exist")
+            
+            #delete component
+            component_indicator.delete()
+    
+            #return succuss message
+            response = {'success' : True}
+            return JsonResponse(response)
 
 
     context = {

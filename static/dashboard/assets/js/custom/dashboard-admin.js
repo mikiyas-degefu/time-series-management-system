@@ -17,115 +17,140 @@ $(document).ready(() => {
             helper: 'clone',
             scroll: false,
         });
-
-
+        
         $("[name='row']").draggable({
             revert: "invalid",
             stack: ".draggable",
             helper: 'clone',
             scroll: false,
         });
-
-
+        
         // Define handleAfterDropped function to handle element drop
         const handleAfterDropped = (event, ui) => {
             let droppable = $(event.target); // Target the specific row element
             let draggable = ui.draggable;
-
-            droppable.addClass("bg-success").find("p").html("");
-
+        
+            droppable.addClass("bg-gray-300").find("h5").html("");
+        
             let colId = idGen.next().value;
-
-            // Create a new parent div
-            let parentDiv = $(`<div name="col_component" id="dragged_col_${colId}" class="col-md-6 row-col"></div>`);
+        
+            // Create a new parent div for the column
+            let parentDiv = $(`<div name="col_component" id="dragged_col_${colId}" class="col-md-4 row-col"></div>`);
             let card = $(`<div class="card"></div>`);
             let cardBody = $(`
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1 ms-3">
-                                <p class="mb-0"></p>
-                            </div>
-                            <div class="flex-shrink-0 ms-3">
-                                <div class="dropdown">
-                                    <a class="avtar avtar-s btn-link-primary dropdown-toggle arrow-none" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="ti ti-dots-vertical f-18"></i>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <button 
-                                            type="button"
-                                            name="btn-edit" 
-                                            data-id="${draggable.data('id')}"
-                                            data-is-multiple="${draggable.data('isMultiple')}"
-                                            data-is-single-year="${draggable.data('isSingleYear')}"
-                                            data-is-range="${draggable.data('isRange')}" 
-                                            data-row-id="${droppable.attr('id')}"
-                                            data-has-title="${draggable.data('hasTitle')}"
-                                            data-has-indicator="${draggable.data('hasIndicator')}"
-                                            data-has-description="${draggable.data('hasDescription')}"
-                                            id="col_${colId}"
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#modalAddDashboardRow" 
-                                            class="dropdown-item">
-                                            <svg class="pc-icon"><use xlink:href="#custom-flash"></use></svg> 
-                                            Edit
-                                        </button>
-
-                                        <!--Col Delete  Button-->
-                                        <button 
-                                          type="button" 
-                                          name="btn-delete"
-                                          id="delete_btn_col_${colId}"
-                                          data-col-id="${colId}" 
-                                          data-is-created="False"
-                                          data-bs-toggle="modal" 
-                                          data-bs-target="#removeComponent"
-                                          class="dropdown-item">
-                                          <i class="text-danger ti ti-x f-20 "></i>
-                                          <span class="text-danger">Delete</span>
-                                        </button>
-
-                                    </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1 ms-3">
+                            <p class="mb-0"></p>
+                        </div>
+                        <div class="flex-shrink-0 ms-3">
+                            <div class="dropdown">
+                                <a class="avtar avtar-s btn-link-primary dropdown-toggle arrow-none" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="ti ti-dots-vertical f-18"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <button 
+                                        type="button"
+                                        name="btn-edit" 
+                                        data-id="${draggable.data('id')}"
+                                        data-is-multiple="${draggable.data('isMultiple')}"
+                                        data-is-single-year="${draggable.data('isSingleYear')}"
+                                        data-is-range="${draggable.data('isRange')}" 
+                                        data-row-id="${droppable.attr('id')}"
+                                        data-has-title="${draggable.data('hasTitle')}"
+                                        data-has-indicator="${draggable.data('hasIndicator')}"
+                                        data-has-description="${draggable.data('hasDescription')}"
+                                        id="col_${colId}"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modalAddDashboardRow" 
+                                        class="dropdown-item">
+                                        <svg class="pc-icon"><use xlink:href="#custom-flash"></use></svg> 
+                                        Edit
+                                    </button>
+        
+                                    <!-- Col Delete Button -->
+                                    <button 
+                                        type="button" 
+                                        name="btn-delete"
+                                        id="delete_btn_col_${colId}"
+                                        data-col-id="${colId}" 
+                                        data-is-created="False"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#removeComponent"
+                                        class="dropdown-item">
+                                        <i class="text-danger ti ti-x f-20 "></i>
+                                        <span class="text-danger">Delete</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    </div>`);
-
+                    </div>
+                </div>`);
+        
             // Append the cloned draggable and card structure
             cardBody.appendTo(card);
             draggable.clone().appendTo(cardBody);
             card.find('img').css('width', '100%');
             card.appendTo(parentDiv);
-
-
+        
             // Append the parent div to the droppable element
             parentDiv.appendTo(droppable);
-
-            // Make the row elements sortable and disable text selection
-            $('[name="row"]').sortable({
+        
+            // Make the columns sortable within each row
+            droppable.sortable({
                 items: '.row-col',
                 placeholder: "ui-state-highlight",
             }).disableSelection();
         };
-
+        
         // Apply droppable to the row container
         $('#droppable2').droppable({
             accept: "[name='row']",
             drop: async function (event, ui) {
                 let droppable = $(this); // Get droppable element
-                let rowId = await handleRowCreated(); // Get row id from backend
-
+                let [rowId, rank] = await handleRowCreated(); // Get row id from backend
+        
                 if (rowId) {
-                    let parentDiv = $(`<div name="row"  id="${rowId}" class="row p-5 border ui-droppable ui-sortable ui-draggable ui-draggable-handle"><p>Drop Here</p></div>`);
+                    let parentDiv = $(`
+                        <div name="row" id="${rowId}" class="row p-5 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
+                            
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <small class="mb-0">rank - ${rank}</small>
+                                <div class="dropdown">
+                                    <a class="avtar avtar-s btn-link-secondary dropdown-toggle arrow-none" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="ti ti-dots-vertical f-18"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <button 
+                                            class="dropdown-item" 
+                                            name="btn-rank-row" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#modalRowRank"
+                                            data-row-id="${rowId}"
+                                            data-row-rank="${rank}"
+                                            >Edit row
+                                        </button>
+                                        <button 
+                                            class="dropdown-item text-danger" 
+                                            name="btn-delete-row" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#removeRow"
+                                            data-row-id="${rowId}"
+                                            >Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h5>Drop Here</h5>
+                        </div>`);
                     parentDiv.appendTo(droppable);
                 } else {
                     console.error("Failed to get ID");
                 }
             }
         });
-
-       
-  
-
+        
         $(document).on('drop', '[name="row"]', function(event, ui) {
             handleAfterDropped(event, ui);
         });
@@ -137,6 +162,7 @@ $(document).ready(() => {
                 });
             }
         });
+        
 
 
     // Event delegation to handle dynamically added elements
@@ -210,6 +236,23 @@ $(document).ready(() => {
         $('#delete_input_col_id').val(colID)
         $(`#delete_input_id_created`).val(isCreated)
     });
+
+
+    //handle on row remove
+    $(document).on('click', '[name="btn-delete-row"]', function (){
+        const rowId = $(this).data('rowId')
+        $("#delete_row_id").val(rowId)
+    })
+
+    //handle on row rank clicked
+    $(document).on('click', '[name="btn-rank-row"]', function (){
+        const rowId = $(this).data('rowId')
+        const rowRank = $(this).data('rowRank')
+
+        $("#row_rank_input").val(rowRank)
+        $("#row_rank_input_row_id").val(rowId)
+    })
+
 
 
 });
