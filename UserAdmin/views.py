@@ -808,6 +808,7 @@ def edit_user(request):
 
 
 #######Document#########
+@login_required(login_url='login')
 def document(request):
     form = DocumentForm(request.POST or None, request.FILES or None)
 
@@ -835,6 +836,7 @@ def document(request):
 
 
 
+@login_required(login_url='login')
 def document_edit(request, id):
     
     try:
@@ -860,6 +862,7 @@ def document_edit(request, id):
     return render(request, 'user-admin/document_edit.html', context=context)
 
 
+@login_required(login_url='login')
 def document_delete(request, id):
     try:
         document = Document.objects.get(id=id)
@@ -873,6 +876,7 @@ def document_delete(request, id):
 
 
 #################Dashboard####################  
+@login_required(login_url='login')
 def custom_dashboard(request):
     dashboards = Dashboard.objects.all()
     form = DashboardForm(request.POST or None)
@@ -909,6 +913,8 @@ def custom_dashboard(request):
     return render(request, 'user-admin/dashboard-admin/dashboard_list.html', context=context)
 
 
+
+@login_required(login_url='login')
 @api_view(['POST'])
 def edit_dashboard(request):    
     id = request.POST['id'] 
@@ -934,6 +940,7 @@ def delete_dashboard(request, id):
 
 
 
+@login_required(login_url='login')
 def custom_dashboard_topic(request,id):
     try:
         dashboard = Dashboard.objects.get(id=id)
@@ -1064,12 +1071,15 @@ def custom_dashboard_topic(request,id):
 
 ################EXPORT DATA####################
 @login_required(login_url='login')
+@login_required(login_url='login')
 def export_topic(request):
     topic = TopicResource()
     dataset = topic.export()
     response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
     response['Content-Disposition'] = 'attachment; filename="topic.xlsx"'
     return response
+
+
 
 
 

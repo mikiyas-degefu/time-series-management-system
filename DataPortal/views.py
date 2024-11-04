@@ -5,17 +5,19 @@ from Base.models import (
     MonthData,
     DataPoint
 )
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
 
-def index(request):
-    
 
-    
+
+@login_required(login_url='login')
+def index(request):
     return render(request, 'data_portal/index.html')
 
 
+@login_required(login_url='login')
 def detail_indicator(request, id):
     try:
         indicator = Indicator.objects.get(id=id)

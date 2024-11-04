@@ -2,7 +2,10 @@ from django.urls import path
 from .api.view import *
 from .views import *
 
-from UserManagement.views import login_view , logout_view
+from UserManagement.views import login_view , logout_view , reset_password ,   user_change_password
+
+from django.contrib.auth import views as auth_views
+from .forms import UserPasswordResetForm, UserPasswordConfirmForm
 
 urlpatterns = [
     path('indicator-lists/<str:id>', get_indicators),
@@ -10,7 +13,13 @@ urlpatterns = [
     ###Auth
     path('login/',login_view,name="login"),
     path('logout/',logout_view,name="logout"),
-
+    
+    
+    ###Rest
+    path('password_reset/', auth_views.PasswordResetView.as_view(template_name='auth/reset_password.html', form_class=UserPasswordResetForm), name='password_reset'),
+    path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name='auth/password_reset_done.html'), name='password_reset_done'),
+    path(r'reset/<uidb64>/<token>/',auth_views.PasswordResetConfirmView.as_view(template_name="auth/password_reset_confirm.html",form_class=UserPasswordConfirmForm), name='password_reset_confirm'),
+    path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="auth/password_reset_complete.html"), name='password_reset_complete'),
 
 
     ###Api
