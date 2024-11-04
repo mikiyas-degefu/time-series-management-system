@@ -164,10 +164,10 @@
 
           <!-- Start Editable components-->
           {% for row in rows%}
-          <div name="row" id="{{row.id}}" class="row p-5 border rounded-3 mt-1 bg-gray-300 ui-droppable ui-sortable">
+          <div name="row" id="{{row.id}}" class="row p-5 bg-gray-300 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
 
             <div class="d-flex align-items-center justify-content-between mb-3">
-              <h5 class="mb-0"></h5>
+              <small class="mb-0">rank - {{row.rank}}</small>
               <div class="dropdown">
                   <a class="avtar avtar-s btn-link-secondary dropdown-toggle arrow-none" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <i class="ti ti-dots-vertical f-18"></i>
@@ -183,10 +183,10 @@
                     </button>
                   </div>
               </div>
-          </div>
+            </div>
             
             {% for col in row.cols.all%}
-            <div name="col_component" id="dragged_col_{{col.id}}" class="col-md-{% if col.width == '100%' %}12{% elif col.width == '50%' %}6{% elif col.width == '33%' %}4{% elif col.width == '25%' %}3{% else %}12{% endif %}">
+            <div name="col_component" id="dragged_col_{{col.id}}" class="col-md-{% if col.width == '100%' %}12{% elif col.width == '50%' %}6{% elif col.width == '33%' %}4{% elif col.width == '25%' %}3{% else %}12{% endif %} col-md-4 row-col ui-sortable-handle">
             
               <div class="card">
                 <div class="card-body">
@@ -355,6 +355,29 @@
           </div>
         </div>
 
+         <!-- Modal row rank -->
+         <div class="modal fade" id="modalRowRank" tabindex="-1" aria-labelledby="modalRowRankLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalRowRankLabel">Delete Row</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <form id="delete-row-modal" method="post">
+                <div class="modal-body">
+                  Are you sure you want to remove this row? Deleting it may impact any columns contained within.
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-danger">Save changes</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+
+
         {% include 'dashboard/include/js.html'%}
 
         <script
@@ -392,7 +415,7 @@
               },
               success: function (response) {
                 if (response.success) {
-                  resolve(response.row);  // Resolve with the row ID
+                  resolve([response.row, response.rank]);  // Resolve with the row ID
                 } else {
                   reject("Error: Failed to get ID");
                 }

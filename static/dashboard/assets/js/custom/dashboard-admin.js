@@ -108,14 +108,14 @@ $(document).ready(() => {
             accept: "[name='row']",
             drop: async function (event, ui) {
                 let droppable = $(this); // Get droppable element
-                let rowId = await handleRowCreated(); // Get row id from backend
+                let [rowId, rank] = await handleRowCreated(); // Get row id from backend
         
                 if (rowId) {
                     let parentDiv = $(`
                         <div name="row" id="${rowId}" class="row p-5 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
                             
                             <div class="d-flex align-items-center justify-content-between mb-3">
-                                <h5 class="mb-0"></h5>
+                                <small class="mb-0">rank - ${rank}</small>
                                 <div class="dropdown">
                                     <a class="avtar avtar-s btn-link-secondary dropdown-toggle arrow-none" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="ti ti-dots-vertical f-18"></i>

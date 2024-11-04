@@ -948,16 +948,17 @@ def custom_dashboard_topic(request,id):
     form = DashboardIndicatorForm(request.POST or None)
 
     if request.method == 'POST':
-        #save row
+        #create row
         if 'rank' in request.POST:
             row = Row()
             row.for_dashboard = dashboard
-            row.rank = request.POST['rank']
+            row.rank = rows.count()+1
             row.save()
 
-            response = {'success' : True, 'row' : row.id }
+            response = {'success' : True, 'row' : row.id, 'rank' : row.rank }
             return JsonResponse( response)
         
+        #create components
         if 'dashboardId' in request.POST:
             
             try:
