@@ -588,36 +588,69 @@
         }
     })
 
-    //handle on row-delete 
-    $("#delete-row-modal").on('submit', async function(e){
-        e.preventDefault()
-
-        const rowID = $("#delete_row_id").val()
-
-        $.ajax({
-          type: 'DELETE',
-          url: `{% url "custom-dashboard-topic" dashboard.id %}`,
-          headers: {
-            'X-CSRFToken': '{{ csrf_token }}'  // add CSRF token to headers
-          },
-          data: JSON.stringify({ 'id': rowID, 'isRow' : true }),
-          success: function (response) {
-              if (response.success) {
-                   //show succuss message
-                   showToast('&#128515 Hello, User', 'Successfully row removed', 'success')
-                  $(`#${rowID}`).remove() //remove from html
-                  $('#removeRow').modal('hide'); //Hide Modal
-              } else {
+        //handle on row-delete 
+        $("#delete-row-modal").on('submit', async function(e){
+            e.preventDefault()
+    
+            const rowID = $("#delete_row_id").val()
+    
+            $.ajax({
+              type: 'DELETE',
+              url: `{% url "custom-dashboard-topic" dashboard.id %}`,
+              headers: {
+                'X-CSRFToken': '{{ csrf_token }}'  // add CSRF token to headers
+              },
+              data: JSON.stringify({ 'id': rowID, 'isRow' : true }),
+              success: function (response) {
+                  if (response.success) {
+                       //show succuss message
+                       showToast('&#128515 Hello, User', 'Successfully row removed', 'success')
+                      $(`#${rowID}`).remove() //remove from html
+                      $('#removeRow').modal('hide'); //Hide Modal
+                  } else {
+                      // Show error message
+                      showToast('&#128577; Oops!', 'Failed to remove the row', 'error');
+                  }
+              },
+              error: function () {
                   // Show error message
                   showToast('&#128577; Oops!', 'Failed to remove the row', 'error');
               }
-          },
-          error: function () {
-              // Show error message
-              showToast('&#128577; Oops!', 'Failed to remove the row', 'error');
-          }
-        });
-    })
+            });
+        })
+
+        //handle on row-rank-updated 
+        $("#rank-row-modal").on('submit', async function(e){
+            e.preventDefault()
+    
+            const rank = $("#row_rank_input").val()
+            const rowID = $("#row_rank_input_row_id").val()
+    
+            $.ajax({
+              type: 'PATCH',
+              url: `{% url "custom-dashboard-topic" dashboard.id %}`,
+              headers: {
+                'X-CSRFToken': '{{ csrf_token }}'  // add CSRF token to headers
+              },
+              data: JSON.stringify({ 'id': rowID, 'rank' : rank ,'isRow' : true }),
+              success: function (response) {
+                  if (response.success) {
+                       //show succuss message
+                      showToast('&#128515 Hello, User', 'Successfully row rank updated!', 'success')
+                      $('#modalRowRank').modal('hide'); //Hide Modal
+                  } else {
+                      // Show error message
+                      showToast('&#128577; Oops!', `Failed to updated ${response.message}`, 'error');
+                  }
+              },
+              error: function () {
+                  // Show error message
+                  showToast('&#128577; Oops!', 'Failed to remove the row', 'error');
+              }
+            });
+
+
+        })
     
     </script>
 

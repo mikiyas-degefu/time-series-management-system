@@ -1061,6 +1061,34 @@ def custom_dashboard_topic(request,id):
             #return succuss message
             response = {'success' : True}
             return JsonResponse(response)
+    
+    elif request.method == 'PATCH':
+        data = json.loads(request.body)
+
+        #Get row
+        try:
+            current_row = Row.objects.get(id = data.get('id'))
+        except Row.DoesNotExist:
+            return JsonResponse({'success' : False, 'message' : "Row doesn't exit!"})
+        
+        #Get rank number
+        try:
+            new_rank_number = int(data.get('rank'))
+        except:
+            return JsonResponse({'success' : False, 'message' : 'Invalid rank number!'})
+        
+        #update old rank 
+        current_row.rank = new_rank_number
+        current_row.save()
+
+        #return succuss message
+        response = {'success' : True}
+        return JsonResponse(response)
+
+        
+        
+
+            
 
 
     context = {
