@@ -115,7 +115,7 @@ $(document).ready(() => {
                         <div name="row" id="${rowId}" class="row p-5 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
                             
                             <div class="d-flex align-items-center justify-content-between mb-3">
-                                <small class="mb-0">rank - ${rank}</small>
+                                <small id="rank-text-${rowId}" class="mb-0">rank - ${rank}</small>
                                 <div class="dropdown">
                                     <a class="avtar avtar-s btn-link-secondary dropdown-toggle arrow-none" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="ti ti-dots-vertical f-18"></i>
@@ -246,8 +246,8 @@ $(document).ready(() => {
 
     //handle on row rank clicked
     $(document).on('click', '[name="btn-rank-row"]', function (){
-        const rowId = $(this).data('rowId')
-        const rowRank = $(this).data('rowRank')
+        const rowId = $(this).attr('data-row-id'); 
+        const rowRank = $(this).attr('data-row-rank'); 
 
         $("#row_rank_input").val(rowRank)
         $("#row_rank_input_row_id").val(rowId)

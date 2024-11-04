@@ -167,7 +167,7 @@
           <div name="row" id="{{row.id}}" class="row p-5 bg-gray-300 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
 
             <div class="d-flex align-items-center justify-content-between mb-3">
-              <small class="mb-0">rank - {{row.rank}}</small>
+              <small id="rank-text-{{row.id}}" class="mb-0">rank - {{row.rank}}</small>
               <div class="dropdown">
                   <a class="avtar avtar-s btn-link-secondary dropdown-toggle arrow-none" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <i class="ti ti-dots-vertical f-18"></i>
@@ -637,6 +637,11 @@
                   if (response.success) {
                        //show succuss message
                       showToast('&#128515 Hello, User', 'Successfully row rank updated!', 'success')
+                      //find the element by its name and row id 
+                      let element = $(`[name="btn-rank-row"][data-row-id="${rowID}"]`);
+                      element.attr('data-row-rank', `${rank}`) //update data of button
+
+                      $(`#rank-text-${rowID}`).html(`rank - ${rank}`) //update rank small text 
                       $('#modalRowRank').modal('hide'); //Hide Modal
                   } else {
                       // Show error message
