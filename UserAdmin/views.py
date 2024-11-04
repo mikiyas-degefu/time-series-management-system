@@ -1018,9 +1018,6 @@ def custom_dashboard_topic(request,id):
             else:
                 indicators = None
                 
-
-        
-            
             dashboard_indicator.component = component
             dashboard_indicator.for_row = row
             dashboard_indicator.width = width
@@ -1036,18 +1033,33 @@ def custom_dashboard_topic(request,id):
         
     elif request.method == 'DELETE':
         data = json.loads(request.body)
-        component_id = data.get('id')
-        try:
-            component_indicator = DashboardIndicator.objects.get(id = component_id)
-        except DashboardIndicator.DoesNotExist:
-            return HttpResponse("Component does not exist")
-        
-        #delete component
-        component_indicator.delete()
 
-        #return succuss message
-        response = {'success' : True}
-        return JsonResponse(response)
+        if data.get('isRow'):
+            row_id = data.get('id')
+            try:
+                row = Row.objects.get(id=row_id)
+            except Row.DoesNotExist:
+                return HttpResponse("Row does not exist")
+
+            #delete row 
+            row.delete()
+            #return succuss message
+            response = {'success' : True}
+            return JsonResponse(response)
+        
+        elif data.get('isCol'):
+            component_id = data.get('id')
+            try:
+                component_indicator = DashboardIndicator.objects.get(id = component_id)
+            except DashboardIndicator.DoesNotExist:
+                return HttpResponse("Component does not exist")
+            
+            #delete component
+            component_indicator.delete()
+    
+            #return succuss message
+            response = {'success' : True}
+            return JsonResponse(response)
 
 
     context = {

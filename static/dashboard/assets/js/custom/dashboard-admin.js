@@ -112,7 +112,7 @@ $(document).ready(() => {
         
                 if (rowId) {
                     let parentDiv = $(`
-                        <div name="row" id="${rowId}" class="row p-5 border ui-droppable ui-sortable ui-draggable ui-draggable-handle">
+                        <div name="row" id="${rowId}" class="row p-5 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
                             
                             <div class="d-flex align-items-center justify-content-between mb-3">
                                 <h5 class="mb-0"></h5>
@@ -121,7 +121,14 @@ $(document).ready(() => {
                                         <i class="ti ti-dots-vertical f-18"></i>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end">
-                                        <a class="dropdown-item text-danger" href="#">Delete</a>
+                                        <button 
+                                            class="dropdown-item text-danger" 
+                                            name="btn-delete-row" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#removeRow"
+                                            data-row-id="${rowId}"
+                                            >Delete
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -220,6 +227,13 @@ $(document).ready(() => {
         $('#delete_input_col_id').val(colID)
         $(`#delete_input_id_created`).val(isCreated)
     });
+
+
+    //handle on row remove
+    $(document).on('click', '[name="btn-delete-row"]', function (){
+        const rowId = $(this).data('rowId')
+        $("#delete_row_id").val(rowId)
+    })
 
 
 });
