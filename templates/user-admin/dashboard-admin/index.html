@@ -178,8 +178,8 @@
                       name="btn-rank-row" 
                       data-bs-toggle="modal" 
                       data-bs-target="#modalRowRank"
-                      data-row-id="${rowId}"
-                      data-row-rank=${rank}
+                      data-row-id="{{row.id}}"
+                      data-row-rank="{{row.rank}}"
                       >Edit row
                     </button>
                     <button 
@@ -372,11 +372,12 @@
                 <h5 class="modal-title" id="modalRowRankLabel">Rank Row</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <form id="delete-row-modal" method="post">
+              <form id="rank-row-modal" method="post">
                 <div class="modal-body">
                   <p>Are you sure you want to modify the ranking of this row? This may impact the current order.</p>
                   <label class="form-label" for="row_rank_input">Input rank:</label>
                   <input type="number" class="form-control" id="row_rank_input">
+                  <input type="hidden" class="form-control" id="row_rank_input_row_id">
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

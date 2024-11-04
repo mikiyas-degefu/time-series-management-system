@@ -127,7 +127,7 @@ $(document).ready(() => {
                                             data-bs-toggle="modal" 
                                             data-bs-target="#modalRowRank"
                                             data-row-id="${rowId}"
-                                            data-row-rank=${rank}
+                                            data-row-rank="${rank}"
                                             >Edit row
                                         </button>
                                         <button 
@@ -243,6 +243,16 @@ $(document).ready(() => {
         const rowId = $(this).data('rowId')
         $("#delete_row_id").val(rowId)
     })
+
+    //handle on row rank clicked
+    $(document).on('click', '[name="btn-rank-row"]', function (){
+        const rowId = $(this).data('rowId')
+        const rowRank = $(this).data('rowRank')
+
+        $("#row_rank_input").val(rowRank)
+        $("#row_rank_input_row_id").val(rowId)
+    })
+
 
 
 });
