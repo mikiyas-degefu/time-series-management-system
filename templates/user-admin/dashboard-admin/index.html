@@ -160,14 +160,14 @@
 
       <!-- [ Main Content ] start -->
       <div class="pc-content">
-        <div id="droppable2" name="drop-element" style="height:100vh;"  class="ui-droppable">
+        <div id="droppable2" name="drop-element" style="padding-bottom: 140px;"  class="ui-droppable ">
 
           <!-- Start Editable components-->
           {% for row in rows%}
-          <div name="row" id="{{row.id}}" class="row p-5 bg-gray-300 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
+          <div name="row" id="{{row.id}}" data-rank="{{row.rank}}" class="row p-5 bg-gray-300 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
 
             <div class="d-flex align-items-center justify-content-between mb-3">
-              <small class="mb-0">rank - {{row.rank}}</small>
+              <small id="rank-text-{{row.id}}" class="mb-0">rank - {{row.rank}}</small>
               <div class="dropdown">
                   <a class="avtar avtar-s btn-link-secondary dropdown-toggle arrow-none" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <i class="ti ti-dots-vertical f-18"></i>
@@ -588,36 +588,93 @@
         }
     })
 
-    //handle on row-delete 
-    $("#delete-row-modal").on('submit', async function(e){
-        e.preventDefault()
-
-        const rowID = $("#delete_row_id").val()
-
-        $.ajax({
-          type: 'DELETE',
-          url: `{% url "custom-dashboard-topic" dashboard.id %}`,
-          headers: {
-            'X-CSRFToken': '{{ csrf_token }}'  // add CSRF token to headers
-          },
-          data: JSON.stringify({ 'id': rowID, 'isRow' : true }),
-          success: function (response) {
-              if (response.success) {
-                   //show succuss message
-                   showToast('&#128515 Hello, User', 'Successfully row removed', 'success')
-                  $(`#${rowID}`).remove() //remove from html
-                  $('#removeRow').modal('hide'); //Hide Modal
-              } else {
+        //handle on row-delete 
+        $("#delete-row-modal").on('submit', async function(e){
+            e.preventDefault()
+    
+            const rowID = $("#delete_row_id").val()
+    
+            $.ajax({
+              type: 'DELETE',
+              url: `{% url "custom-dashboard-topic" dashboard.id %}`,
+              headers: {
+                'X-CSRFToken': '{{ csrf_token }}'  // add CSRF token to headers
+              },
+              data: JSON.stringify({ 'id': rowID, 'isRow' : true }),
+              success: function (response) {
+                  if (response.success) {
+                       //show succuss message
+                       showToast('&#128515 Hello, User', 'Successfully row removed', 'success')
+                      $(`#${rowID}`).remove() //remove from html
+                      $('#removeRow').modal('hide'); //Hide Modal
+                  } else {
+                      // Show error message
+                      showToast('&#128577; Oops!', 'Failed to remove the row', 'error');
+                  }
+              },
+              error: function () {
                   // Show error message
                   showToast('&#128577; Oops!', 'Failed to remove the row', 'error');
               }
-          },
-          error: function () {
-              // Show error message
-              showToast('&#128577; Oops!', 'Failed to remove the row', 'error');
-          }
-        });
-    })
+            });
+        })
+
+        //handle on row-rank-updated 
+        $("#rank-row-modal").on('submit', async function(e){
+            e.preventDefault()
+    
+            const rank = $("#row_rank_input").val()
+            const rowID = $("#row_rank_input_row_id").val()
+    
+            $.ajax({
+              type: 'PATCH',
+              url: `{% url "custom-dashboard-topic" dashboard.id %}`,
+              headers: {
+                'X-CSRFToken': '{{ csrf_token }}'  // add CSRF token to headers
+              },
+              data: JSON.stringify({ 'id': rowID, 'rank' : rank ,'isRow' : true }),
+              success: function (response) {
+                  if (response.success) {
+                       //show succuss message
+                      showToast('&#128515 Hello, User', 'Successfully row rank updated!', 'success')
+                      //find the element by its name and row id 
+                      let element = $(`[name="btn-rank-row"][data-row-id="${rowID}"]`);
+                      element.attr('data-row-rank', rank) //update data of button
+                      $(`#${rowID}`).attr('data-rank', rank) //update row rank 
+                      $(`#rank-text-${rowID}`).html(`rank - ${rank}`) //update rank small text 
+                      sortRow()//sort row
+                      $('#modalRowRank').modal('hide'); //Hide Modal
+                     
+
+
+                  } else {
+                      // Show error message
+                      showToast('&#128577; Oops!', `Failed to updated ${response.message}`, 'error');
+                  }
+              },
+              error: function () {
+                  // Show error message
+                  showToast('&#128577; Oops!', 'Failed to remove the row', 'error');
+              }
+            });
+        })
+
+
+        /**
+         * Sort row based on its rank
+         */
+        const sortRow =() =>{
+          let items = $('#droppable2 [name="row"]');
+
+          // Sort the items based on their data-rank attribute
+          items.sort(function(a, b) {
+              return $(a).data('rank') - $(b).data('rank'); // Ascending order
+          });
+
+          //updated the html 
+          $('#droppable2').empty().append(items);
+
+        }
     
     </script>
 
