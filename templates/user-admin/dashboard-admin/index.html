@@ -164,7 +164,19 @@
 
           <!-- Start Editable components-->
           {% for row in rows%}
-          <div name="row" id="{{row.id}}" class="row p-5 border bg-success ui-droppable ui-sortable">
+          <div name="row" id="{{row.id}}" class="row p-5 border bg-gray-300 ui-droppable ui-sortable">
+
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <h5 class="mb-0"></h5>
+              <div class="dropdown">
+                  <a class="avtar avtar-s btn-link-secondary dropdown-toggle arrow-none" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="ti ti-dots-vertical f-18"></i>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-end">
+                      <a class="dropdown-item text-danger" href="#">Delete</a>
+                  </div>
+              </div>
+          </div>
             
             {% for col in row.cols.all%}
             <div name="col_component" id="dragged_col_{{col.id}}" class="col-md-{% if col.width == '100%' %}12{% elif col.width == '50%' %}6{% elif col.width == '33%' %}4{% elif col.width == '25%' %}3{% else %}12{% endif %}">
