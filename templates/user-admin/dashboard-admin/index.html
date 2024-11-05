@@ -582,7 +582,7 @@
 
 
                 } else {
-                    console.error('invalid!')
+                  showToast('&#128577; Oops!', `Failed to updated ${response.message}`, 'error');
                 }
               },
               error: function (err) {
@@ -617,7 +617,7 @@
 
                 } else {
                     // Show error message
-                    showToast('&#128577; Oops!', 'Failed to remove the component', 'error');
+                    showToast('&#128577; Oops!', `Failed to updated ${response.message}`, 'error');
                 }
             },
             error: function () {
@@ -724,7 +724,7 @@
                    
                     let element = $(`[name="btn-style-row"][data-row-id="${rowID}"]`);
                     let oldStyle = element.attr('data-row-style')
-                    
+
                     $(`#${rowID}`).removeClass(oldStyle).addClass(style);
                     element.attr('data-row-style', style) //update data of button
 

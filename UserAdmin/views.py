@@ -946,7 +946,7 @@ def custom_dashboard_topic(request,id):
     try:
         dashboard = Dashboard.objects.get(id=id)
     except Dashboard.DoesNotExist:
-        return HttpResponse("Dashboard does not exist")
+        return JsonResponse({'success' : False, 'message' : "Dashboard doesn't exit!"})
     
     ## Previous Dashboard lists 
     rows = Row.objects.filter(for_dashboard = dashboard).order_by('rank').select_related()
@@ -964,7 +964,7 @@ def custom_dashboard_topic(request,id):
             row.save()
 
             response = {'success' : True, 'row' : row.id, 'rank' : row.rank }
-            return JsonResponse( response)
+            return JsonResponse(response)
         
         #create components
         if 'dashboardId' in request.POST:
@@ -972,20 +972,20 @@ def custom_dashboard_topic(request,id):
             try:
                 component = Component.objects.get(id = request.POST['componentId'])
             except Component.DoesNotExist:
-                return HttpResponse("Component does not exist")
-           
+                return JsonResponse({'success' : False, 'message' : "Component doesn't exit!"})
             #check row is exit
             try:
                 row = Row.objects.get(id = request.POST['rowId'])
             except Row.DoesNotExist:
-                return HttpResponse("Row does not exist")
+                return JsonResponse({'success' : False, 'message' : "Row doesn't exit!"})
+
             
             #check if dashboard indicator exists
             if request.POST['dashboardId']:
                 try:
                     dashboard_indicator = DashboardIndicator.objects.get(id = request.POST['dashboardId'])
                 except DashboardIndicator.DoesNotExist:
-                    return HttpResponse("Dashboard Indicator does not exist")
+                    return JsonResponse({'success' : False, 'message' : "Component doesn't exit!"})
             else:
                 dashboard_indicator = DashboardIndicator()
             
@@ -1014,23 +1014,23 @@ def custom_dashboard_topic(request,id):
                     dashboard_indicator.data_range_start = data_range_start_ec
                     dashboard_indicator.data_range_end = data_range_end_ec
                 except:
-                    return HttpResponse("Dashboard data range start does not exist")
+                    return JsonResponse({'success' : False, 'message' : "Dashboard data range start does not exist!"})
             elif component.is_single_year:
                 try:
                     year = DataPoint.objects.get(id = request.POST['year'])
                     dashboard_indicator.year = year
                 except DataPoint.DoesNotExist:
-                    return HttpResponse("Year does not exist")
+                    return JsonResponse({'success' : False, 'message' : "Year does not exist!"})
             if component.is_multiple:
                 try:
                     indicators = Indicator.objects.filter(id__in = request.POST.getlist('indicator[]'))
                 except Indicator.DoesNotExist:
-                    return HttpResponse("Indicator does not exist")
+                    return JsonResponse({'success' : False, 'message' : "Indicator does not exit!"})
             elif not component.is_multiple and component.has_indicator:
                 try:
                     indicators = Indicator.objects.filter(id = request.POST['indicator'])
                 except Indicator.DoesNotExist:
-                    return HttpResponse("Indicator does not exist")
+                    return JsonResponse({'success' : False, 'message' : "Indicator does not exit!"})
             else:
                 indicators = None
                 
@@ -1056,7 +1056,7 @@ def custom_dashboard_topic(request,id):
             try:
                 row = Row.objects.get(id=row_id)
             except Row.DoesNotExist:
-                return HttpResponse("Row does not exist")
+                return JsonResponse({'success' : False, 'message' : "Row doesn't exit!"})
 
             #delete row 
             row.delete()
@@ -1069,7 +1069,7 @@ def custom_dashboard_topic(request,id):
             try:
                 component_indicator = DashboardIndicator.objects.get(id = component_id)
             except DashboardIndicator.DoesNotExist:
-                return HttpResponse("Component does not exist")
+                return JsonResponse({'success' : False, 'message' : "Component doesn't exit!"})
             
             #delete component
             component_indicator.delete()
