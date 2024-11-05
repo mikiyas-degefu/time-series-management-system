@@ -60,6 +60,7 @@ $(document).ready(() => {
                                         data-has-title="${draggable.data('hasTitle')}"
                                         data-has-indicator="${draggable.data('hasIndicator')}"
                                         data-has-description="${draggable.data('hasDescription')}"
+                                        data-col-rank="None"
                                         id="col_${colId}"
                                         data-bs-toggle="modal" 
                                         data-bs-target="#modalAddDashboardRow" 
@@ -219,6 +220,7 @@ $(document).ready(() => {
         let colDescription = $(this).data('colDescription') || null;
         let colDataRangeStart = $(this).data('colDataRangeStart') || null;
         let colDataRangeEnd = $(this).data('colDataRangeEnd') || null;
+        let colRank = $(this).data('colRank') || 0;
 
         $("#id_indicator").val(colIndicatorId)
         $("#id_year").val(colYearId);
@@ -227,6 +229,7 @@ $(document).ready(() => {
         $("#id_description").val(colDescription);
         $("#id_data_range_start").val(colDataRangeStart);
         $("#id_data_range_end").val(colDataRangeEnd);
+        $("#id_rank").val(colRank != 'None' ? Number(colRank) : 0)
 
     });
 
