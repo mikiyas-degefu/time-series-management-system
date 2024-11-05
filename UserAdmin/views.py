@@ -967,25 +967,18 @@ def custom_dashboard_topic(request,id):
         
         #create components
         if 'dashboardId' in request.POST:
-            
+            #check component is exist
             try:
                 component = Component.objects.get(id = request.POST['componentId'])
             except Component.DoesNotExist:
                 return HttpResponse("Component does not exist")
            
-            
+            #check row is exit
             try:
                 row = Row.objects.get(id = request.POST['rowId'])
             except Row.DoesNotExist:
                 return HttpResponse("Row does not exist")
             
-            
-            width = request.POST['width'] or None
-            title = request.POST['title'] or None
-            description = request.POST['description'] or None
-            data_range_start = request.POST['data_range_start'] or None
-            data_range_end = request.POST['data_range_end'] or None
-
             #check if dashboard indicator exists
             if request.POST['dashboardId']:
                 try:
@@ -994,6 +987,20 @@ def custom_dashboard_topic(request,id):
                     return HttpResponse("Dashboard Indicator does not exist")
             else:
                 dashboard_indicator = DashboardIndicator()
+            
+            #get the date from post request
+            width = request.POST['width'] or None
+            title = request.POST['title'] or None
+            description = request.POST['description'] or None
+            data_range_start = request.POST['data_range_start'] or None
+            data_range_end = request.POST['data_range_end'] or None
+            rank = request.POST['colRank'] or None
+
+            #check rank is number
+            try:
+                rank = int(rank)
+            except:
+                return JsonResponse({'success' : False, 'message' : "Please enter valid rank number!"})
 
             #save data
             dashboard_indicator.title = title if component.has_title else None
@@ -1006,7 +1013,7 @@ def custom_dashboard_topic(request,id):
                     dashboard_indicator.data_range_start = data_range_start_ec
                     dashboard_indicator.data_range_end = data_range_end_ec
                 except:
-                    return HttpResponse("Dashboard data_range_start does not exist")
+                    return HttpResponse("Dashboard data range start does not exist")
             elif component.is_single_year:
                 try:
                     year = DataPoint.objects.get(id = request.POST['year'])
@@ -1028,6 +1035,7 @@ def custom_dashboard_topic(request,id):
                 
             dashboard_indicator.component = component
             dashboard_indicator.for_row = row
+            dashboard_indicator.rank = rank
             dashboard_indicator.width = width
             dashboard_indicator.save()
             try:
@@ -1036,7 +1044,7 @@ def custom_dashboard_topic(request,id):
             except:
                 pass
            
-            response = {'success' : True, 'id' : dashboard_indicator.id}
+            response = {'success' : True, 'id' : dashboard_indicator.id, 'rank' : dashboard_indicator.rank}
             return JsonResponse(response)
         
     elif request.method == 'DELETE':

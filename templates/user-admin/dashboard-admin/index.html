@@ -164,7 +164,7 @@
 
           <!-- Start Editable components-->
           {% for row in rows%}
-          <div name="row" id="{{row.id}}" data-rank="{{row.rank}}" class="row p-5 bg-gray-300 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
+          <div name="row" id="{{row.id}}" data-rank="{{row.rank}}" class="bg-gray-300 row p-5 border mt-1 rounded-3">
 
             <div class="d-flex align-items-center justify-content-between mb-3">
               <small id="rank-text-{{row.id}}" class="mb-0">rank - {{row.rank}}</small>
@@ -447,12 +447,11 @@
     };
 
 
-         //handle on modal col[component] submit
+         //handle on modal col created
          $("#form-configuration").on('submit', (e)=>{
             e.preventDefault();   
 
             let colId = $("#form_col_id").val();  // Get the column ID
-            console.log('col-id',colId)
 
             let isMultiple = $(`#${colId}`).data('isMultiple')
             let isRange =$(`#${colId}`).data('isRange');
@@ -468,11 +467,14 @@
             let year = $("#id_year").val();
             let data_range_start = $("#id_data_range_start").val();
             let data_range_end = $("#id_data_range_end").val();
+            let rank = $('#id_rank').val()
+
+  
 
             let width = $("#id_width").val();    
 
             let colSize = width == '25%' ? 'col-md-3' : (width == '33%' ? 'col-md-4' : (width == '50%' ? 'col-md-6' : (width == '100%' ? 'col-md-12' : '')));
-            console.log(colId, "aftttttt")
+
             try{
               document.getElementById(`dragged_${colId}`).className = colSize;
             }catch{
@@ -495,6 +497,7 @@
                 'data_range_end' : data_range_end || null,
                 'rowId' : rowId,
                 'width' : width,
+                'colRank' : rank,
                 csrfmiddlewaretoken: '{{csrf_token}}'
               },
 
@@ -511,8 +514,15 @@
                   $(`#${colId}`).data('col-data-range-start', data_range_start) 
                   $(`#${colId}`).data('col-data-range-end', data_range_end)
 
+                  //update col rank and update the html 
+                  $(`#col-rank-info-${colId}`).html(`
+                      <i class="fas fa-check-circle text-success" data-bs-toggle="tooltip" data-bs-placement="top" title="component created!"></i>
+                      <small class="mb-0">col rank - ${response.rank}</small>
+                  `)
+                  console.log(`#col-rank-info-${colId}`)
 
                   try{
+                    
                     //for update button
                     $(`#${colId}`).attr("id", `col_${response.id}`);
 
@@ -536,7 +546,7 @@
 
 
                 } else {
-                    console.error('here eeeee err here')
+                    console.error('invalid!')
                 }
               },
               error: function (err) {

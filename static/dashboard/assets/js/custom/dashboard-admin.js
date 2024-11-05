@@ -40,8 +40,8 @@ $(document).ready(() => {
             let cardBody = $(`
                 <div class="card-body">
                     <div class="d-flex align-items-center">
-                        <div class="flex-grow-1 ms-3">
-                            <p class="mb-0"></p>
+                        <div id="col-rank-info-col_${colId}" class="flex-grow-1 ms-3">
+                            <small class="mb-0 text-danger">col rank - None (component not created!)</small>
                         </div>
                         <div class="flex-shrink-0 ms-3">
                             <div class="dropdown">
@@ -81,6 +81,7 @@ $(document).ready(() => {
                                         <i class="text-danger ti ti-x f-20 "></i>
                                         <span class="text-danger">Delete</span>
                                     </button>
+
                                 </div>
                             </div>
                         </div>
