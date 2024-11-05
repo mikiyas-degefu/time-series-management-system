@@ -35,13 +35,13 @@ $(document).ready(() => {
             let colId = idGen.next().value;
         
             // Create a new parent div for the column
-            let parentDiv = $(`<div name="col_component" id="dragged_col_${colId}" class="col-md-4 row-col"></div>`);
+            let parentDiv = $(`<div name="col_component" data-rank=-1 id="dragged_col_${colId}" class="col-md-4 row-col"></div>`);
             let card = $(`<div class="card"></div>`);
             let cardBody = $(`
                 <div class="card-body">
                     <div class="d-flex align-items-center">
-                        <div class="flex-grow-1 ms-3">
-                            <p class="mb-0"></p>
+                        <div id="col-rank-info-col_${colId}" class="flex-grow-1 ms-3">
+                            <small class="mb-0 text-danger">col rank - None (component not created!)</small>
                         </div>
                         <div class="flex-shrink-0 ms-3">
                             <div class="dropdown">
@@ -60,6 +60,7 @@ $(document).ready(() => {
                                         data-has-title="${draggable.data('hasTitle')}"
                                         data-has-indicator="${draggable.data('hasIndicator')}"
                                         data-has-description="${draggable.data('hasDescription')}"
+                                        data-col-rank="None"
                                         id="col_${colId}"
                                         data-bs-toggle="modal" 
                                         data-bs-target="#modalAddDashboardRow" 
@@ -81,6 +82,7 @@ $(document).ready(() => {
                                         <i class="text-danger ti ti-x f-20 "></i>
                                         <span class="text-danger">Delete</span>
                                     </button>
+
                                 </div>
                             </div>
                         </div>
@@ -112,7 +114,7 @@ $(document).ready(() => {
         
                 if (rowId) {
                     let parentDiv = $(`
-                        <div name="row" id="${rowId}" data-rank="${rank}" class="row p-5 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
+                        <div name="row" id="${rowId}" data-rank="${rank}" class="row justify-content-start p-5 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
                             
                             <div class="d-flex align-items-center justify-content-between mb-3">
                                 <small id="rank-text-${rowId}" class="mb-0">rank - ${rank}</small>
@@ -121,6 +123,15 @@ $(document).ready(() => {
                                         <i class="ti ti-dots-vertical f-18"></i>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end">
+                                        <button 
+                                           class="dropdown-item" 
+                                           name="btn-style-row" 
+                                           data-bs-toggle="modal" 
+                                           data-bs-target="#modalRowStyle"
+                                           data-row-id="${rowId}"
+                                           data-row-style="justify-content-start"
+                                           >Style
+                                        </button>
                                         <button 
                                             class="dropdown-item" 
                                             name="btn-rank-row" 
@@ -193,7 +204,6 @@ $(document).ready(() => {
         hasIndicator ? $("#id_indicator").show().prev().show() : $("#id_indicator").hide().prev().hide()
 
 
-
         let isMultipleSelect = isMultiple == 'True' ? true : false; // Set your condition here
 
         if (isMultipleSelect) {
@@ -218,6 +228,7 @@ $(document).ready(() => {
         let colDescription = $(this).data('colDescription') || null;
         let colDataRangeStart = $(this).data('colDataRangeStart') || null;
         let colDataRangeEnd = $(this).data('colDataRangeEnd') || null;
+        let colRank = $(this).data('colRank') || 0;
 
         $("#id_indicator").val(colIndicatorId)
         $("#id_year").val(colYearId);
@@ -226,6 +237,7 @@ $(document).ready(() => {
         $("#id_description").val(colDescription);
         $("#id_data_range_start").val(colDataRangeStart);
         $("#id_data_range_end").val(colDataRangeEnd);
+        $("#id_rank").val(colRank != 'None' ? Number(colRank) : 0)
 
     });
 
@@ -251,6 +263,15 @@ $(document).ready(() => {
 
         $("#row_rank_input").val(rowRank)
         $("#row_rank_input_row_id").val(rowId)
+    })
+
+    //handle on row style clicked
+    $(document).on('click', '[name="btn-style-row"]', function (){
+        const rowId = $(this).attr('data-row-id'); 
+        const rowStyle = $(this).attr('data-row-style'); 
+
+        $("#id_style").val(rowStyle)
+        $("#row_row_input_row_id").val(rowId)
     })
 
 
