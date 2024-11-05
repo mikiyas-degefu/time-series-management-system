@@ -35,7 +35,7 @@ $(document).ready(() => {
             let colId = idGen.next().value;
         
             // Create a new parent div for the column
-            let parentDiv = $(`<div name="col_component" id="dragged_col_${colId}" class="col-md-4 row-col"></div>`);
+            let parentDiv = $(`<div name="col_component" data-rank=-1 id="dragged_col_${colId}" class="col-md-4 row-col"></div>`);
             let card = $(`<div class="card"></div>`);
             let cardBody = $(`
                 <div class="card-body">
@@ -193,7 +193,6 @@ $(document).ready(() => {
         hasDescription ? $("#id_description").show().prev().show() : $("#id_description").hide().prev().hide()
         isSingleYear ? $("#id_year").show().prev().show() : $("#id_year").hide().prev().hide()
         hasIndicator ? $("#id_indicator").show().prev().show() : $("#id_indicator").hide().prev().hide()
-
 
 
         let isMultipleSelect = isMultiple == 'True' ? true : false; // Set your condition here

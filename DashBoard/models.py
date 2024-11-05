@@ -84,6 +84,9 @@ class DashboardIndicator(models.Model):
     def __str__(self):
         return str(self.for_row.rank) 
     
+    class Meta:
+        ordering = ['rank'] 
+    
 
     def get_annual_value(self,start_date=None, end_date=None, year=None):
         indicator = self.indicator.all()
@@ -92,5 +95,6 @@ class DashboardIndicator(models.Model):
             return annual
         else:
             annual = AnnualData.objects.filter(indicator__in = indicator ,for_datapoint__year_EC=year)
-            return annual    
+            return annual   
+         
 

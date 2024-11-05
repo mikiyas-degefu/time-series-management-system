@@ -195,7 +195,7 @@
             </div>
             
             {% for col in row.cols.all%}
-            <div name="col_component" id="dragged_col_{{col.id}}" class="col-md-{% if col.width == '100%' %}12{% elif col.width == '50%' %}6{% elif col.width == '33%' %}4{% elif col.width == '25%' %}3{% else %}12{% endif %} col-md-4 row-col ui-sortable-handle">
+            <div name="col_component" data-rank="{{col.rank}}" id="dragged_col_{{col.id}}" class="col-md-{% if col.width == '100%' %}12{% elif col.width == '50%' %}6{% elif col.width == '33%' %}4{% elif col.width == '25%' %}3{% else %}12{% endif %} col-md-4 row-col ui-sortable-handle">
             
               <div class="card">
                 <div class="card-body">
@@ -514,16 +514,17 @@
                   $(`#${colId}`).data('col-data-range-start', data_range_start) 
                   $(`#${colId}`).data('col-data-range-end', data_range_end)
                   $(`#${colId}`).data('col-rank', response.rank);
+                  $(`#dragged_${colId}`).attr('data-rank', response.rank) //update col rank 
+
+                  sortCol(rowId) //sort col
 
                   //update col rank and update the html 
                   $(`#col-rank-info-${colId}`).html(`
                       <i class="fas fa-check-circle text-success" data-bs-toggle="tooltip" data-bs-placement="top" title="component created!"></i>
                       <small class="mb-0">col rank - ${response.rank}</small>
                   `)
-                  console.log(`#col-rank-info-${colId}`)
 
-                  try{
-                    
+                  try{    
                     //for update button
                     $(`#${colId}`).attr("id", `col_${response.id}`);
                     $(`#col-rank-info-${colId}`).attr("id", `col-rank-info-col_${response.id}`); //update rank html id
@@ -538,7 +539,6 @@
                      //update id of col 
                      $(`#dragged_${colId}`).attr("id", `dragged_col_${response.id}`);
 
-                    
                   }catch{
                     console.log("ID Updated failed!")
                   }
@@ -658,8 +658,6 @@
                       sortRow()//sort row
                       $('#modalRowRank').modal('hide'); //Hide Modal
                      
-
-
                   } else {
                       // Show error message
                       showToast('&#128577; Oops!', `Failed to updated ${response.message}`, 'error');
@@ -686,6 +684,22 @@
 
           //updated the html 
           $('#droppable2').empty().append(items);
+
+        }
+
+        /**
+         * Sort col based on its rank
+         */
+         const sortCol =(rowId) =>{
+          let items = $(`#${rowId} [name="col_component"]`);
+
+          // Sort the items based on their data-rank attribute
+          items.sort(function(a, b) {
+              return $(a).data('rank') - $(b).data('rank'); // Ascending order
+          });
+
+          //updated the html 
+          $(`#${rowId}`).empty().append(items);
 
         }
     
