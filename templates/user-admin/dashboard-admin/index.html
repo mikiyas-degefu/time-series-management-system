@@ -164,7 +164,7 @@
 
           <!-- Start Editable components-->
           {% for row in rows%}
-          <div name="row" id="{{row.id}}" data-rank="{{row.rank}}" class="bg-gray-300 row p-5 border mt-1 rounded-3">
+          <div name="row" id="{{row.id}}" data-rank="{{row.rank}}" class="bg-gray-300 row {{row.style}} p-5 border mt-1 rounded-3">
 
             <div class="d-flex align-items-center justify-content-between mb-3">
               <small id="rank-text-{{row.id}}" class="mb-0">rank - {{row.rank}}</small>
@@ -284,6 +284,7 @@
 
                 </div>
               </div>
+              
             </div>
             {% endfor %}
 
@@ -699,7 +700,7 @@
           });
 
           //updated the html 
-          $(`#${rowId}`).empty().append(items);
+          $(`#${rowId}`).append(items);
 
         }
     

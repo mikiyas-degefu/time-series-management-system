@@ -950,7 +950,6 @@ def custom_dashboard_topic(request,id):
     ## Previous Dashboard lists 
     rows = Row.objects.filter(for_dashboard = dashboard).order_by('rank').select_related()
 
-
     components = Component.objects.all()
     form = DashboardIndicatorForm(request.POST or None)
 
@@ -1099,12 +1098,6 @@ def custom_dashboard_topic(request,id):
         #return succuss message
         response = {'success' : True}
         return JsonResponse(response)
-
-        
-        
-
-            
-
 
     context = {
         'dashboard' : dashboard,

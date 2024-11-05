@@ -2,22 +2,23 @@ from django.db import models
 from Base.models import Indicator
 from Base.models import DataPoint, Month, Quarter,AnnualData
 
-
-# Create your models here.
-
-
-
 colors = {
     ('blue' , 'blue'),
     ('red' , 'red'),
     ('green' , 'green'),
 }
 
-
 component_category = {
     ('card' , 'card'),
     ('graph' , 'graph'),
     ('table' , 'table'),
+}
+
+row_style = {
+    ('justify-content-start', 'Start'),
+    ('justify-content-end', 'End'),
+    ('justify-content-center', 'Center'),
+    ('justify-content-between', 'Gap between'),
 }
 
 
@@ -59,6 +60,7 @@ class Dashboard(models.Model):
 class Row(models.Model):
     rank = models.IntegerField()
     for_dashboard = models.ForeignKey(Dashboard , on_delete=models.CASCADE , related_name='rows')
+    style =models.CharField(max_length=100, choices=row_style, default='justify-content-center')
 
     def col_list(self):
         return DashboardIndicator.objects.filter(for_row=self)
@@ -79,14 +81,13 @@ class DashboardIndicator(models.Model):
     data_range_start = models.ForeignKey(DataPoint,null=True, blank=True, related_name="dateStartDataPoint" ,on_delete=models.SET_NULL)
     data_range_end = models.ForeignKey(DataPoint,null=True, blank=True, related_name="dateEndDataPoint" ,on_delete=models.SET_NULL)
     rank = models.IntegerField(default=0)
-    width = models.CharField(choices=sizes , max_length=50 , default='50%', null=True , blank=True  )
+    width = models.CharField(choices=sizes , max_length=50 , default='50%', null=True , blank=True)
 
     def __str__(self):
         return str(self.for_row.rank) 
     
     class Meta:
         ordering = ['rank'] 
-    
 
     def get_annual_value(self,start_date=None, end_date=None, year=None):
         indicator = self.indicator.all()
