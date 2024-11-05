@@ -90,4 +90,7 @@ class DashboardIndicator(models.Model):
         if (start_date and end_date) and not year:
             annual = AnnualData.objects.filter(indicator__in = indicator ,for_datapoint__year_EC__range=(start_date, end_date))
             return annual
+        else:
+            annual = AnnualData.objects.filter(indicator__in = indicator ,for_datapoint__year_EC=year)
+            return annual    
 
