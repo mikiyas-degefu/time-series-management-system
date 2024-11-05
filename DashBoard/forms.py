@@ -1,5 +1,5 @@
 from django import forms
-from .models import Dashboard, DashboardIndicator
+from .models import Dashboard, DashboardIndicator, Row
 
 
 class DashboardForm(forms.ModelForm):
@@ -10,6 +10,14 @@ class DashboardForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'})
         }
+
+class RowStyleForm(forms.ModelForm):
+    class Meta:
+        model = Row
+        fields = ('style',)
+        widgets = {
+            'style' : forms.Select(attrs={'class' : 'form-control'})
+        } 
 
 
 class DashboardIndicatorForm(forms.ModelForm):

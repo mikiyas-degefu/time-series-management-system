@@ -175,6 +175,15 @@
                   <div class="dropdown-menu dropdown-menu-end">
                     <button 
                       class="dropdown-item" 
+                      name="btn-style-row" 
+                      data-bs-toggle="modal" 
+                      data-bs-target="#modalRowStyle"
+                      data-row-id="{{row.id}}"
+                      data-row-style="{{row.style}}"
+                      >Style
+                    </button>
+                    <button 
+                      class="dropdown-item" 
                       name="btn-rank-row" 
                       data-bs-toggle="modal" 
                       data-bs-target="#modalRowRank"
@@ -391,6 +400,29 @@
             </div>
           </div>
         </div>
+
+          <!-- Modal row style -->
+          <div class="modal fade" id="modalRowStyle" tabindex="-1" aria-labelledby="modalRowStyleLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalRowStyleLabel">Row Style</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="style-row-modal" method="post">
+                  <div class="modal-body">
+                    <p>Are you sure you want to update the style of this row? Please note that this alteration could impact the arrangement of the existing components.</p>
+                    {{form_row_style.as_p}}
+                    <input type="hidden" class="form-control" id="row_row_input_row_id">
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
 
 
 
@@ -666,10 +698,49 @@
               },
               error: function () {
                   // Show error message
-                  showToast('&#128577; Oops!', 'Failed to remove the row', 'error');
+                  showToast('&#128577; Oops!', 'Failed to update the row', 'error');
               }
             });
         })
+
+         //handle on row-style-updated 
+         $("#style-row-modal").on('submit', async function(e){
+          e.preventDefault()
+  
+          const style = $("#id_style").val()
+          const rowID = $("#row_row_input_row_id").val()
+  
+          $.ajax({
+            type: 'PATCH',
+            url: `{% url "custom-dashboard-topic" dashboard.id %}`,
+            headers: {
+              'X-CSRFToken': '{{ csrf_token }}'  // add CSRF token to headers
+            },
+            data: JSON.stringify({ 'id': rowID, 'style' : style ,'isRowStyle' : true }),
+            success: function (response) {
+                if (response.success) {
+                     //show succuss message
+                    showToast('&#128515 Hello, User', 'Successfully row style updated!', 'success')
+                   
+                    let element = $(`[name="btn-style-row"][data-row-id="${rowID}"]`);
+                    let oldStyle = element.attr('data-row-style')
+                    
+                    $(`#${rowID}`).removeClass(oldStyle).addClass(style);
+                    element.attr('data-row-style', style) //update data of button
+
+                    $('#modalRowStyle').modal('hide'); //Hide Modal
+                    
+                } else {
+                    // Show error message
+                    showToast('&#128577; Oops!', `Failed to updated ${response.message}`, 'error');
+                }
+            },
+            error: function () {
+                // Show error message
+                showToast('&#128577; Oops!', 'Failed to update the row', 'error');
+            }
+          });
+      })
 
 
         /**

@@ -55,7 +55,8 @@ from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from DashBoard.forms import(
     DashboardForm,
-    DashboardIndicatorForm
+    DashboardIndicatorForm,
+    RowStyleForm
 )
 
 
@@ -952,6 +953,7 @@ def custom_dashboard_topic(request,id):
 
     components = Component.objects.all()
     form = DashboardIndicatorForm(request.POST or None)
+    form_row_style = RowStyleForm(request.POST or None)
 
     if request.method == 'POST':
         #create row
@@ -1084,26 +1086,38 @@ def custom_dashboard_topic(request,id):
             current_row = Row.objects.get(id = data.get('id'))
         except Row.DoesNotExist:
             return JsonResponse({'success' : False, 'message' : "Row doesn't exit!"})
-        
-        #Get rank number
-        try:
-            new_rank_number = int(data.get('rank'))
-        except:
-            return JsonResponse({'success' : False, 'message' : 'Invalid rank number!'})
-        
-        #update old rank 
-        current_row.rank = new_rank_number
-        current_row.save()
 
-        #return succuss message
-        response = {'success' : True}
-        return JsonResponse(response)
+        if data.get('isRow'):
+            #Get rank number
+            try:
+                new_rank_number = int(data.get('rank'))
+            except:
+                return JsonResponse({'success' : False, 'message' : 'Invalid rank number!'})
+            
+            #update old rank 
+            current_row.rank = new_rank_number
+            current_row.save()
+    
+            #return succuss message
+            response = {'success' : True}
+            return JsonResponse(response)
+        
+        elif data.get('isRowStyle'):
+            #update old style 
+            current_row.style = data.get('style')
+            current_row.save()
 
+            #return succuss message
+            response = {'success' : True}
+            return JsonResponse(response)
+
+    
     context = {
         'dashboard' : dashboard,
         'components' : components,
         'form' : form,
-        'rows' : rows
+        'rows' : rows,
+        'form_row_style' : form_row_style
     }
     return render(request, 'user-admin/dashboard-admin/index.html', context=context)
 

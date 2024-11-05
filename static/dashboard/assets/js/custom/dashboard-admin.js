@@ -114,7 +114,7 @@ $(document).ready(() => {
         
                 if (rowId) {
                     let parentDiv = $(`
-                        <div name="row" id="${rowId}" data-rank="${rank}" class="row p-5 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
+                        <div name="row" id="${rowId}" data-rank="${rank}" class="row justify-content-start p-5 border mt-1 rounded-3 ui-droppable ui-sortable ui-draggable ui-draggable-handle">
                             
                             <div class="d-flex align-items-center justify-content-between mb-3">
                                 <small id="rank-text-${rowId}" class="mb-0">rank - ${rank}</small>
@@ -123,6 +123,15 @@ $(document).ready(() => {
                                         <i class="ti ti-dots-vertical f-18"></i>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end">
+                                        <button 
+                                           class="dropdown-item" 
+                                           name="btn-style-row" 
+                                           data-bs-toggle="modal" 
+                                           data-bs-target="#modalRowStyle"
+                                           data-row-id="${rowId}"
+                                           data-row-style="justify-content-start"
+                                           >Style
+                                        </button>
                                         <button 
                                             class="dropdown-item" 
                                             name="btn-rank-row" 
@@ -254,6 +263,15 @@ $(document).ready(() => {
 
         $("#row_rank_input").val(rowRank)
         $("#row_rank_input_row_id").val(rowId)
+    })
+
+    //handle on row style clicked
+    $(document).on('click', '[name="btn-style-row"]', function (){
+        const rowId = $(this).attr('data-row-id'); 
+        const rowStyle = $(this).attr('data-row-style'); 
+
+        $("#id_style").val(rowStyle)
+        $("#row_row_input_row_id").val(rowId)
     })
 
 
