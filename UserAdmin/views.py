@@ -954,6 +954,7 @@ def custom_dashboard_topic(request,id):
     components = Component.objects.all()
     form = DashboardIndicatorForm(request.POST or None)
     form_row_style = RowStyleForm(request.POST or None)
+    
 
     if request.method == 'POST':
         #create row

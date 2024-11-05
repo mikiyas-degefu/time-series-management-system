@@ -322,10 +322,9 @@
                   {{form.as_p}}
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary"
-                    data-bs-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Save
-                    changes</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button  name="btn-loading" class="btn btn-primary lh-1" style="display: none;" type="button" disabled="disabled"><span class="spinner-border spinner-border-sm" role="status"></span> Loading...</button>
+                  <button name="btn-submit" type="submit" class="btn btn-primary">Save changes</button>
                 </div>
               </form>
             </div>
@@ -348,7 +347,8 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-danger">Save changes</button>
+                  <button  name="btn-loading" class="btn btn-primary lh-1" style="display: none;" type="button" disabled="disabled"><span class="spinner-border spinner-border-sm" role="status"></span> Loading...</button>
+                  <button name="btn-submit" type="submit" class="btn btn-primary">Save changes</button>
                 </div>
               </form>
             </div>
@@ -370,7 +370,8 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-danger">Save changes</button>
+                  <button  name="btn-loading" class="btn btn-primary lh-1" style="display: none;" type="button" disabled="disabled"><span class="spinner-border spinner-border-sm" role="status"></span> Loading...</button>
+                  <button name="btn-submit" type="submit" class="btn btn-primary">Save changes</button>
                 </div>
               </form>
             </div>
@@ -394,7 +395,8 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
+                  <button  name="btn-loading" class="btn btn-primary lh-1" style="display: none;" type="button" disabled="disabled"><span class="spinner-border spinner-border-sm" role="status"></span> Loading...</button>
+                  <button name="btn-submit" type="submit" class="btn btn-primary">Save changes</button>
                 </div>
               </form>
             </div>
@@ -534,6 +536,17 @@
                 csrfmiddlewaretoken: '{{csrf_token}}'
               },
 
+              beforeSend: function() {
+               $("[name='btn-submit']").hide()
+                $("[name='btn-loading']").show();
+              },
+              // hides the loader after completion of request, whether successfull or failor.             
+              complete: function() {
+               //Show save button finished 
+               $("[name='btn-submit']").show()
+                $("[name='btn-loading']").hide();
+              },
+
               success: function (response) {
                 if (response.success) {
 
@@ -607,6 +620,16 @@
               'X-CSRFToken': '{{ csrf_token }}'  // add CSRF token to headers
             },
             data: JSON.stringify({ 'id': colID, 'isCol' : true}),
+            beforeSend: function() {
+              $("[name='btn-submit']").hide()
+               $("[name='btn-loading']").show();
+             },
+             // hides the loader after completion of request, whether successfull or failor.             
+             complete: function() {
+              //Show save button finished 
+              $("[name='btn-submit']").show()
+               $("[name='btn-loading']").hide();
+             },
             success: function (response) {
                 if (response.success) {
                      //show succuss message
@@ -647,6 +670,16 @@
                 'X-CSRFToken': '{{ csrf_token }}'  // add CSRF token to headers
               },
               data: JSON.stringify({ 'id': rowID, 'isRow' : true }),
+              beforeSend: function() {
+                $("[name='btn-submit']").hide()
+                 $("[name='btn-loading']").show();
+               },
+               // hides the loader after completion of request, whether successfull or failor.             
+               complete: function() {
+                //Show save button finished 
+                $("[name='btn-submit']").show()
+                 $("[name='btn-loading']").hide();
+               },
               success: function (response) {
                   if (response.success) {
                        //show succuss message
@@ -679,6 +712,16 @@
                 'X-CSRFToken': '{{ csrf_token }}'  // add CSRF token to headers
               },
               data: JSON.stringify({ 'id': rowID, 'rank' : rank ,'isRow' : true }),
+              beforeSend: function() {
+                $("[name='btn-submit']").hide()
+                 $("[name='btn-loading']").show();
+               },
+               // hides the loader after completion of request, whether successfull or failor.             
+               complete: function() {
+                //Show save button finished 
+                $("[name='btn-submit']").show()
+                 $("[name='btn-loading']").hide();
+               },
               success: function (response) {
                   if (response.success) {
                        //show succuss message
@@ -717,6 +760,16 @@
               'X-CSRFToken': '{{ csrf_token }}'  // add CSRF token to headers
             },
             data: JSON.stringify({ 'id': rowID, 'style' : style ,'isRowStyle' : true }),
+            beforeSend: function() {
+              $("[name='btn-submit']").hide()
+               $("[name='btn-loading']").show();
+             },
+             // hides the loader after completion of request, whether successfull or failor.             
+             complete: function() {
+              //Show save button finished 
+              $("[name='btn-submit']").show()
+               $("[name='btn-loading']").hide();
+             },
             success: function (response) {
                 if (response.success) {
                      //show succuss message
