@@ -1,6 +1,9 @@
 $(document).ready(() => {
     $(function () {
 
+        // Define a variable to hold the Choices instance
+        let multipleCancelButton;
+
         //generate unique id
         function* generateId() {
             let i = 0;
@@ -206,14 +209,27 @@ $(document).ready(() => {
 
         let isMultipleSelect = isMultiple == 'True' ? true : false; // Set your condition here
 
+        if (multipleCancelButton) {
+            multipleCancelButton.destroy();
+        }
+
         if (isMultipleSelect) {
             $("#form-configuration").trigger("reset");
             $('#id_indicator').attr('multiple', 'multiple').addClass('form-select');
 
+
         } else {
             $("#form-configuration").trigger("reset");
             $('#id_indicator').removeAttr('multiple').addClass('form-select');
+            
         }
+
+        //activate multi select with search
+        multipleCancelButton = new Choices('#id_indicator', {
+            removeItemButton: true,
+            searchResultLimit: 10,
+            shouldSort: false,  // Optional: Disable sorting if needed
+        });
 
 
         //assign value to form
@@ -229,6 +245,21 @@ $(document).ready(() => {
         let colDataRangeStart = $(this).data('colDataRangeStart') || null;
         let colDataRangeEnd = $(this).data('colDataRangeEnd') || null;
         let colRank = $(this).data('colRank') || 0;
+
+        //assign selected item for select option 
+        if(Array.isArray(colIndicatorId)){
+            multipleCancelButton.removeActiveItems(); //clear selected item first 
+            colIndicatorId?.forEach((item) =>{
+                multipleCancelButton.setChoiceByValue(item.toString());
+            })
+        }else if(colIndicatorId){
+            multipleCancelButton.removeActiveItems(); //clear selected item first 
+            multipleCancelButton.setChoiceByValue(colIndicatorId);
+        }else{
+            multipleCancelButton.removeActiveItems();
+        }
+        
+       
 
         $("#id_indicator").val(colIndicatorId)
         $("#id_year").val(colYearId);

@@ -26,6 +26,12 @@
       href="https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.css">
 
     {% include 'dashboard/include/head.html' %}
+
+    <script src="https://cdn.jsdelivr.net/npm/choices.js@11.0.2/public/assets/scripts/choices.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/choices.js@11.0.2/public/assets/styles/choices.min.css" rel="stylesheet">
+
+
+
   </head>
   <!-- [Head] end -->
   <style>
@@ -160,6 +166,7 @@
 
       <!-- [ Main Content ] start -->
       <div class="pc-content">
+
         <div id="droppable2" name="drop-element" style="padding-bottom: 140px;"  class="ui-droppable ">
 
           <!-- Start Editable components-->
@@ -304,7 +311,6 @@
           
         </div>
       </div>
-
         <!--Modal Add Dashboard Row-->
         <div class="modal fade" id="modalAddDashboardRow" tabindex="-1"
           aria-labelledby="modalAddDashboardRowLabel" aria-hidden="true">
@@ -442,6 +448,8 @@
           src="https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.js"></script>
 
         <script type="text/javascript">
+
+
          const showToast = (title, body, cssClass) => {
                $.toast({
                 heading: title,
