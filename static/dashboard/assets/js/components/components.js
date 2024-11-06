@@ -1,441 +1,502 @@
-const size = {
-  "50%": "col-md-6",
-  "33%": "col-md-4",
-  "25%": "col-md-3",
-  "100%": "col-md-12",
-};
 
-const bar_horizontal_stacked = (id, component) => {
-  const newComponent = component;
-  newComponent.annual_value.sort((a, b) => {
-    if (a.for_datapoint < b.for_datapoint) return -1;
-    return 1;
-  });
-
-  const data = newComponent.indicator.map((indicator) => {
-    let annual = newComponent.annual_value
-      .filter((item) => item.indicator === indicator.id)
-      .map((item) => item.performance);
-    return {
-      name: indicator.title_ENG,
-      data: annual,
-    };
-  });
-
-  const years = Array.from(
-    new Set(newComponent?.annual_value?.map((item) => item.for_datapoint))
-  );
-  new ApexCharts(document.querySelector(`#${id}`), {
-    chart: { height: 400, type: "bar", stacked: !0, stackType: "100%" },
-    title: {
-      text: newComponent.title,
-    },
-    plotOptions: { bar: { horizontal: !0 } },
-    stroke: { width: 1, colors: ["#fff"] },
-    series: data,
-    xaxis: { categories: years },
-    tooltip: {
-      y: {
-        formatter: function (e) {
-          return e + "K";
+  const size = {
+    "50%": "col-md-6",
+    "33%": "col-md-4",
+    "25%": "col-md-3",
+    "100%": "col-md-12",
+  };
+  
+  const bar_horizontal_stacked = (id, component) => {
+    const newComponent = component;
+    newComponent.annual_value.sort((a, b) => {
+      if (a.for_datapoint < b.for_datapoint) return -1;
+      return 1;
+    });
+  
+    const data = newComponent.indicator.map((indicator) => {
+      let annual = newComponent.annual_value
+        .filter((item) => item.indicator === indicator.id)
+        .map((item) => item.performance);
+      return {
+        name: indicator.title_ENG,
+        data: annual,
+      };
+    });
+  
+    const years = Array.from(
+      new Set(newComponent?.annual_value?.map((item) => item.for_datapoint))
+    );
+    new ApexCharts(document.querySelector(`#${id}`), {
+      chart: { height: 400, type: "bar", stacked: !0, stackType: "100%" },
+      title: {
+        text: newComponent.title,
+      },
+      plotOptions: { bar: { horizontal: !0 } },
+      stroke: { width: 1, colors: ["#fff"] },
+      series: data,
+      xaxis: { categories: years },
+      tooltip: {
+        y: {
+          formatter: function (e) {
+            return e + "K";
+          },
         },
       },
-    },
-    fill: { opacity: 1 },
-    legend: { show: false },
-  }).render();
-};
-
-const bar_horizontal = (id, component) => {
-  const newComponent = component;
-  newComponent.annual_value.sort((a, b) => {
-    if (a.for_datapoint < b.for_datapoint) return -1;
-    return 1;
-  });
-  const years = Array.from(
-    new Set(newComponent?.annual_value?.map((item) => item.for_datapoint))
-  );
-  const data = newComponent.indicator.map((indicator) => {
-    let annual = newComponent.annual_value
-      .filter((item) => item.indicator === indicator.id)
-      .map((item) => item.performance);
-    return {
-      name: indicator.title_ENG,
-      data: annual,
-    };
-  });
-  var options = {
-    series: data,
-    chart: {
-      type: "bar",
-      height: 400,
-    },
-    title: {
-      text: newComponent.title,
-    },
-    plotOptions: {
-      bar: {
-        horizontal: true,
-        dataLabels: {
-          position: "top",
+      fill: { opacity: 1 },
+      legend: { show: false },
+    }).render();
+  };
+  
+  const bar_horizontal = (id, component) => {
+    const newComponent = component;
+    newComponent.annual_value.sort((a, b) => {
+      if (a.for_datapoint < b.for_datapoint) return -1;
+      return 1;
+    });
+    const years = Array.from(
+      new Set(newComponent?.annual_value?.map((item) => item.for_datapoint))
+    );
+    const data = newComponent.indicator.map((indicator) => {
+      let annual = newComponent.annual_value
+        .filter((item) => item.indicator === indicator.id)
+        .map((item) => item.performance);
+      return {
+        name: indicator.title_ENG,
+        data: annual,
+      };
+    });
+    var options = {
+      series: data,
+      chart: {
+        type: "bar",
+        height: 400,
+      },
+      title: {
+        text: newComponent.title,
+      },
+      plotOptions: {
+        bar: {
+          horizontal: true,
+          dataLabels: {
+            position: "top",
+          },
         },
       },
-    },
-    dataLabels: {
-      enabled: true,
-      offsetX: -6,
-      style: {
-        fontSize: "12px",
+      dataLabels: {
+        enabled: true,
+        offsetX: -6,
+        style: {
+          fontSize: "12px",
+          colors: ["#fff"],
+        },
+      },
+      stroke: {
+        show: true,
+        width: 1,
         colors: ["#fff"],
       },
-    },
-    stroke: {
-      show: true,
-      width: 1,
-      colors: ["#fff"],
-    },
-    tooltip: {
-      shared: true,
-      intersect: false,
-    },
-    xaxis: {
-      categories: years,
-    },
+      tooltip: {
+        shared: true,
+        intersect: false,
+      },
+      xaxis: {
+        categories: years,
+      },
+    };
+  
+    var chart = new ApexCharts(document.querySelector(`#${id}`), options);
+    chart.render();
   };
-
-  var chart = new ApexCharts(document.querySelector(`#${id}`), options);
-  chart.render();
-};
-
-const bar = (id, component) => {
-  const newComponent = component;
-
-  newComponent.annual_value.sort((a, b) => {
-    if (a.for_datapoint < b.for_datapoint) return -1;
-    return 1;
-  });
-
-  const years = Array.from(
-    new Set(newComponent?.annual_value?.map((item) => item.for_datapoint))
-  );
-  const data = newComponent.indicator.map((indicator) => {
-    let annual = newComponent.annual_value
-      .filter((item) => item.indicator === indicator.id)
-      .map((item) => item.performance);
-    return {
-      name: indicator.title_ENG,
-      data: annual,
-    };
-  });
-
-  new ApexCharts(document.querySelector(`#${id}`), {
-    chart: { height: 400, type: "bar" },
-    plotOptions: {
-      bar: { horizontal: !1, columnWidth: "55%", endingShape: "rounded" },
-    },
-    dataLabels: { enabled: !1 },
-    colors: ["#2CA87F", "#4680FF", "#13c2c2"],
-    stroke: { show: !0, width: 2, colors: ["transparent"] },
-    series: data,
-    title: {
-      text: newComponent.title,
-    },
-    xaxis: {
-      categories: years,
-    },
-    fill: { opacity: 1 },
-    tooltip: {
-      y: {
-        formatter: function (e) {
-          return "$ " + e + " thousands";
+  
+  const bar = (id, component) => {
+    const newComponent = component;
+  
+    newComponent.annual_value.sort((a, b) => {
+      if (a.for_datapoint < b.for_datapoint) return -1;
+      return 1;
+    });
+  
+    const years = Array.from(
+      new Set(newComponent?.annual_value?.map((item) => item.for_datapoint))
+    );
+    const data = newComponent.indicator.map((indicator) => {
+      let annual = newComponent.annual_value
+        .filter((item) => item.indicator === indicator.id)
+        .map((item) => item.performance);
+      return {
+        name: indicator.title_ENG,
+        data: annual,
+      };
+    });
+  
+    new ApexCharts(document.querySelector(`#${id}`), {
+      chart: { height: 400, type: "bar" },
+      plotOptions: {
+        bar: { horizontal: !1, columnWidth: "55%", endingShape: "rounded" },
+      },
+      dataLabels: { enabled: !1 },
+      colors: ["#2CA87F", "#4680FF", "#13c2c2"],
+      stroke: { show: !0, width: 2, colors: ["transparent"] },
+      series: data,
+      title: {
+        text: newComponent.title,
+      },
+      xaxis: {
+        categories: years,
+      },
+      fill: { opacity: 1 },
+      tooltip: {
+        y: {
+          formatter: function (e) {
+            return "$ " + e + " thousands";
+          },
         },
       },
-    },
-  }).render();
-};
-
-const different_line_area = (id, component) => {
-  const newComponent = component;
-
-  // Sort annual_value array
-  newComponent.annual_value.sort((a, b) => {
-    if (a.for_datapoint < b.for_datapoint) return -1;
-    return 1;
-  });
-
-  // Prepare series data with first indicator as line and second as area
-  const seriesData = newComponent.indicator.map((indicator, index) => {
-    const annual = newComponent.annual_value
-      .filter((item) => item.indicator === indicator.id)
-      .map((item) => item.performance);
-
-    return {
-      name: indicator.title_ENG,
-      type: index === 0 ? "line" : "area", // Line for the first, area for the second
-      data: annual,
-    };
-  });
-
-  // Extract unique years for x-axis categories
-  const years = Array.from(
-    new Set(newComponent.annual_value.map((item) => item.for_datapoint))
-  );
-
-  // Configure and render the chart
-  new ApexCharts(document.querySelector(`#${id}`), {
-    chart: { height: 400, type: "line" },
-    title: { text: newComponent.title },
-    stroke: { width: [2, 2], curve: "smooth" }, // Width for both line and area
-    series: seriesData,
-    xaxis: { categories: years },
-    tooltip: {
-      y: {
-        formatter: function (e) {
-          return e + "K";
+    }).render();
+  };
+  
+  const different_line_area = (id, component) => {
+    const newComponent = component;
+  
+    // Sort annual_value array
+    newComponent.annual_value.sort((a, b) => {
+      if (a.for_datapoint < b.for_datapoint) return -1;
+      return 1;
+    });
+  
+    // Prepare series data with first indicator as line and second as area
+    const seriesData = newComponent.indicator.map((indicator, index) => {
+      const annual = newComponent.annual_value
+        .filter((item) => item.indicator === indicator.id)
+        .map((item) => item.performance);
+  
+      return {
+        name: indicator.title_ENG,
+        type: index === 0 ? "line" : "area", // Line for the first, area for the second
+        data: annual,
+      };
+    });
+  
+    // Extract unique years for x-axis categories
+    const years = Array.from(
+      new Set(newComponent.annual_value.map((item) => item.for_datapoint))
+    );
+  
+    // Configure and render the chart
+    new ApexCharts(document.querySelector(`#${id}`), {
+      chart: { height: 400, type: "line" },
+      title: { text: newComponent.title },
+      stroke: { width: [2, 2], curve: "smooth" }, // Width for both line and area
+      series: seriesData,
+      xaxis: { categories: years },
+      tooltip: {
+        y: {
+          formatter: function (e) {
+            return e + "K";
+          },
         },
       },
-    },
-    fill: {
-      opacity: [1, 0.4], // Full opacity for line, semi-transparent for area
-    },
-    legend: { show: false },
-  }).render();
-};
-
-const mixed_area_line_bar = (id, component) => {
-  const newComponent = component;
-
-  // Sort annual_value array
-  newComponent.annual_value.sort((a, b) => {
-    if (a.for_datapoint < b.for_datapoint) return -1;
-    return 1;
-  });
-
-  // Prepare series data with first indicator as line, second as bar, and third as area
-  const seriesData = newComponent.indicator.map((indicator, index) => {
-    const annual = newComponent.annual_value
-      .filter((item) => item.indicator === indicator.id)
-      .map((item) => item.performance);
-
-    return {
-      name: indicator.title_ENG,
-      type: index === 0 ? "line" : index === 1 ? "bar" : "area", // Line for 1st, Bar for 2nd, Area for 3rd
-      data: annual,
-    };
-  });
-
-  // Extract unique years for x-axis categories
-  const years = Array.from(
-    new Set(newComponent.annual_value.map((item) => item.for_datapoint))
-  );
-
-  // Configure and render the chart
-  new ApexCharts(document.querySelector(`#${id}`), {
-    chart: { height: 400, type: "line" },
-    title: { text: newComponent.title },
-    stroke: { width: [2, 0, 2], curve: "smooth" }, // Line and area have width 2, bar has 0
-    plotOptions: { bar: { columnWidth: "50%" } },
-    series: seriesData,
-    xaxis: { categories: years },
-    tooltip: {
-      y: {
-        formatter: function (e) {
-          return e + "K";
+      fill: {
+        opacity: [1, 0.4], // Full opacity for line, semi-transparent for area
+      },
+      legend: { show: false },
+    }).render();
+  };
+  
+  const mixed_area_line_bar = (id, component) => {
+    const newComponent = component;
+  
+    // Sort annual_value array
+    newComponent.annual_value.sort((a, b) => {
+      if (a.for_datapoint < b.for_datapoint) return -1;
+      return 1;
+    });
+  
+    // Prepare series data with first indicator as line, second as bar, and third as area
+    const seriesData = newComponent.indicator.map((indicator, index) => {
+      const annual = newComponent.annual_value
+        .filter((item) => item.indicator === indicator.id)
+        .map((item) => item.performance);
+  
+      return {
+        name: indicator.title_ENG,
+        type: index === 0 ? "line" : index === 1 ? "bar" : "area", // Line for 1st, Bar for 2nd, Area for 3rd
+        data: annual,
+      };
+    });
+  
+    // Extract unique years for x-axis categories
+    const years = Array.from(
+      new Set(newComponent.annual_value.map((item) => item.for_datapoint))
+    );
+  
+    // Configure and render the chart
+    new ApexCharts(document.querySelector(`#${id}`), {
+      chart: { height: 400, type: "line" },
+      title: { text: newComponent.title },
+      stroke: { width: [2, 0, 2], curve: "smooth" }, // Line and area have width 2, bar has 0
+      plotOptions: { bar: { columnWidth: "50%" } },
+      series: seriesData,
+      xaxis: { categories: years },
+      tooltip: {
+        y: {
+          formatter: function (e) {
+            return e + "K";
+          },
         },
       },
-    },
-    fill: {
-      opacity: [0.85, 1, 0.4], // Different opacities for area effect
-    },
-    legend: { show: false },
-  }).render();
-};
-
-const mixed_line_bar = (id, component) => {
-  const newComponent = component;
-
-  // Sort annual_value array
-  newComponent.annual_value.sort((a, b) => {
-    if (a.for_datapoint < b.for_datapoint) return -1;
-    return 1;
-  });
-
-  // Prepare series data with first indicator as line and second as bar
-  const seriesData = newComponent.indicator.map((indicator, index) => {
-    const annual = newComponent.annual_value
-      .filter((item) => item.indicator === indicator.id)
-      .map((item) => item.performance);
-
-    return {
-      name: indicator.title_ENG,
-      type: index === 0 ? "line" : "bar", // First indicator as line, second as bar
-      data: annual,
-    };
-  });
-
-  // Extract unique years for x-axis categories
-  const years = Array.from(
-    new Set(newComponent.annual_value.map((item) => item.for_datapoint))
-  );
-
-  // Configure and render the chart
-  new ApexCharts(document.querySelector(`#${id}`), {
-    chart: { height: 400, type: "line" },
-    title: { text: newComponent.title },
-    stroke: { width: [2, 0], curve: "smooth" }, // Width 2 for line, 0 for bar
-    plotOptions: { bar: { columnWidth: "50%" } },
-    series: seriesData,
-    xaxis: { categories: years },
-    tooltip: {
-      y: {
-        formatter: function (e) {
-          return e + "K";
+      fill: {
+        opacity: [0.85, 1, 0.4], // Different opacities for area effect
+      },
+      legend: { show: false },
+    }).render();
+  };
+  
+  const mixed_line_bar = (id, component) => {
+    const newComponent = component;
+  
+    // Sort annual_value array
+    newComponent.annual_value.sort((a, b) => {
+      if (a.for_datapoint < b.for_datapoint) return -1;
+      return 1;
+    });
+  
+    // Prepare series data with first indicator as line and second as bar
+    const seriesData = newComponent.indicator.map((indicator, index) => {
+      const annual = newComponent.annual_value
+        .filter((item) => item.indicator === indicator.id)
+        .map((item) => item.performance);
+  
+      return {
+        name: indicator.title_ENG,
+        type: index === 0 ? "line" : "bar", // First indicator as line, second as bar
+        data: annual,
+      };
+    });
+  
+    // Extract unique years for x-axis categories
+    const years = Array.from(
+      new Set(newComponent.annual_value.map((item) => item.for_datapoint))
+    );
+  
+    // Configure and render the chart
+    new ApexCharts(document.querySelector(`#${id}`), {
+      chart: { height: 400, type: "line" },
+      title: { text: newComponent.title },
+      stroke: { width: [2, 0], curve: "smooth" }, // Width 2 for line, 0 for bar
+      plotOptions: { bar: { columnWidth: "50%" } },
+      series: seriesData,
+      xaxis: { categories: years },
+      tooltip: {
+        y: {
+          formatter: function (e) {
+            return e + "K";
+          },
         },
       },
-    },
-    fill: { opacity: 0.85 },
-    legend: { show: false },
-  }).render();
-};
-
-const bar_stacked = (id, component) => {
-  const newComponent = component;
-
-  // Sort annual_value array as in previous functions
-  newComponent.annual_value.sort((a, b) => {
-    if (a.for_datapoint < b.for_datapoint) return -1;
-    return 1;
-  });
-
-  // Prepare data for the series
-  const data = newComponent.indicator.map((indicator) => {
-    const annual = newComponent.annual_value
-      .filter((item) => item.indicator === indicator.id)
-      .map((item) => item.performance);
-
-    return {
-      name: indicator.title_ENG,
-      data: annual,
-    };
-  });
-
-  // Extract unique years for x-axis categories
-  const years = Array.from(
-    new Set(newComponent.annual_value.map((item) => item.for_datapoint))
-  );
-
-  // Configure and render the chart
-  new ApexCharts(document.querySelector(`#${id}`), {
-    chart: { height: 400, type: "bar", stacked: true },
-    title: { text: newComponent.title },
-    plotOptions: { bar: { horizontal: false } }, // Vertical stacked bars
-    stroke: { width: 1, colors: ["#fff"] },
-    series: data,
-    xaxis: { categories: years },
-    tooltip: {
-      y: {
-        formatter: function (e) {
-          return e + "K";
+      fill: { opacity: 0.85 },
+      legend: { show: false },
+    }).render();
+  };
+  
+  const bar_stacked = (id, component) => {
+    const newComponent = component;
+  
+    // Sort annual_value array as in previous functions
+    newComponent.annual_value.sort((a, b) => {
+      if (a.for_datapoint < b.for_datapoint) return -1;
+      return 1;
+    });
+  
+    // Prepare data for the series
+    const data = newComponent.indicator.map((indicator) => {
+      const annual = newComponent.annual_value
+        .filter((item) => item.indicator === indicator.id)
+        .map((item) => item.performance);
+  
+      return {
+        name: indicator.title_ENG,
+        data: annual,
+      };
+    });
+  
+    // Extract unique years for x-axis categories
+    const years = Array.from(
+      new Set(newComponent.annual_value.map((item) => item.for_datapoint))
+    );
+  
+    // Configure and render the chart
+    new ApexCharts(document.querySelector(`#${id}`), {
+      chart: { height: 400, type: "bar", stacked: true },
+      title: { text: newComponent.title },
+      plotOptions: { bar: { horizontal: false } }, // Vertical stacked bars
+      stroke: { width: 1, colors: ["#fff"] },
+      series: data,
+      xaxis: { categories: years },
+      tooltip: {
+        y: {
+          formatter: function (e) {
+            return e + "K";
+          },
         },
       },
-    },
-    fill: { opacity: 1 },
-    legend: { show: false },
-  }).render();
-};
-
-const basic_line = (id, component) => {
-  const newComponent = component;
-
-  newComponent.annual_value.sort((a, b) => {
-    if (a.for_datapoint < b.for_datapoint) return -1;
-    return 1;
-  });
-
-  const years = Array.from(
-    new Set(
-      newComponent?.annual_value?.map((item) => String(item.for_datapoint))
-    )
-  );
-  const data = newComponent.indicator.map((indicator) => {
-    let annual = newComponent.annual_value
-      .filter((item) => item.indicator === indicator.id)
-      .map((item) => item.performance);
-    return {
-      name: indicator.title_ENG,
-      data: annual,
-    };
-  });
-
-  var options = {
-    series: [
-      {
-        name: data[0].name,
-        data: data[0].data,
+      fill: { opacity: 1 },
+      legend: { show: false },
+    }).render();
+  };
+  
+  const basic_line = (id, component) => {
+    const newComponent = component;
+  
+    newComponent.annual_value.sort((a, b) => {
+      if (a.for_datapoint < b.for_datapoint) return -1;
+      return 1;
+    });
+  
+    const years = Array.from(
+      new Set(
+        newComponent?.annual_value?.map((item) => String(item.for_datapoint))
+      )
+    );
+    const data = newComponent.indicator.map((indicator) => {
+      let annual = newComponent.annual_value
+        .filter((item) => item.indicator === indicator.id)
+        .map((item) => item.performance);
+      return {
+        name: indicator.title_ENG,
+        data: annual,
+      };
+    });
+  
+    var options = {
+      series: [
+        {
+          name: data[0].name,
+          data: data[0].data,
+        },
+      ],
+      chart: {
+        height: 400,
+        type: "line",
+        zoom: {
+          enabled: false,
+        },
       },
-    ],
-    chart: {
-      height: 400,
-      type: "line",
-      zoom: {
+      dataLabels: {
         enabled: false,
       },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      curve: "straight",
-    },
-    title: {
-      text: newComponent.title,
-      align: "left",
-    },
-    grid: {
-      row: {
-        colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-        opacity: 0.5,
+      stroke: {
+        curve: "straight",
       },
-    },
-    xaxis: {
-      categories: years,
-    },
+      title: {
+        text: newComponent.title,
+        align: "left",
+      },
+      grid: {
+        row: {
+          colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+          opacity: 0.5,
+        },
+      },
+      xaxis: {
+        categories: years,
+      },
+    };
+  
+    var chart = new ApexCharts(document.querySelector(`#${id}`), options);
+    chart.render();
   };
-
-  var chart = new ApexCharts(document.querySelector(`#${id}`), options);
-  chart.render();
-};
-
-const pie_donut = (id, component) => {
-  const newComponent = component;
-
-  // Prepare series data for the donut chart by summing performance for each indicator
-  const seriesData = newComponent.indicator.map((indicator) => {
-    const totalPerformance = newComponent.annual_value
-      .filter((item) => item.indicator === indicator.id)
-      .reduce((sum, item) => sum + item.performance, 0); // Sum performance for each indicator
-
-    return totalPerformance;
-  });
-
-  // Prepare labels for the donut chart using indicator titles
-  const labels = newComponent.indicator.map((indicator) => indicator.title_ENG);
-
-  // Configure and render the donut chart
-  new ApexCharts(document.querySelector(`#${id}`), {
-    chart: { height: 400, type: "donut" },
-    series: seriesData,
-    labels: labels,
-    title: { text: newComponent.title },
-    plotOptions: {
-      pie: {
-        donut: {
-          size: "50%", // Adjust the size of the donut hole
-          labels: {
-            show: true,
-            name: { show: true, fontSize: "16px" },
-            value: {
+  
+  const pie_donut = (id, component) => {
+    const newComponent = component;
+  
+    // Prepare series data for the donut chart by summing performance for each indicator
+    const seriesData = newComponent.indicator.map((indicator) => {
+      const totalPerformance = newComponent.annual_value
+        .filter((item) => item.indicator === indicator.id)
+        .reduce((sum, item) => sum + item.performance, 0); // Sum performance for each indicator
+  
+      return totalPerformance;
+    });
+  
+    // Prepare labels for the donut chart using indicator titles
+    const labels = newComponent.indicator.map((indicator) => indicator.title_ENG);
+  
+    // Configure and render the donut chart
+    new ApexCharts(document.querySelector(`#${id}`), {
+      chart: { height: 400, type: "donut" },
+      series: seriesData,
+      labels: labels,
+      title: { text: newComponent.title },
+      plotOptions: {
+        pie: {
+          donut: {
+            size: "50%", // Adjust the size of the donut hole
+            labels: {
               show: true,
+              name: { show: true, fontSize: "16px" },
+              value: {
+                show: true,
+                fontSize: "14px",
+                formatter: function (val) {
+                  return val + "K";
+                },
+              },
+              total: {
+                show: true,
+                label: "Total",
+                formatter: function (w) {
+                  return w.globals.seriesTotals.reduce((a, b) => a + b, 0) + "K";
+                },
+              },
+            },
+          },
+        },
+      },
+      tooltip: {
+        y: {
+          formatter: function (e) {
+            return e + "K";
+          },
+        },
+      },
+      legend: {
+        show: false,
+      },
+    }).render();
+  };
+  
+  const radial_bar_custom_angle = (id, component) => {
+    const newComponent = component;
+  
+    // Prepare series data for radial bar chart by summing performance for each indicator
+    const seriesData = newComponent.indicator.map((indicator) => {
+      const totalPerformance = newComponent.annual_value
+        .filter((item) => item.indicator === indicator.id)
+        .reduce((sum, item) => sum + item.performance, 0); // Sum performance for each indicator
+  
+      return totalPerformance;
+    });
+  
+    // Prepare labels for radial bars using indicator titles
+    const labels = newComponent.indicator.map((indicator) => indicator.title_ENG);
+  
+    // Configure and render the custom-angle radial bar chart
+    new ApexCharts(document.querySelector(`#${id}`), {
+      chart: {
+        height: 400,
+        type: "radialBar",
+      },
+      series: seriesData,
+      labels: labels,
+      title: { text: newComponent.title },
+      plotOptions: {
+        radialBar: {
+          startAngle: -90, // Customize the start angle for a half or quarter-circle
+          endAngle: 90, // Customize the end angle
+          dataLabels: {
+            name: { fontSize: "16px" },
+            value: {
               fontSize: "14px",
               formatter: function (val) {
                 return val + "K";
@@ -451,309 +512,256 @@ const pie_donut = (id, component) => {
           },
         },
       },
-    },
-    tooltip: {
-      y: {
-        formatter: function (e) {
-          return e + "K";
-        },
-      },
-    },
-    legend: {
-      show: false,
-    },
-  }).render();
-};
-
-const radial_bar_custom_angle = (id, component) => {
-  const newComponent = component;
-
-  // Prepare series data for radial bar chart by summing performance for each indicator
-  const seriesData = newComponent.indicator.map((indicator) => {
-    const totalPerformance = newComponent.annual_value
-      .filter((item) => item.indicator === indicator.id)
-      .reduce((sum, item) => sum + item.performance, 0); // Sum performance for each indicator
-
-    return totalPerformance;
-  });
-
-  // Prepare labels for radial bars using indicator titles
-  const labels = newComponent.indicator.map((indicator) => indicator.title_ENG);
-
-  // Configure and render the custom-angle radial bar chart
-  new ApexCharts(document.querySelector(`#${id}`), {
-    chart: {
-      height: 400,
-      type: "radialBar",
-    },
-    series: seriesData,
-    labels: labels,
-    title: { text: newComponent.title },
-    plotOptions: {
-      radialBar: {
-        startAngle: -90, // Customize the start angle for a half or quarter-circle
-        endAngle: 90, // Customize the end angle
-        dataLabels: {
-          name: { fontSize: "16px" },
-          value: {
-            fontSize: "14px",
-            formatter: function (val) {
-              return val + "K";
-            },
-          },
-          total: {
-            show: true,
-            label: "Total",
-            formatter: function (w) {
-              return w.globals.seriesTotals.reduce((a, b) => a + b, 0) + "K";
-            },
+      tooltip: {
+        y: {
+          formatter: function (e) {
+            return e + "K";
           },
         },
       },
-    },
-    tooltip: {
-      y: {
-        formatter: function (e) {
-          return e + "K";
-        },
+      legend: {
+        show: false,
       },
-    },
-    legend: {
-      show: false,
-    },
-  }).render();
-};
-
-const radial_bar = (id, component) => {
-  const newComponent = component;
-
-  // Prepare series data for radial bar chart by mapping annual values to performance
-  const seriesData = newComponent.indicator.map((indicator) => {
-    const totalPerformance = newComponent.annual_value
-      .filter((item) => item.indicator === indicator.id)
-      .reduce((sum, item) => sum + item.performance, 0); // Sum performance for each indicator
-
-    return totalPerformance;
-  });
-
-  // Prepare labels for radial bars using indicator titles
-  const labels = newComponent.indicator.map((indicator) => indicator.title_ENG);
-
-  // Configure and render the radial bar chart
-  new ApexCharts(document.querySelector(`#${id}`), {
-    chart: { height: 400, type: "radialBar" },
-    series: seriesData,
-    labels: labels,
-    title: { text: newComponent.title },
-    plotOptions: {
-      radialBar: {
-        dataLabels: {
-          name: { fontSize: "16px" },
-          value: {
-            fontSize: "14px",
-            formatter: function (val) {
-              return val + "K";
-            },
-          },
-          total: {
-            show: true,
-            label: "Total",
-            formatter: function (w) {
-              return w.globals.seriesTotals.reduce((a, b) => a + b, 0) + "K";
-            },
-          },
-        },
-      },
-    },
-    legend: {
-      show: false,
-    },
-  }).render();
-};
-
-const pie = (id, component) => {
-  console.log(component);
-  const newComponent = component;
-
-  // Prepare series data for pie chart by mapping annual values to performance
-  const seriesData = newComponent.indicator.map((indicator) => {
-    const totalPerformance = newComponent.annual_value
-      .filter((item) => item.indicator === indicator.id)
-      .reduce((sum, item) => sum + item.performance, 0); // Sum performance for each indicator
-
-    return totalPerformance;
-  });
-
-  // Prepare labels for pie chart using indicator titles
-  const labels = newComponent.indicator.map((indicator) => indicator.title_ENG);
-
-  // Configure and render the pie chart
-  new ApexCharts(document.querySelector(`#${id}`), {
-    chart: { height: 400, type: "pie" },
-    series: seriesData,
-    labels: labels,
-    title: { text: newComponent.title },
-    tooltip: {
-      y: {
-        formatter: function (e) {
-          return e + "K";
-        },
-      },
-    },
-    legend: {
-      show: false,
-    },
-  }).render();
-};
-
-const different_line = (id, component) => {
-  const newComponent = component;
-
-  // Sort annual_value array as in `bar_horizontal_stacked`
-  newComponent.annual_value.sort((a, b) => {
-    if (a.for_datapoint < b.for_datapoint) return -1;
-    return 1;
-  });
-
-  // Prepare data for series
-  const data = newComponent.indicator.map((indicator) => {
-    const annual = newComponent.annual_value
-      .filter((item) => item.indicator === indicator.id)
-      .map((item) => item.performance);
-
-    return {
-      name: indicator.title_ENG,
-      data: annual,
-    };
-  });
-
-  // Extract unique years for x-axis categories
-  const years = Array.from(
-    new Set(newComponent.annual_value.map((item) => item.for_datapoint))
-  );
-
-  // Configure and render the chart
-  new ApexCharts(document.querySelector(`#${id}`), {
-    chart: { height: 400, type: "line", zoom: { enabled: false } },
-    title: { text: newComponent.title },
-    stroke: { curve: "smooth" },
-    series: data,
-    xaxis: { categories: years },
-    tooltip: {
-      y: {
-        formatter: function (e) {
-          return e + "K";
-        },
-      },
-    },
-    fill: { opacity: 0.5 },
-    legend: { show: false },
-  }).render();
-};
-
-const banner = (id, component) => {
-  $(`#${id}`).html(`
-      <div class="card welcome-banner bg-blue-900">
-          <div class="card-body">
-              <div class="row">
-                  <div class="col-sm-6">
-                      <div class="p-4">
-                          <h2 class="text-white">${component?.title}</h2>
-                          <p class="text-white">${component?.description}</p>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>`);
-};
-
-//Not done
-const progress_card = () => {
-  // Function logic for progress_card
-};
-
-const rate_card = () => {
-  // Function logic for rate_card
-};
-
-const simple_card = () => {
-  // Function logic for simple_card
-};
-
-
-const top_list = () => {
-  // Function logic for top_list
-};
-
-
-const list_with_category = (id, component) => {
-  const years = [...new Set(component.annual_value.map(data => data.for_datapoint))];
-  const indicatorTitles = component.indicator.reduce((acc, indicator) => {
-      acc[indicator.id] = indicator.title_ENG;
-      return acc;
-  }, {});
-  let rows = component.indicator.map(indicator => {
-      let row = `<tr><td>${indicator.title_ENG}</td>`;
-      years.forEach(year => {
-          const dataPoint = component.annual_value.find(data => data.indicator === indicator.id && data.for_datapoint === year);
-          row += `<td>${dataPoint ? dataPoint.performance : '-'}</td>`;
-      });
-      row += '</tr>';
-      return row;
-  }).join('');
-  let table = `
-      <div class="container mt-5">
-          <h2>Annual Performance Data</h2>
-          <table class="table table-bordered table-hover">
-              <thead>
-                  <tr>
-                      <th>Indicator</th>
-                      ${years.map(year => `<th>${year}</th>`).join('')}
-                  </tr>
-              </thead>
-              <tbody>
-                  ${rows}
-              </tbody>
-          </table>
-      </div>
-  `;
-  $(`#${id}`).html(table)
-};
-
-const fetchData = async () => {
-  let url = "/dashboard/components/2";
-  try {
-    const res = await axios.get(url);
-
-    
-    res.data.rows.forEach((row) => {
-
-      let col = row.cols
-        .map((component) => {
-          return `<div id="graph-${component.id}" class="${
-            size[component.width]
-          }"></div>`;
-        })
-        .join("");
-
-        $("#pc-content").append(`
-                <div class="row ${row.style}">
-                    ${col}
-                </div>`);
-
-      row.cols.forEach((component) => {
-        let id = `graph-${component.id}`;
-        new Function("arg1", "arg2", component.component + "(arg1 , arg2)")(
-          id,
-          component
-        );
-      });
-
-
+    }).render();
+  };
+  
+  const radial_bar = (id, component) => {
+    const newComponent = component;
+  
+    // Prepare series data for radial bar chart by mapping annual values to performance
+    const seriesData = newComponent.indicator.map((indicator) => {
+      const totalPerformance = newComponent.annual_value
+        .filter((item) => item.indicator === indicator.id)
+        .reduce((sum, item) => sum + item.performance, 0); // Sum performance for each indicator
+  
+      return totalPerformance;
     });
-  } catch (error) {
-    console.log(error);
-  }
-};
+  
+    // Prepare labels for radial bars using indicator titles
+    const labels = newComponent.indicator.map((indicator) => indicator.title_ENG);
+  
+    // Configure and render the radial bar chart
+    new ApexCharts(document.querySelector(`#${id}`), {
+      chart: { height: 400, type: "radialBar" },
+      series: seriesData,
+      labels: labels,
+      title: { text: newComponent.title },
+      plotOptions: {
+        radialBar: {
+          dataLabels: {
+            name: { fontSize: "16px" },
+            value: {
+              fontSize: "14px",
+              formatter: function (val) {
+                return val + "K";
+              },
+            },
+            total: {
+              show: true,
+              label: "Total",
+              formatter: function (w) {
+                return w.globals.seriesTotals.reduce((a, b) => a + b, 0) + "K";
+              },
+            },
+          },
+        },
+      },
+      legend: {
+        show: false,
+      },
+    }).render();
+  };
+  
+  const pie = (id, component) => {
+    console.log(component);
+    const newComponent = component;
+  
+    // Prepare series data for pie chart by mapping annual values to performance
+    const seriesData = newComponent.indicator.map((indicator) => {
+      const totalPerformance = newComponent.annual_value
+        .filter((item) => item.indicator === indicator.id)
+        .reduce((sum, item) => sum + item.performance, 0); // Sum performance for each indicator
+  
+      return totalPerformance;
+    });
+  
+    // Prepare labels for pie chart using indicator titles
+    const labels = newComponent.indicator.map((indicator) => indicator.title_ENG);
+  
+    // Configure and render the pie chart
+    new ApexCharts(document.querySelector(`#${id}`), {
+      chart: { height: 400, type: "pie" },
+      series: seriesData,
+      labels: labels,
+      title: { text: newComponent.title },
+      tooltip: {
+        y: {
+          formatter: function (e) {
+            return e + "K";
+          },
+        },
+      },
+      legend: {
+        show: false,
+      },
+    }).render();
+  };
+  
+  const different_line = (id, component) => {
+    const newComponent = component;
+  
+    // Sort annual_value array as in `bar_horizontal_stacked`
+    newComponent.annual_value.sort((a, b) => {
+      if (a.for_datapoint < b.for_datapoint) return -1;
+      return 1;
+    });
+  
+    // Prepare data for series
+    const data = newComponent.indicator.map((indicator) => {
+      const annual = newComponent.annual_value
+        .filter((item) => item.indicator === indicator.id)
+        .map((item) => item.performance);
+  
+      return {
+        name: indicator.title_ENG,
+        data: annual,
+      };
+    });
+  
+    // Extract unique years for x-axis categories
+    const years = Array.from(
+      new Set(newComponent.annual_value.map((item) => item.for_datapoint))
+    );
+  
+    // Configure and render the chart
+    new ApexCharts(document.querySelector(`#${id}`), {
+      chart: { height: 400, type: "line", zoom: { enabled: false } },
+      title: { text: newComponent.title },
+      stroke: { curve: "smooth" },
+      series: data,
+      xaxis: { categories: years },
+      tooltip: {
+        y: {
+          formatter: function (e) {
+            return e + "K";
+          },
+        },
+      },
+      fill: { opacity: 0.5 },
+      legend: { show: false },
+    }).render();
+  };
+  
+  const banner = (id, component) => {
+    $(`#${id}`).html(`
+        <div class="card welcome-banner bg-blue-900">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="p-4">
+                            <h2 class="text-white">${component?.title}</h2>
+                            <p class="text-white">${component?.description}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`);
+  };
+  
+  //Not done
+  const progress_card = () => {
+    // Function logic for progress_card
+  };
+  
+  const rate_card = () => {
+    // Function logic for rate_card
+  };
+  
+  const simple_card = () => {
+    // Function logic for simple_card
+  };
+  
+  
+  const top_list = () => {
+    // Function logic for top_list
+  };
+  
+  
+  const list_with_category = (id, component) => {
+    const years = [...new Set(component.annual_value.map(data => data.for_datapoint))];
+    const indicatorTitles = component.indicator.reduce((acc, indicator) => {
+        acc[indicator.id] = indicator.title_ENG;
+        return acc;
+    }, {});
+    let rows = component.indicator.map(indicator => {
+        let row = `<tr><td>${indicator.title_ENG}</td>`;
+        years.forEach(year => {
+            const dataPoint = component.annual_value.find(data => data.indicator === indicator.id && data.for_datapoint === year);
+            row += `<td>${dataPoint ? dataPoint.performance : '-'}</td>`;
+        });
+        row += '</tr>';
+        return row;
+    }).join('');
+    let table = `
+        <div class="container mt-5">
+            <h2>Annual Performance Data</h2>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Indicator</th>
+                        ${years.map(year => `<th>${year}</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows}
+                </tbody>
+            </table>
+        </div>
+    `;
+    $(`#${id}`).html(table)
+  };
+  
+  
+  
+  
+  
 
-fetchData();
+  const fetchData = async () => {
+    let urlPath = window.location.pathname;
+  let pathID = urlPath.replace("/dashboard/dashboard_detail/", "").replace("/", "");
+  let url = `/dashboard/components/${pathID}`
+    try {
+      const res = await axios.get(url);
+  
+      
+      res.data.rows.forEach((row) => {
+  
+        let col = row.cols
+          .map((component) => {
+            return `<div id="graph-${component.id}" class="${
+              size[component.width]
+            }"></div>`;
+          })
+          .join("");
+  
+          $("#pc-content").append(`
+                  <div class="row ${row.style}">
+                      ${col}
+                  </div>`);
+  
+        row.cols.forEach((component) => {
+          let id = `graph-${component.id}`;
+          new Function("arg1", "arg2", component.component + "(arg1 , arg2)")(
+            id,
+            component
+          );
+        });
+  
+  
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+  fetchData();  

@@ -19,9 +19,10 @@ def dashboard_detail(request , id):
     except Dashboard.DoesNotExist:
         dashboard = None
     try:
-        rows = Row.objects.get(for_dashboard=Dashboard.objects.get(id=id))
+        rows = Row.objects.filter(for_dashboard=Dashboard.objects.get(id=id))
     except Row.DoesNotExist:  
         rows = None
+    print(rows)
     context = {
         'dashboard' : dashboard,
         'dashboards' : Dashboard.objects.all(),

@@ -64,6 +64,10 @@ class Row(models.Model):
     for_dashboard = models.ForeignKey(Dashboard , on_delete=models.CASCADE , related_name='rows')
     style =models.CharField(max_length=100, choices=row_style, default='justify-content-start')
 
+
+    class Meta:
+        ordering = ['rank'] 
+
     def col_list(self):
         return DashboardIndicator.objects.filter(for_row=self)
 
