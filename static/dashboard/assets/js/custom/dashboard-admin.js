@@ -191,20 +191,36 @@ $(document).ready(() => {
 
 
         //handle form type
-        if (isRange == 'True') {
-            $("#id_year").parent().hide()
-            $("#id_data_range_start").parent().show()
-            $("#id_data_range_end").parent().show()
+        if (isRange === 'True') {
+            $("#id_year").removeAttr('required').parent().hide();
+            $("#id_data_range_start").attr('required', true).parent().show();
+            $("#id_data_range_end").attr('required', true).parent().show();
         } else {
-            $("#id_year").parent().show()
-            $("#id_data_range_start").parent().hide()
-            $("#id_data_range_end").parent().hide()
+            $("#id_year").attr('required', true).parent().show();
+            $("#id_data_range_start").removeAttr('required').parent().hide();
+            $("#id_data_range_end").removeAttr('required').parent().hide();
         }
+        
 
-        hasTitle ? $("#id_title").show().prev().show() : $("#id_title").hide().prev().hide()
-        hasDescription ? $("#id_description").show().prev().show() : $("#id_description").hide().prev().hide()
-        isSingleYear ? $("#id_year").show().prev().show() : $("#id_year").hide().prev().hide()
-        hasIndicator ? $("#id_indicator").show().prev().show() : $("#id_indicator").hide().prev().hide()
+        // Show or hide the title field based on hasTitle
+        hasTitle 
+        ? $("#id_title").show().attr('required', true).prev().show()
+        : $("#id_title").removeAttr('required').hide().prev().hide();
+        
+        // Show or hide the description field based on hasDescription
+        hasDescription 
+        ? $("#id_description").attr('required', true).show().prev().show()
+        : $("#id_description").removeAttr('required').hide().prev().hide();
+        
+        // Show or hide the year field based on isSingleYear
+        isSingleYear 
+        ? $("#id_year").show().attr('required', true).prev().show()
+        : $("#id_year").removeAttr('required').hide().prev().hide();
+        
+        // Show or hide the indicator field based on hasIndicator
+        hasIndicator 
+        ? $("#id_indicator").show().prev().show()
+        : $("#id_indicator").hide().prev().hide();
 
 
         let isMultipleSelect = isMultiple == 'True' ? true : false; // Set your condition here
@@ -230,6 +246,16 @@ $(document).ready(() => {
             searchResultLimit: 10,
             shouldSort: false,  // Optional: Disable sorting if needed
         });
+
+        const choicesContainer = document.querySelector('.choices');
+        if (choicesContainer) {
+            // Set your custom ID
+            choicesContainer.id = 'id_indicator_search';
+        }
+
+        hasIndicator 
+        ? $("#id_indicator_search").show().prev().show()
+        : $("#id_indicator_search").hide().prev().hide();
 
 
         //assign value to form
