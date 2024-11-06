@@ -721,7 +721,7 @@ const list_with_category = (id, component) => {
 };
 
 const fetchData = async () => {
-  let url = "/dashboard/components/1";
+  let url = "/dashboard/components/2";
   try {
     const res = await axios.get(url);
 

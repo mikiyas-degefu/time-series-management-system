@@ -48,14 +48,18 @@
                       </svg>
                   </li>
 
-                  <li class="pc-item">
-                      <a href="https://ableproadmin.com/widget/w_statistics.html" class="pc-link">
-                          <span class="pc-micon">
-                              <svg class="pc-icon"><use xlink:href="#custom-story"></use></svg>
-                          </span>
-                          <span class="pc-mtext">Statistics</span>
-                      </a>
-                  </li>
+                  
+                    {% for i in dashboards  %}
+                    <li class="pc-item">
+                    <a href="{% url "dashboard_detail" i.id %}" class="pc-link">
+                        <span class="pc-micon">
+                            <svg class="pc-icon"><use xlink:href="#custom-story"></use></svg>
+                        </span>
+                        <span class="pc-mtext">{{i.title}}</span>
+                    </a>
+                   </li>
+                    {% endfor %}
+                  
 
 
               </ul>
