@@ -680,12 +680,44 @@ const simple_card = () => {
   // Function logic for simple_card
 };
 
-const list_with_category = () => {
-  // Function logic for list_with_category
-};
 
 const top_list = () => {
   // Function logic for top_list
+};
+
+
+const list_with_category = (id, component) => {
+  const years = [...new Set(component.annual_value.map(data => data.for_datapoint))];
+  const indicatorTitles = component.indicator.reduce((acc, indicator) => {
+      acc[indicator.id] = indicator.title_ENG;
+      return acc;
+  }, {});
+  let rows = component.indicator.map(indicator => {
+      let row = `<tr><td>${indicator.title_ENG}</td>`;
+      years.forEach(year => {
+          const dataPoint = component.annual_value.find(data => data.indicator === indicator.id && data.for_datapoint === year);
+          row += `<td>${dataPoint ? dataPoint.performance : '-'}</td>`;
+      });
+      row += '</tr>';
+      return row;
+  }).join('');
+  let table = `
+      <div class="container mt-5">
+          <h2>Annual Performance Data</h2>
+          <table class="table table-bordered table-hover">
+              <thead>
+                  <tr>
+                      <th>Indicator</th>
+                      ${years.map(year => `<th>${year}</th>`).join('')}
+                  </tr>
+              </thead>
+              <tbody>
+                  ${rows}
+              </tbody>
+          </table>
+      </div>
+  `;
+  $(`#${id}`).html(table)
 };
 
 const fetchData = async () => {

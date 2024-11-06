@@ -37,6 +37,8 @@ class Component(models.Model):
     has_title = models.BooleanField(default=True)
     has_description = models.BooleanField(default=False)
     has_indicator = models.BooleanField(default=True)
+    has_json = models.BooleanField(default=False)
+    json = models.JSONField(null=True, blank=True)
     data_type = models.CharField(choices=data_type_options, max_length=10,null=True, blank=True)
     image = models.ImageField(upload_to='components/', null=True, blank=True)
     path = models.CharField(max_length=50, unique=True)
