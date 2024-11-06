@@ -49,16 +49,17 @@
                   </li>
 
                   
-                    {% for i in dashboards  %}
-                    <li class="pc-item">
-                    <a href="{% url "dashboard_detail" i.id %}" class="pc-link">
-                        <span class="pc-micon">
-                            <svg class="pc-icon"><use xlink:href="#custom-story"></use></svg>
-                        </span>
-                        <span class="pc-mtext">{{i.title}}</span>
-                    </a>
-                   </li>
-                    {% endfor %}
+                  {% for i in dashboards %}
+                  <li class="pc-item">
+                      <a href="{% url "dashboard_detail" i.id %}" class="pc-link">
+                          <span class="pc-micon">
+                              <i class="fas fa-{{i.icon}}"></i> <!-- Replace 'fa-icons' with the actual icon name -->
+                          </span>
+                          <span class="pc-mtext">{{ i.title }}</span>
+                      </a>
+                  </li>
+              {% endfor %}
+              
                   
 
 
