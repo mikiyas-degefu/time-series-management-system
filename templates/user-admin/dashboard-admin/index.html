@@ -26,6 +26,12 @@
       href="https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.css">
 
     {% include 'dashboard/include/head.html' %}
+
+    <script src="https://cdn.jsdelivr.net/npm/choices.js@11.0.2/public/assets/scripts/choices.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/choices.js@11.0.2/public/assets/styles/choices.min.css" rel="stylesheet">
+
+
+
   </head>
   <!-- [Head] end -->
   <style>
@@ -160,6 +166,7 @@
 
       <!-- [ Main Content ] start -->
       <div class="pc-content">
+
         <div id="droppable2" name="drop-element" style="padding-bottom: 140px;"  class="ui-droppable ">
 
           <!-- Start Editable components-->
@@ -304,7 +311,6 @@
           
         </div>
       </div>
-
         <!--Modal Add Dashboard Row-->
         <div class="modal fade" id="modalAddDashboardRow" tabindex="-1"
           aria-labelledby="modalAddDashboardRowLabel" aria-hidden="true">
@@ -442,6 +448,8 @@
           src="https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.js"></script>
 
         <script type="text/javascript">
+
+
          const showToast = (title, body, cssClass) => {
                $.toast({
                 heading: title,
@@ -634,7 +642,7 @@
                 if (response.success) {
                      //show succuss message
                      showToast('&#128515 Hello, User', 'Successfully component removed', 'success')
-                     console.log(`#dragged_col_${colID}`)
+
                     $(`#dragged_col_${colID}`).remove() //remove from html
                     $('#removeComponent').modal('hide'); //Hide Modal
 
@@ -815,18 +823,19 @@
         /**
          * Sort col based on its rank
          */
-         const sortCol =(rowId) =>{
+         const sortCol = (rowId) => {
+          // Select items with name="col_component" within the specified row
           let items = $(`#${rowId} [name="col_component"]`);
-
+      
           // Sort the items based on their data-rank attribute
-          items.sort(function(a, b) {
-              return $(a).data('rank') - $(b).data('rank'); // Ascending order
+          items.sort((a, b) => $(a).data('rank') - $(b).data('rank'));
+      
+          // Append each item to reorder them in the container
+          items.each(function() {
+              $(this).appendTo(`#${rowId}`);
           });
-
-          //updated the html 
-          $(`#${rowId}`).append(items);
-
-        }
+      };
+      
     
     </script>
 

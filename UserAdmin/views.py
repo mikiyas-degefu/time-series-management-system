@@ -265,10 +265,6 @@ def data_view_indicator_detail(request, id):
             quarter_id = request.POST['quarter_id']
             month_id = request.POST['month_id']
 
-
-
-
-    
             if quarter_id == "" and month_id == "":
                 try:
                     value = AnnualData.objects.filter(indicator__id = indicator_id, for_datapoint__year_EC = year_id).first()
