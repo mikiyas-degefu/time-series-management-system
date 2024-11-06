@@ -724,8 +724,10 @@ const fetchData = async () => {
   let url = "/dashboard/components/1";
   try {
     const res = await axios.get(url);
-    let pc_content = $("#pc-content");
-    const rows = res.data.rows.forEach((row) => {
+
+    
+    res.data.rows.forEach((row) => {
+
       let col = row.cols
         .map((component) => {
           return `<div id="graph-${component.id}" class="${
@@ -734,8 +736,8 @@ const fetchData = async () => {
         })
         .join("");
 
-      pc_content.append(`
-                <div class="row">
+        $("#pc-content").append(`
+                <div class="row ${row.style}">
                     ${col}
                 </div>`);
 
@@ -746,6 +748,8 @@ const fetchData = async () => {
           component
         );
       });
+
+
     });
   } catch (error) {
     console.log(error);
