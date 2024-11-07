@@ -11,13 +11,13 @@
 
   
 
-  {% include 'user-admin/include/head.html' %}
+  {% include 'user-admin/common/head.html' %}
   {% fontawesome_5_static %}
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
-  {% include 'user-admin/include/navbar.html'%}
-  <div>{% include 'user-admin/include/sidebar.html' %}</div>
+  {% include 'user-admin/common/navbar.html'%}
+  <div>{% include 'user-admin/common/sidebar.html' %}</div>
 
 
   <!--Body Start-->
@@ -306,7 +306,7 @@
   </div>
   <!--Body End-->
 
-  {% include 'user-admin/include/footer.html'%}
+  {% include 'user-admin/common/footer.html'%}
 
   <!--Chart -->
   <script src="{% static 'assets/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
@@ -318,7 +318,7 @@
   <script src="{% static 'assets/plugins/summernote/summernote-bs4.min.js' %}"></script>
   <script src="{% static 'assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
 
-  {% include 'user-admin/include/footer_js.html'%}
+  {% include 'user-admin/common/footer_js.html'%}
 </body>
 <script>
   $(document).ready(function () {

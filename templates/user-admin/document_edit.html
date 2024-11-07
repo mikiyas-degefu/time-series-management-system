@@ -7,21 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>DPMEs</title>
     <link />
-    {% include 'user-admin/include/head.html' %}
+    {% include 'user-admin/common/head.html' %}
   </head>
 
   <body class="hold-transition sidebar-mini layout-fixed">
-    {% include 'user-admin/include/navbar.html'%}
-    <div>{% include 'user-admin/include/sidebar.html' %}</div>
+    {% include 'user-admin/common/navbar.html'%}
+    <div>{% include 'user-admin/common/sidebar.html' %}</div>
 
     <!--Body Start-->
     <div class="content-wrapper">
-
-
-        <div class="col-lg-7 mx-auto d-block">
-            {% include 'includes/messages.html' %}
-          </div>
-
+      <div class="col-lg-7 mx-auto d-block">
+        {% include 'includes/messages.html' %}
+      </div>
 
       <!-- TItle Start-->
       <div class="content-header">
@@ -31,18 +28,21 @@
               <form method="POST">
                 {% csrf_token %}
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="AddDocumentLabel">Documents</h5>
-                    </div>
-                    <div class="modal-body">
-                      {{form.as_p}}
-                    </div>
-                    <div class="modal-footer">
-                        <a href="{% url 'document'%}" class="btn btn-secondary" data-bs-dismiss="modal">Close</a>
-                        <button type="submit" class="btn btn-primary">Yes</button>
-                    </div>
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="AddDocumentLabel">Documents</h5>
+                  </div>
+                  <div class="modal-body">{{form.as_p}}</div>
+                  <div class="modal-footer">
+                    <a
+                      href="{% url 'document'%}"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                      >Close</a
+                    >
+                    <button type="submit" class="btn btn-primary">Yes</button>
+                  </div>
                 </div>
-            </form>
+              </form>
             </div>
           </div>
         </div>
@@ -51,7 +51,7 @@
     </div>
     <!--Body End-->
 
-   {% include 'user-admin/include/footer.html'%}
-    {% include 'user-admin/include/footer_js.html'%}
+    {% include 'user-admin/common/footer.html'%} {% include
+    'user-admin/common/footer_js.html'%}
   </body>
 </html>
