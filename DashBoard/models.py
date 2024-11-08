@@ -37,8 +37,7 @@ class Component(models.Model):
     has_title = models.BooleanField(default=True)
     has_description = models.BooleanField(default=False)
     has_indicator = models.BooleanField(default=True)
-    has_json = models.BooleanField(default=False)
-    json = models.JSONField(null=True, blank=True)
+    is_country = models.BooleanField(default=False)
     data_type = models.CharField(choices=data_type_options, max_length=10,null=True, blank=True)
     image = models.ImageField(upload_to='components/', null=True, blank=True)
     path = models.CharField(max_length=50, unique=True)
@@ -77,6 +76,8 @@ class Row(models.Model):
 
 sizes = (('25%', '25%'), ('33%', '33%'), ('50%', '50%'), ('100%', '100%'))
 
+
+
 class DashboardIndicator(models.Model):
     for_row = models.ForeignKey(Row , on_delete=models.CASCADE, related_name='cols')
     indicator = models.ManyToManyField(Indicator,blank=True ,related_name='indicator')  
@@ -88,12 +89,24 @@ class DashboardIndicator(models.Model):
     data_range_end = models.ForeignKey(DataPoint,null=True, blank=True, related_name="dateEndDataPoint" ,on_delete=models.SET_NULL)
     rank = models.IntegerField(default=0)
     width = models.CharField(choices=sizes , max_length=50 , default='50%', null=True , blank=True)
+    addis_ababa = models.FloatField(null=True, blank=True)
+    tigray = models.FloatField(null=True, blank=True)
+    amhara = models.FloatField(null=True, blank=True)
+    oromia = models.FloatField(null=True, blank=True)
+    somali = models.FloatField(null=True, blank=True)
+    afar = models.FloatField(null=True, blank=True)
+    benshangul_gumuz = models.FloatField(null=True, blank=True)
+    dire_dawa = models.FloatField(null=True, blank=True)
+    gambella = models.FloatField(null=True, blank=True)
+    snnp = models.FloatField(null=True, blank=True)
+    harari = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return str(self.for_row.rank) 
     
     class Meta:
         ordering = ['rank'] 
+
 
     def get_annual_value(self,start_date=None, end_date=None, year=None):
         indicator = self.indicator.all()

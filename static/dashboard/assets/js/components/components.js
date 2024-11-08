@@ -737,9 +737,6 @@ const list_with_category = (id, component) => {
 
 
 
-
-
-
 const fetchData = async () => {
   let urlPath = window.location.pathname;
   let pathID = urlPath.replace("/dashboard/dashboard_detail/", "").replace("/", "");

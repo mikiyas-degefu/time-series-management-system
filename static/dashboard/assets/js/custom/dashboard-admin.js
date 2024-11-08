@@ -58,7 +58,8 @@ $(document).ready(() => {
                                         data-id="${draggable.data('id')}"
                                         data-is-multiple="${draggable.data('isMultiple')}"
                                         data-is-single-year="${draggable.data('isSingleYear')}"
-                                        data-is-range="${draggable.data('isRange')}" 
+                                        data-is-range="${draggable.data('isRange')}"
+                                        data-is-country="${draggable.data('isCountry')}"  
                                         data-row-id="${droppable.attr('id')}"
                                         data-has-title="${draggable.data('hasTitle')}"
                                         data-has-indicator="${draggable.data('hasIndicator')}"
@@ -183,6 +184,7 @@ $(document).ready(() => {
     $(document).on('click', "[name='btn-edit']", function () {
         let isMultiple = $(this).data('isMultiple');
         let isRange = $(this).data('isRange');
+        let isCountry = $(this).data('isCountry') == 'True' ? true : false;
         let colId = $(this).attr('id');
         let hasTitle = $(this).data('hasTitle') == 'True' ? true : false
         let hasDescription = $(this).data('hasDescription') == 'True' ? true : false
@@ -221,6 +223,36 @@ $(document).ready(() => {
         hasIndicator 
         ? $("#id_indicator").show().prev().show()
         : $("#id_indicator").hide().prev().hide();
+        
+        // Show or hide the country Lists field based on hasCountry
+        if (!isCountry) {
+            $("#id_addis_ababa").removeAttr('required').hide().prev().hide();
+            $("#id_tigray").removeAttr('required').hide().prev().hide();
+            $("#id_amhara").removeAttr('required').hide().prev().hide();
+            $("#id_oromia").removeAttr('required').hide().prev().hide();
+            $("#id_somali").removeAttr('required').hide().prev().hide();
+            $("#id_afar").removeAttr('required').hide().prev().hide();
+            $("#id_benshangul_gumuz").removeAttr('required').hide().prev().hide();
+            $("#id_dire_dawa").removeAttr('required').hide().prev().hide();
+            $("#id_gambella").removeAttr('required').hide().prev().hide();
+            $("#id_gambella").removeAttr('required').hide().prev().hide();
+            $("#id_snnp").removeAttr('required').hide().prev().hide();
+            $("#id_harari").removeAttr('required').hide().prev().hide();
+        } else {
+            $("#id_addis_ababa").show().attr('required', true).prev().show()
+            $("#id_tigray").show().attr('required', true).prev().show()
+            $("#id_amhara").show().attr('required', true).prev().show()
+            $("#id_oromia").show().attr('required', true).prev().show()
+            $("#id_somali").show().attr('required', true).prev().show()
+            $("#id_afar").show().attr('required', true).prev().show()
+            $("#id_benshangul_gumuz").show().attr('required', true).prev().show()
+            $("#id_dire_dawa").show().attr('required', true).prev().show()
+            $("#id_gambella").show().attr('required', true).prev().show()
+            $("#id_snnp").show().attr('required', true).prev().show()
+            $("#id_harari").show().attr('required', true).prev().show()
+        }
+        
+        
 
 
         let isMultipleSelect = isMultiple == 'True' ? true : false; // Set your condition here
