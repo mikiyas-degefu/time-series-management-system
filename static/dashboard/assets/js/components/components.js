@@ -677,8 +677,22 @@ const rate_card = () => {
   // Function logic for rate_card
 };
 
-const simple_card = () => {
-  // Function logic for simple_card
+const simple_card = (id, component) => {
+  $(`#${id}`).html(`
+    <div>
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h3 class="mb-1">${component.annual_value[0].performance}</h3>
+                    <p class="text-muted mb-0">${component.title}</p>
+                </div>
+                <div class="col-4 text-end">
+                    <i class="ti ti-chart-bar text-secondary f-36"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    `);
 };
 
 
