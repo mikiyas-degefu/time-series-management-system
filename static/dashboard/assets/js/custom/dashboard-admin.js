@@ -309,7 +309,6 @@ $(document).ready(() => {
         //assign value to form
         $("#form_col_id").val(colId);
 
-        console.log($(this).data());
         //assign form value if exist
         let colIndicatorId = $(this).data('colIndicatorId') || null;
         let colYearId = $(this).data('colYearId') || null;

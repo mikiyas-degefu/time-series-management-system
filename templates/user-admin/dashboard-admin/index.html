@@ -260,6 +260,8 @@
                             data-col-data-range-start="{{col.data_range_start.id}}"
                             data-col-data-range-end="{{col.data_range_end.id}}"
                             data-is-country="{{col.component.is_country}}"
+                            data-is-image-component="{{col.component.is_image_component}}"
+                            data-has-icon="{{col.component.has_icon}}"
                             data-col-addis-ababa = "{{col.addis_ababa}}"
                             data-col-tigray = "{{col.tigray}}"
                             data-col-amhara = "{{col.amhara}}"
@@ -271,6 +273,7 @@
                             data-col-gambella = "{{col.gambella}}"
                             data-col-snnp = "{{col.snnp}}"
                             data-col-harari = "{{col.harari}}"
+                            data-col-custome-value = "{{col.custom_value}}"
                             data-bs-toggle="modal"
                             data-bs-target="#modalAddDashboardRow"
                             class="dropdown-item">
@@ -544,6 +547,8 @@
             let snnp = $("#id_snnp").val()
             let harari = $("#id_harari").val()
 
+            let customValue =  $("#id_custom_value").val() || null
+
            
             function readFileAsArrayBuffer(file) {
               return new Promise((resolve, reject) => {
@@ -595,7 +600,9 @@
               formData.append('gambella',  gambella || null,);
               formData.append('snnp',  snnp || null);
               formData.append('harari',  harari || null);
+              formData.append('customValue',  customValue || null);
               formData.append('icon', $('#id_icon')[0].files[0] || null);
+              formData.append('image', $('#id_image')[0].files[0] || null);
               formData.append('csrfmiddlewaretoken', "{{ csrf_token }}");
 
               $.ajax({
@@ -639,6 +646,10 @@
                   $(`#${colId}`).data('col-gambella', gambella);
                   $(`#${colId}`).data('col-snnp', snnp);
                   $(`#${colId}`).data('col-harari', harari);
+                  
+
+                  //custom
+                  $(`#${colId}`).data('data-col-custome-value', customValue);
 
                   $(`#dragged_${colId}`).attr('data-rank', response.rank) //update col rank 
 
