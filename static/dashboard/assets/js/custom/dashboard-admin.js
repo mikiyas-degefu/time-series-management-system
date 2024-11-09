@@ -65,6 +65,8 @@ $(document).ready(() => {
                                         data-has-indicator="${draggable.data('hasIndicator')}"
                                         data-has-description="${draggable.data('hasDescription')}"
                                         data-has-icon="${draggable.data('hasIcon')}"
+                                        data-is-custom="${draggable.data('isCustom')}"
+                                        data-is-image-component="${draggable.data('isImageComponent')}"
                                         data-col-rank="None"
                                         id="col_${colId}"
                                         data-bs-toggle="modal" 
@@ -192,6 +194,8 @@ $(document).ready(() => {
         let isSingleYear = $(this).data('isSingleYear') == 'True' ? true : false
         let hasIndicator = $(this).data('hasIndicator') == 'True' ? true : false
         let hasIcon = $(this).data('hasIcon') == 'True' ? true : false
+        let isCustom = $(this).data('isCustom') == 'True' ? true : false
+        let isImageComponent = $(this).data('isImageComponent') == 'True' ? true : false
 
 
         //handle form type
@@ -231,6 +235,14 @@ $(document).ready(() => {
         ? $("#id_icon").show().attr('required', true).prev().show()
         : $("#id_icon").removeAttr('required').hide().prev().hide();
         
+        isCustom
+            ? $("#id_custom_value").show().attr('required', true).prev().show()
+            : $("#id_custom_value").removeAttr('required').hide().prev().hide();
+        
+        isImageComponent
+            ? $("#id_image").show().attr('required', true).prev().show()
+            : $("#id_image").removeAttr('required').hide().prev().hide();
+        
         // Show or hide the country Lists field based on hasCountry
         if (!isCountry) {
             $("#id_addis_ababa").removeAttr('required').hide().prev().hide();
@@ -259,8 +271,6 @@ $(document).ready(() => {
         }
         
         
-
-
         let isMultipleSelect = isMultiple == 'True' ? true : false; // Set your condition here
 
         if (multipleCancelButton) {
