@@ -598,13 +598,7 @@
 
               $.ajax({
               type: 'POST',
-              url: `{% url "custom-dashboard-topic" dashboard.id %}`,
-              enctype: 'multipart/form-data',
-              contentType: false,
-              processData: false,
-              headers: {
-               'X-Requested-With': 'XMLHttpRequest',  // Indicate AJAX request
-              },
+              url: `{% url "custom-dashboard-topic" dashboard.id %}`,              
               data: formData,
             
               beforeSend: function() {
@@ -682,6 +676,9 @@
                   showToast('&#128577; Oops!', `Failed to updated ${response.message}`, 'error');
                 }
               },
+              cache: false,
+              contentType: false,
+              processData: false,
               error: function (err) {
                 console.log(err)
               }

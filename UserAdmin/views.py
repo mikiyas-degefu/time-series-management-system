@@ -948,6 +948,7 @@ def custom_dashboard_topic(request,id):
     rows = Row.objects.filter(for_dashboard = dashboard).order_by('rank').select_related()
 
     components = Component.objects.all()
+    
     form = DashboardIndicatorForm(request.POST or None, request.FILES or None)
     form_row_style = RowStyleForm(request.POST or None)
     
@@ -976,15 +977,22 @@ def custom_dashboard_topic(request,id):
             except Row.DoesNotExist:
                 return JsonResponse({'success' : False, 'message' : "Row doesn't exit!"})
 
-            
+           
+
             #check if dashboard indicator exists
-            if request.POST['dashboardId']:
-                try:
-                    dashboard_indicator = DashboardIndicator.objects.get(id = request.POST['dashboardId'])
-                except DashboardIndicator.DoesNotExist:
-                    return JsonResponse({'success' : False, 'message' : "Component doesn't exit!"})
+            if 'dashboardId' in request.POST:
+                if request.POST['dashboardId'] and request.POST['dashboardId']!= 'null':
+                    try:
+                        dashId =  request.POST['dashboardId'] if request.POST['dashboardId'] != 'null' else None
+                        dashboard_indicator = DashboardIndicator.objects.get(id = dashId)
+                    except DashboardIndicator.DoesNotExist:
+                        return JsonResponse({'success' : False, 'message' : "Component doesn't exit!"})
+                else:
+                    dashboard_indicator = DashboardIndicator()
             else:
                 dashboard_indicator = DashboardIndicator()
+            
+             
             
             #get the date from post request
             width = request.POST['width'] or None
@@ -994,6 +1002,7 @@ def custom_dashboard_topic(request,id):
             data_range_end = request.POST['data_range_end'] or None
             rank = request.POST['colRank'] or None
 
+           
             #check rank is number
             try:
                 rank = int(rank)
@@ -1030,7 +1039,8 @@ def custom_dashboard_topic(request,id):
             ## check component is multiple    
             if component.is_multiple:
                 try:
-                    indicators = Indicator.objects.filter(id__in = request.POST.getlist('indicator[]'))
+                    indicator_list = request.POST.get('indicator').split(',')
+                    indicators = Indicator.objects.filter(id__in = indicator_list)
                 except Indicator.DoesNotExist:
                     return JsonResponse({'success' : False, 'message' : "Indicator does not exit!"})
             elif not component.is_multiple and component.has_indicator:
@@ -1118,6 +1128,7 @@ def custom_dashboard_topic(request,id):
             dashboard_indicator.rank = rank
             dashboard_indicator.width = width
             dashboard_indicator.save()
+            
             try:
                 dashboard_indicator.indicator.clear()
                 dashboard_indicator.indicator.add(*indicators) #save all indicator to dashboard b/c of m-to-m relation
