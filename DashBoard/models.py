@@ -123,4 +123,3 @@ class DashboardIndicator(models.Model):
             annual = AnnualData.objects.filter(indicator__in = indicator ,for_datapoint__year_EC=year)
             return annual   
          
-
