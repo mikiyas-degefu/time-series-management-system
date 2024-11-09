@@ -667,7 +667,7 @@ const banner = (id, component) => {
                     </div>
                      <div class="col-sm-6 text-center">
                     <div class="img-welcome-banner"><img
-                            src="${component?.image}" alt="img"
+                            src="${component?.icon}" style="height: 70px;" alt="img"
                             class="img-fluid"></div>
                 </div>
                 </div>
