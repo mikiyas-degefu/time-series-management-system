@@ -728,7 +728,7 @@ const image = (id, component) => {
     <div>
         <div class="card-body">
             <div class="row align-items-center">
-                <img src="${component.image}" class="img-fluid" alt="--" style="height: 150px;"/>
+                <img src="${component.image}" class="img-fluid" alt="--"/>
             </div>
         </div>
     </div>
