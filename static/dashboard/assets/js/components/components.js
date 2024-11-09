@@ -665,9 +665,15 @@ const banner = (id, component) => {
                             <p class="text-white">${component?.description}</p>
                         </div>
                     </div>
+                     <div class="col-sm-6 text-center">
+                    <div class="img-welcome-banner"><img
+                            src="${component?.image}" alt="img"
+                            class="img-fluid"></div>
+                </div>
                 </div>
             </div>
-        </div>`);
+        </div>`
+      );
 };
 
 //Not done
@@ -689,7 +695,7 @@ const simple_card = (id, component) => {
                     <p class="text-muted mb-0">${component.title}</p>
                 </div>
                 <div class="col-4 text-end">
-                    <i class="ti ti-chart-bar text-secondary f-36"></i>
+                   <img src="${component.icon}" class="img-fluid" alt="--" style="height: 50px;"/>
                 </div>
             </div>
         </div>
@@ -708,7 +714,7 @@ const simple_card_custom_data = (id, component) => {
                     <p class="text-muted mb-0">${component.title}</p>
                 </div>
                 <div class="col-4 text-end">
-                    <i class="ti ti-chart-bar text-secondary f-36"></i>
+                   <img src="${component.icon}" class="img-fluid" alt="--" style="height: 50px;"/>
                 </div>
             </div>
         </div>
