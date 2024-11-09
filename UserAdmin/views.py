@@ -1051,11 +1051,27 @@ def custom_dashboard_topic(request,id):
             else:
                 indicators = None
 
+            ##check component is has custom value
+            if component.is_custom:
+                try:
+                    custom_value = request.POST['customValue']
+                    print(custom_value)
+                    dashboard_indicator.custom_value = custom_value
+                except:
+                    return JsonResponse({'success' : False, 'message' : "Please enter valid custom value!"})
+            
+            if component.is_image_component:
+                try:
+                    image = request.FILES['image']
+                    dashboard_indicator.image = image
+                except:
+                    return JsonResponse({'success': False, 'message': 'Please upload valid image format (png, jpg, jpeg) !'})
+
+
             ##check component is country
             if component.is_country:
                 try:
                     addis_ababa = float(request.POST['addisAbaba'])
-                    
                 except:
                     return JsonResponse({'success' : False, 'message' : "Please enter valid number for Addis Ababa!"})
                 

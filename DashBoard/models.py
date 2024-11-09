@@ -91,7 +91,7 @@ class DashboardIndicator(models.Model):
     data_range_start = models.ForeignKey(DataPoint,null=True, blank=True, related_name="dateStartDataPoint" ,on_delete=models.SET_NULL)
     data_range_end = models.ForeignKey(DataPoint,null=True, blank=True, related_name="dateEndDataPoint" ,on_delete=models.SET_NULL)
     rank = models.IntegerField(default=0)
-    icon = models.ImageField(upload_to='dashboard/icon', null=True, blank=True)
+    icon = models.ImageField(upload_to='dashboard/icon/', null=True, blank=True)
     width = models.CharField(choices=sizes , max_length=50 , default='50%', null=True , blank=True)
     addis_ababa = models.FloatField(null=True, blank=True)
     tigray = models.FloatField(null=True, blank=True)
@@ -105,7 +105,7 @@ class DashboardIndicator(models.Model):
     snnp = models.FloatField(null=True, blank=True)
     harari = models.FloatField(null=True, blank=True)
     custom_value = models.CharField(max_length=50 , null=True,  blank=True)
-    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    image = models.ImageField(upload_to='dashboard/images/', null=True, blank=True)
 
     def __str__(self):
         return str(self.for_row.rank) 
