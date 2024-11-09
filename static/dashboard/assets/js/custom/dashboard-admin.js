@@ -235,7 +235,6 @@ $(document).ready(() => {
             $("#id_benshangul_gumuz").removeAttr('required').hide().prev().hide();
             $("#id_dire_dawa").removeAttr('required').hide().prev().hide();
             $("#id_gambella").removeAttr('required').hide().prev().hide();
-            $("#id_gambella").removeAttr('required').hide().prev().hide();
             $("#id_snnp").removeAttr('required').hide().prev().hide();
             $("#id_harari").removeAttr('required').hide().prev().hide();
         } else {
@@ -293,6 +292,7 @@ $(document).ready(() => {
         //assign value to form
         $("#form_col_id").val(colId);
 
+        console.log($(this).data());
         //assign form value if exist
         let colIndicatorId = $(this).data('colIndicatorId') || null;
         let colYearId = $(this).data('colYearId') || null;
@@ -302,6 +302,19 @@ $(document).ready(() => {
         let colDataRangeStart = $(this).data('colDataRangeStart') || null;
         let colDataRangeEnd = $(this).data('colDataRangeEnd') || null;
         let colRank = $(this).data('colRank') || 0;
+        let addisAbaba = $(this).data('colAddisAbaba') || null;
+        let tigray = $(this).data('colTigray') || null;
+        let amhara = $(this).data('colAmhara') || null;
+        let oromia = $(this).data('colOromia') || null;
+        let somali = $(this).data('colSomali') || null;
+        let afar = $(this).data('colAfar') || null;
+        let benshangulGumuz = $(this).data('colBenshangulGumuz') || null;
+        let direDawa = $(this).data('colDireDawa') || null;
+        let gambella = $(this).data('colGambella') || null;
+        let snnp = $(this).data('colSnnp') || null;
+        let harari = $(this).data('colHarari') || null;
+
+        
 
         //assign selected item for select option 
         if(Array.isArray(colIndicatorId)){
@@ -315,8 +328,6 @@ $(document).ready(() => {
         }else{
             multipleCancelButton.removeActiveItems();
         }
-        
-       
 
         $("#id_indicator").val(colIndicatorId)
         $("#id_year").val(colYearId);
@@ -326,6 +337,18 @@ $(document).ready(() => {
         $("#id_data_range_start").val(colDataRangeStart);
         $("#id_data_range_end").val(colDataRangeEnd);
         $("#id_rank").val(colRank != 'None' ? Number(colRank) : 0)
+
+        $("#id_addis_ababa").val(addisAbaba);
+        $("#id_tigray").val(tigray);
+        $("#id_amhara").val(amhara);
+        $("#id_oromia").val(oromia);
+        $("#id_somali").val(somali);
+        $("#id_afar").val(afar);
+        $("#id_benshangul_gumuz").val(benshangulGumuz);
+        $("#id_dire_dawa").val(direDawa);
+        $("#id_gambella").val(gambella);
+        $("#id_snnp").val(snnp);
+        $("#id_harari").val(harari);
 
     });
 

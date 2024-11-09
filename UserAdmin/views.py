@@ -1018,6 +1018,8 @@ def custom_dashboard_topic(request,id):
                     dashboard_indicator.year = year
                 except DataPoint.DoesNotExist:
                     return JsonResponse({'success' : False, 'message' : "Year does not exist!"})
+                
+            ## check component is multiple    
             if component.is_multiple:
                 try:
                     indicators = Indicator.objects.filter(id__in = request.POST.getlist('indicator[]'))
@@ -1030,6 +1032,78 @@ def custom_dashboard_topic(request,id):
                     return JsonResponse({'success' : False, 'message' : "Indicator does not exit!"})
             else:
                 indicators = None
+
+            ##check component is country
+            if component.is_country:
+                try:
+                    addis_ababa = float(request.POST['addisAbaba'])
+                    
+                except:
+                    return JsonResponse({'success' : False, 'message' : "Please enter valid number for Addis Ababa!"})
+                
+                try:    
+                    tigray = float(request.POST['tigray'])
+                except:
+                    return JsonResponse({'success' : False, 'message' : "Please enter valid number for Tigray!"})
+                
+                try:    
+                    amhara = float(request.POST['amhara'])
+                except:
+                    return JsonResponse({'success' : False, 'message' : "Please enter valid number for Amhara!"})
+                
+                try:    
+                    oromia = float(request.POST['oromia'])
+                except:
+                    return JsonResponse({'success' : False, 'message' : "Please enter valid number for Oromia!"})
+                
+                try:    
+                    somali = float(request.POST['somali'])
+                except:
+                    return JsonResponse({'success' : False, 'message' : "Please enter valid number for Somali!"})
+                
+                try:    
+                    afar = float(request.POST['afar'])
+                except:
+                    return JsonResponse({'success' : False, 'message' : "Please enter valid number for Afar!"})
+                
+                try:    
+                    benshangul_gumuz = float(request.POST['benshangulGumuz'])
+                except:
+                    return JsonResponse({'success' : False, 'message' : "Please enter valid number for Benshangul Gumuz!"})
+                
+                try:    
+                    dire_dawa = float(request.POST['direDawa'])
+                except:
+                    return JsonResponse({'success' : False, 'message' : "Please enter valid number for Dire Dawa!"})
+                
+                try:    
+                    gambella = float(request.POST['gambella'])
+                except:
+                    return JsonResponse({'success' : False, 'message' : "Please enter valid number for Gambella!"})
+                
+                try:    
+                    snnp = float(request.POST['snnp'])
+                except:
+                    return JsonResponse({'success' : False, 'message' : "Please enter valid number for SNNP!"})
+                
+                try:    
+                    harari = float(request.POST['harari'])
+                except:
+                    return JsonResponse({'success' : False, 'message' : "Please enter valid number for SNNP!"})
+                
+                #save data if it is country
+                dashboard_indicator.addis_ababa = addis_ababa
+                dashboard_indicator.tigray = tigray
+                dashboard_indicator.amhara = amhara
+                dashboard_indicator.oromia = oromia
+                dashboard_indicator.somali = somali
+                dashboard_indicator.afar = afar
+                dashboard_indicator.benshangul_gumuz = benshangul_gumuz
+                dashboard_indicator.dire_dawa = dire_dawa
+                dashboard_indicator.gambella = gambella
+                dashboard_indicator.snnp = snnp
+                dashboard_indicator.harari = harari
+                
                 
             dashboard_indicator.component = component
             dashboard_indicator.for_row = row

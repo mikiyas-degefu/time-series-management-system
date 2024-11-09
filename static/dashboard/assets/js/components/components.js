@@ -573,7 +573,6 @@ const radial_bar = (id, component) => {
 };
 
 const pie = (id, component) => {
-  console.log(component);
   const newComponent = component;
 
   // Prepare series data for pie chart by mapping annual values to performance
@@ -735,6 +734,72 @@ const list_with_category = (id, component) => {
   $(`#${id}`).html(table)
 };
 
+
+const country = (id, component) => {
+
+    (async () => {
+
+      const topology = await fetch(
+        'https://code.highcharts.com/mapdata/countries/et/et-all.topo.json'
+      ).then(response => response.json());
+
+      // Prepare demo data. The data is joined to map using value of 'hc-key'
+      // property by default. See API docs for 'joinBy' for more info on linking
+      // data and map.
+      const data = [
+        ['et-be', component?.benshangul_gumuz || 0],
+        ['et-2837', 11],
+        ['et-ha', component?.harari || 0],
+        ['et-sn', component?.snnp || 0],
+        ['et-ga', component?.gambella || 0],
+        ['et-aa', component?.addis_ababa || 0],
+        ['et-so', component?.somali || 0],
+        ['et-dd', component?.dire_dawa || 0],
+        ['et-ti', component?.tigray || 0],
+        ['et-af', component?.afar || 0],
+        ['et-am', component?.amhara || 0]
+      ];
+
+      // Create the chart
+      Highcharts.mapChart(`${id}`, {
+        chart: {
+          map: topology
+        },
+        title: {
+          text: component?.title
+        },
+        credits: {
+          enabled: false
+        },
+        mapNavigation: {
+          enabled: true,
+          buttonOptions: {
+            verticalAlign: 'bottom'
+          }
+        },
+        colorAxis: {
+          min: Math.min(...data.map(d => d[1])), // Dynamic min based on data
+          max: Math.max(...data.map(d => d[1])), // Dynamic max based on data
+          stops: [
+            [0, '#B7D8B1'],    // Starting color for minimum value
+            [1, '#162F12']     // Color for maximum value
+          ],
+          nullColor: '#B7D8B1' // Fallback color for areas with no data
+        },
+        series: [{
+          data: data,
+          name: component?.title,
+          dataLabels: {
+            enabled: true,
+            format: '{point.name}'
+          }
+        }]
+      });
+
+
+    })();
+
+}
 
 
 const fetchData = async () => {

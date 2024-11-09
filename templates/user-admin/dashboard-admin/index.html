@@ -256,6 +256,18 @@
                             data-col-description="{{col.description}}"
                             data-col-data-range-start="{{col.data_range_start.id}}"
                             data-col-data-range-end="{{col.data_range_end.id}}"
+                            data-is-country="{{col.component.is_country}}"
+                            data-col-addis-ababa = "{{col.addis_ababa}}"
+                            data-col-tigray = "{{col.tigray}}"
+                            data-col-amhara = "{{col.amhara}}"
+                            data-col-oromia = "{{col.oromia}}"
+                            data-col-somali = "{{col.somali}}"
+                            data-col-afar = "{{col.afar}}"
+                            data-col-benshangul-gumuz = "{{col.benshangul_gumuz}}"
+                            data-col-dire-dawa = "{{col.dire_dawa}}"
+                            data-col-gambella = "{{col.gambella}}"
+                            data-col-snnp = "{{col.snnp}}"
+                            data-col-harari = "{{col.harari}}"
                             data-bs-toggle="modal"
                             data-bs-target="#modalAddDashboardRow"
                             class="dropdown-item">
@@ -515,7 +527,20 @@
             let data_range_start = $("#id_data_range_start").val();
             let data_range_end = $("#id_data_range_end").val();
             let rank = $('#id_rank').val()
-            let width = $("#id_width").val();    
+            let width = $("#id_width").val();  
+            
+            let addisAbaba = $("#id_addis_ababa").val()
+            let tigray = $("#id_tigray").val()
+            let amhara = $("#id_amhara").val()
+            let oromia = $("#id_oromia").val()
+            let somali = $("#id_somali").val()
+            let afar = $("#id_afar").val()
+            let benshangulGumuz = $("#id_benshangul_gumuz").val()
+            let direDawa = $("#id_dire_dawa").val()
+            let gambella = $("#id_gambella").val()
+            let snnp = $("#id_snnp").val()
+            let harari = $("#id_harari").val()
+
 
             let colSize = width == '25%' ? 'col-md-3' : (width == '33%' ? 'col-md-4' : (width == '50%' ? 'col-md-6' : (width == '100%' ? 'col-md-12' : '')));
 
@@ -542,6 +567,17 @@
                 'rowId' : rowId,
                 'width' : width,
                 'colRank' : rank,
+                'addisAbaba' : addisAbaba || null,
+                'tigray' : tigray || null,
+                'amhara' : amhara || null,
+                'oromia' : oromia || null,
+                'somali' : somali || null,
+                'afar' : afar || null,
+                'benshangulGumuz' : benshangulGumuz || null,
+                'direDawa' : direDawa || null,
+                'gambella' : gambella || null,
+                'snnp' : snnp || null,
+                'harari' : harari || null,
                 csrfmiddlewaretoken: '{{csrf_token}}'
               },
 
@@ -569,6 +605,19 @@
                   $(`#${colId}`).data('col-data-range-start', data_range_start) 
                   $(`#${colId}`).data('col-data-range-end', data_range_end)
                   $(`#${colId}`).data('col-rank', response.rank);
+                  //country data
+                  $(`#${colId}`).data('col-addis-ababa', addisAbaba);
+                  $(`#${colId}`).data('col-tigray', tigray);
+                  $(`#${colId}`).data('col-amhara', amhara);
+                  $(`#${colId}`).data('col-oromia', oromia);
+                  $(`#${colId}`).data('col-somali', somali);
+                  $(`#${colId}`).data('col-afar', afar);
+                  $(`#${colId}`).data('col-benshangul-gumuz', benshangulGumuz);
+                  $(`#${colId}`).data('col-dire-dawa', direDawa);
+                  $(`#${colId}`).data('col-gambella', gambella);
+                  $(`#${colId}`).data('col-snnp', snnp);
+                  $(`#${colId}`).data('col-harari', harari);
+
                   $(`#dragged_${colId}`).attr('data-rank', response.rank) //update col rank 
 
                   sortCol(rowId) //sort col
