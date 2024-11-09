@@ -45,5 +45,6 @@ class DashboardIndicatorForm(forms.ModelForm):
             'gambella' : forms.NumberInput(attrs={'class' : 'form-control'}),
             'snnp' : forms.NumberInput(attrs={'class' : 'form-control'}),
             'harari' : forms.NumberInput(attrs={'class' : 'form-control'}),
-
+            'custom_value' : forms.TextInput(attrs={'class' : 'form-control'}),
+            'image': forms.ClearableFileInput(attrs={'class' : 'form-control'}),
         }
