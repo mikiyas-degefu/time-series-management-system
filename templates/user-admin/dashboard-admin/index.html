@@ -142,6 +142,7 @@
                     data-has-description="{{component.has_description}}"
                     data-has-indicator="{{component.has_indicator}}"
                     data-is-country="{{component.is_country}}"
+                    data-has-icon="{{component.has_icon}}"
                     class="text-center">
                     <img src="/media/{{component.image}}" style="width: 150px;"
                       class="img-fluid" alt>
@@ -335,7 +336,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                   aria-label="Close"></button>
               </div>
-              <form id="form-configuration" method="post">
+              <form id="form-configuration" method="post" enctype="multipart/form-data">
                 <div class="modal-body">
                   <input id="form_col_id" type="hidden" value name="col-id">
                   {{form.as_p}}
@@ -541,6 +542,20 @@
             let snnp = $("#id_snnp").val()
             let harari = $("#id_harari").val()
 
+           
+            function readFileAsArrayBuffer(file) {
+              return new Promise((resolve, reject) => {
+                let reader = new FileReader();
+                reader.onload = function(event) {
+                  resolve(event.target.result); // Resolve with the ArrayBuffer
+                };
+                reader.onerror = function(error) {
+                  reject(error); // Reject on error
+                };
+                reader.readAsArrayBuffer(file);
+              })
+            }
+
 
             let colSize = width == '25%' ? 'col-md-3' : (width == '33%' ? 'col-md-4' : (width == '50%' ? 'col-md-6' : (width == '100%' ? 'col-md-12' : '')));
 
@@ -550,37 +565,48 @@
               document.getElementById(`dragged_${colId}`).className = colSize;
             }
             
-            $.ajax({
+            const handlePOSTRequest = async () => {
+
+              let formData = new FormData();
+              formData.append('dashboardId',  $(`#${colId}`).data('col-id') ? $(`#${colId}`).data('col-id') : null)
+              formData.append('isMultiple', isMultiple);
+              formData.append('isRange',  isRange);
+              formData.append('title',  title || null);
+              formData.append('description',  description || null);
+              formData.append('componentId',  componentId);
+              formData.append('indicator',  indicator);
+              formData.append('year',  year);
+              formData.append('data_range_start',  data_range_start || null);
+              formData.append('data_range_end',  data_range_end || null);
+              formData.append('rowId',  rowId);
+              formData.append('isMultiple', isMultiple);
+              formData.append('width',  width);
+              formData.append('colRank',  rank);
+              formData.append('addisAbaba',  addisAbaba || null);
+              formData.append('tigray',  tigray || null);
+              formData.append('amhara',  amhara || null);
+              formData.append('oromia',  oromia || null);
+              formData.append('somali',  somali || null);
+              formData.append('afar',  afar || null);
+              formData.append('benshangulGumuz',  benshangulGumuz || null,);
+              formData.append('direDawa',  direDawa || null);
+              formData.append('gambella',  gambella || null,);
+              formData.append('snnp',  snnp || null);
+              formData.append('harari',  harari || null);
+              formData.append('icon', $('#id_icon')[0].files[0] || null);
+              formData.append('csrfmiddlewaretoken', "{{ csrf_token }}");
+
+              $.ajax({
               type: 'POST',
               url: `{% url "custom-dashboard-topic" dashboard.id %}`,
-              data: {
-                'dashboardId' : $(`#${colId}`).data('col-id') ? $(`#${colId}`).data('col-id') : null,
-                'isMultiple': isMultiple,
-                'isRange' : isRange,
-                'title' : title || null,
-                'description' : description || null,
-                'componentId' : componentId,
-                'indicator' : indicator,
-                'year' : year,
-                'data_range_start' : data_range_start || null,
-                'data_range_end' : data_range_end || null,
-                'rowId' : rowId,
-                'width' : width,
-                'colRank' : rank,
-                'addisAbaba' : addisAbaba || null,
-                'tigray' : tigray || null,
-                'amhara' : amhara || null,
-                'oromia' : oromia || null,
-                'somali' : somali || null,
-                'afar' : afar || null,
-                'benshangulGumuz' : benshangulGumuz || null,
-                'direDawa' : direDawa || null,
-                'gambella' : gambella || null,
-                'snnp' : snnp || null,
-                'harari' : harari || null,
-                csrfmiddlewaretoken: '{{csrf_token}}'
+              enctype: 'multipart/form-data',
+              contentType: false,
+              processData: false,
+              headers: {
+               'X-Requested-With': 'XMLHttpRequest',  // Indicate AJAX request
               },
-
+              data: formData,
+            
               beforeSend: function() {
                $("[name='btn-submit']").hide()
                 $("[name='btn-loading']").show();
@@ -660,6 +686,13 @@
                 console.log(err)
               }
             });
+            }
+
+            handlePOSTRequest()
+
+          
+
+
           })
 
         

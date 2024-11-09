@@ -31,6 +31,7 @@ class DashboardIndicatorForm(forms.ModelForm):
             'year' : forms.Select(attrs={'class': 'form-control'}),
             'data_range_start' : forms.Select(attrs={'class': 'form-control'}),
             'data_range_end' : forms.Select(attrs={'class': 'form-control'}),
+            'icon' : forms.ClearableFileInput(attrs={'class' : 'form-control'}),
             'width' : forms.Select(attrs={'class': 'form-control'}),
             'rank' : forms.NumberInput(attrs={'class' : 'form-control'}),
             'addis_ababa' : forms.NumberInput(attrs={'class' : 'form-control'}),

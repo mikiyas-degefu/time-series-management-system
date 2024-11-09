@@ -948,7 +948,7 @@ def custom_dashboard_topic(request,id):
     rows = Row.objects.filter(for_dashboard = dashboard).order_by('rank').select_related()
 
     components = Component.objects.all()
-    form = DashboardIndicatorForm(request.POST or None)
+    form = DashboardIndicatorForm(request.POST or None, request.FILES or None)
     form_row_style = RowStyleForm(request.POST or None)
     
 
@@ -1018,6 +1018,14 @@ def custom_dashboard_topic(request,id):
                     dashboard_indicator.year = year
                 except DataPoint.DoesNotExist:
                     return JsonResponse({'success' : False, 'message' : "Year does not exist!"})
+                
+            ##check component has icon
+            if component.has_icon:
+                try:
+                    icon = request.FILES['icon']
+                    dashboard_indicator.icon = icon
+                except:
+                    return JsonResponse({'success': False, 'message': 'Please upload valid icon format (png, jpg, jpeg) !'})
                 
             ## check component is multiple    
             if component.is_multiple:

@@ -64,6 +64,7 @@ $(document).ready(() => {
                                         data-has-title="${draggable.data('hasTitle')}"
                                         data-has-indicator="${draggable.data('hasIndicator')}"
                                         data-has-description="${draggable.data('hasDescription')}"
+                                        data-has-icon="${draggable.data('hasIcon')}"
                                         data-col-rank="None"
                                         id="col_${colId}"
                                         data-bs-toggle="modal" 
@@ -190,6 +191,7 @@ $(document).ready(() => {
         let hasDescription = $(this).data('hasDescription') == 'True' ? true : false
         let isSingleYear = $(this).data('isSingleYear') == 'True' ? true : false
         let hasIndicator = $(this).data('hasIndicator') == 'True' ? true : false
+        let hasIcon = $(this).data('hasIcon') == 'True' ? true : false
 
 
         //handle form type
@@ -222,7 +224,12 @@ $(document).ready(() => {
         // Show or hide the indicator field based on hasIndicator
         hasIndicator 
         ? $("#id_indicator").show().prev().show()
-        : $("#id_indicator").hide().prev().hide();
+            : $("#id_indicator").hide().prev().hide();
+        
+        // Show or hide the icon field based on hasIcon
+        hasIcon 
+        ? $("#id_icon").show().attr('required', true).prev().show()
+        : $("#id_icon").removeAttr('required').hide().prev().hide();
         
         // Show or hide the country Lists field based on hasCountry
         if (!isCountry) {
