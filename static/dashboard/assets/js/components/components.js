@@ -689,7 +689,7 @@ const simple_card = (id, component) => {
                     <p class="text-muted mb-0">${component.title}</p>
                 </div>
                 <div class="col-4 text-end">
-                    <i class="ti ti-chart-bar text-secondary f-36"></i>
+                   <img src="${component.icon}" class="img-fluid" alt="--" style="height: 50px;"/>
                 </div>
             </div>
         </div>

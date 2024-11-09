@@ -42,6 +42,8 @@ class Component(models.Model):
     data_type = models.CharField(choices=data_type_options, max_length=10,null=True, blank=True)
     image = models.ImageField(upload_to='components/', null=True, blank=True)
     path = models.CharField(max_length=50, unique=True)
+    is_custom = models.BooleanField(default=False)
+    is_image_component = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -103,9 +105,7 @@ class DashboardIndicator(models.Model):
     snnp = models.FloatField(null=True, blank=True)
     harari = models.FloatField(null=True, blank=True)
     custom_value = models.CharField(max_length=50 , null=True,  blank=True)
-    is_custom = models.BooleanField(default=False)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
-    has_image = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.for_row.rank) 
