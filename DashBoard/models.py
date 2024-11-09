@@ -102,6 +102,10 @@ class DashboardIndicator(models.Model):
     gambella = models.FloatField(null=True, blank=True)
     snnp = models.FloatField(null=True, blank=True)
     harari = models.FloatField(null=True, blank=True)
+    custom_value = models.CharField(max_length=50 , null=True,  blank=True)
+    is_custom = models.BooleanField(default=False)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    has_image = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.for_row.rank) 

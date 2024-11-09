@@ -1,4 +1,3 @@
-
 const size = {
   "50%": "col-md-6",
   "33%": "col-md-4",
@@ -28,9 +27,8 @@ const bar_horizontal_stacked = (id, component) => {
   );
   new ApexCharts(document.querySelector(`#${id}`), {
     chart: { height: 400, type: "bar", stacked: !0, stackType: "100%" },
-    title: {
-      text: newComponent.title,
-    },
+    title: { text: newComponent.title, align: 'left' },
+subtitle: { text: newComponent.description, align: 'center' },
     plotOptions: { bar: { horizontal: !0 } },
     stroke: { width: 1, colors: ["#fff"] },
     series: data,
@@ -71,9 +69,8 @@ const bar_horizontal = (id, component) => {
       type: "bar",
       height: 400,
     },
-    title: {
-      text: newComponent.title,
-    },
+    title: { text: newComponent.title, align: 'left' },
+subtitle: { text: newComponent.description, align: 'center' },
     plotOptions: {
       bar: {
         horizontal: true,
@@ -138,9 +135,8 @@ const bar = (id, component) => {
     colors: ["#2CA87F", "#4680FF", "#13c2c2"],
     stroke: { show: !0, width: 2, colors: ["transparent"] },
     series: data,
-    title: {
-      text: newComponent.title,
-    },
+    title: { text: newComponent.title, align: 'left' },
+subtitle: { text: newComponent.description, align: 'center' },
     xaxis: {
       categories: years,
     },
@@ -185,7 +181,8 @@ const different_line_area = (id, component) => {
   // Configure and render the chart
   new ApexCharts(document.querySelector(`#${id}`), {
     chart: { height: 400, type: "line" },
-    title: { text: newComponent.title },
+    title: { text: newComponent.title, align: 'left' },
+subtitle: { text: newComponent.description, align: 'center' },
     stroke: { width: [2, 2], curve: "smooth" }, // Width for both line and area
     series: seriesData,
     xaxis: { categories: years },
@@ -233,7 +230,8 @@ const mixed_area_line_bar = (id, component) => {
   // Configure and render the chart
   new ApexCharts(document.querySelector(`#${id}`), {
     chart: { height: 400, type: "line" },
-    title: { text: newComponent.title },
+   title: { text: newComponent.title, align: 'left' },
+subtitle: { text: newComponent.description, align: 'center' },
     stroke: { width: [2, 0, 2], curve: "smooth" }, // Line and area have width 2, bar has 0
     plotOptions: { bar: { columnWidth: "50%" } },
     series: seriesData,
@@ -282,7 +280,8 @@ const mixed_line_bar = (id, component) => {
   // Configure and render the chart
   new ApexCharts(document.querySelector(`#${id}`), {
     chart: { height: 400, type: "line" },
-    title: { text: newComponent.title },
+   title: { text: newComponent.title, align: 'left' },
+subtitle: { text: newComponent.description, align: 'center' },
     stroke: { width: [2, 0], curve: "smooth" }, // Width 2 for line, 0 for bar
     plotOptions: { bar: { columnWidth: "50%" } },
     series: seriesData,
@@ -328,7 +327,8 @@ const bar_stacked = (id, component) => {
   // Configure and render the chart
   new ApexCharts(document.querySelector(`#${id}`), {
     chart: { height: 400, type: "bar", stacked: true },
-    title: { text: newComponent.title },
+   title: { text: newComponent.title, align: 'left' },
+subtitle: { text: newComponent.description, align: 'center' },
     plotOptions: { bar: { horizontal: false } }, // Vertical stacked bars
     stroke: { width: 1, colors: ["#fff"] },
     series: data,
@@ -388,10 +388,8 @@ const basic_line = (id, component) => {
     stroke: {
       curve: "straight",
     },
-    title: {
-      text: newComponent.title,
-      align: "left",
-    },
+    title: { text: newComponent.title, align: 'left' },
+subtitle: { text: newComponent.description, align: 'center' },
     grid: {
       row: {
         colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
@@ -427,7 +425,8 @@ const pie_donut = (id, component) => {
     chart: { height: 400, type: "donut" },
     series: seriesData,
     labels: labels,
-    title: { text: newComponent.title },
+   title: { text: newComponent.title, align: 'left' },
+subtitle: { text: newComponent.description, align: 'center' },
     plotOptions: {
       pie: {
         donut: {
@@ -489,7 +488,8 @@ const radial_bar_custom_angle = (id, component) => {
     },
     series: seriesData,
     labels: labels,
-    title: { text: newComponent.title },
+   title: { text: newComponent.title, align: 'left' },
+subtitle: { text: newComponent.description, align: 'center' },
     plotOptions: {
       radialBar: {
         startAngle: -90, // Customize the start angle for a half or quarter-circle
@@ -545,7 +545,8 @@ const radial_bar = (id, component) => {
     chart: { height: 400, type: "radialBar" },
     series: seriesData,
     labels: labels,
-    title: { text: newComponent.title },
+   title: { text: newComponent.title, align: 'left' },
+subtitle: { text: newComponent.description, align: 'center' },
     plotOptions: {
       radialBar: {
         dataLabels: {
@@ -592,7 +593,8 @@ const pie = (id, component) => {
     chart: { height: 400, type: "pie" },
     series: seriesData,
     labels: labels,
-    title: { text: newComponent.title },
+   title: { text: newComponent.title, align: 'left' },
+subtitle: { text: newComponent.description, align: 'center' },
     tooltip: {
       y: {
         formatter: function (e) {
@@ -635,7 +637,8 @@ const different_line = (id, component) => {
   // Configure and render the chart
   new ApexCharts(document.querySelector(`#${id}`), {
     chart: { height: 400, type: "line", zoom: { enabled: false } },
-    title: { text: newComponent.title },
+   title: { text: newComponent.title, align: 'left' },
+subtitle: { text: newComponent.description, align: 'center' },
     stroke: { curve: "smooth" },
     series: data,
     xaxis: { categories: years },
@@ -695,26 +698,63 @@ const simple_card = (id, component) => {
 };
 
 
+const simple_card_custom_data = (id, component) => {
+  $(`#${id}`).html(`
+    <div>
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h3 class="mb-1">${component.custom_value}</h3>
+                    <p class="text-muted mb-0">${component.title}</p>
+                </div>
+                <div class="col-4 text-end">
+                    <i class="ti ti-chart-bar text-secondary f-36"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    `);
+};
+
+
+const image = (id, component) => {
+  $(`#${id}`).html(`
+    <div>
+        <div class="card-body">
+            <div class="row align-items-center">
+                <img src="${component.image}" class="img-fluid" alt="--" style="height: 150px;"/>
+            </div>
+        </div>
+    </div>
+    `);
+};
+
 const top_list = () => {
   // Function logic for top_list
 };
 
-
 const list_with_category = (id, component) => {
-  const years = [...new Set(component.annual_value.map(data => data.for_datapoint))];
+  const years = [
+    ...new Set(component.annual_value.map((data) => data.for_datapoint)),
+  ];
   const indicatorTitles = component.indicator.reduce((acc, indicator) => {
     acc[indicator.id] = indicator.title_ENG;
     return acc;
   }, {});
-  let rows = component.indicator.map(indicator => {
-    let row = `<tr><td>${indicator.title_ENG}</td>`;
-    years.forEach(year => {
-      const dataPoint = component.annual_value.find(data => data.indicator === indicator.id && data.for_datapoint === year);
-      row += `<td>${dataPoint ? dataPoint.performance : '-'}</td>`;
-    });
-    row += '</tr>';
-    return row;
-  }).join('');
+  let rows = component.indicator
+    .map((indicator) => {
+      let row = `<tr><td>${indicator.title_ENG}</td>`;
+      years.forEach((year) => {
+        const dataPoint = component.annual_value.find(
+          (data) =>
+            data.indicator === indicator.id && data.for_datapoint === year
+        );
+        row += `<td>${dataPoint ? dataPoint.performance : "-"}</td>`;
+      });
+      row += "</tr>";
+      return row;
+    })
+    .join("");
   let table = `
         <div class="container mt-5">
             <h2>Annual Performance Data</h2>
@@ -722,7 +762,7 @@ const list_with_category = (id, component) => {
                 <thead>
                     <tr>
                         <th>Indicator</th>
-                        ${years.map(year => `<th>${year}</th>`).join('')}
+                        ${years.map((year) => `<th>${year}</th>`).join("")}
                     </tr>
                 </thead>
                 <tbody>
@@ -731,87 +771,86 @@ const list_with_category = (id, component) => {
             </table>
         </div>
     `;
-  $(`#${id}`).html(table)
+  $(`#${id}`).html(table);
 };
 
-
 const country = (id, component) => {
+  (async () => {
+    const topology = await fetch(
+      "https://code.highcharts.com/mapdata/countries/et/et-all.topo.json"
+    ).then((response) => response.json());
 
-    (async () => {
+    // Prepare demo data. The data is joined to map using value of 'hc-key'
+    // property by default. See API docs for 'joinBy' for more info on linking
+    // data and map.
+    const data = [
+      ["et-be", component?.benshangul_gumuz || 0],
+      ["et-2837", 11],
+      ["et-ha", component?.harari || 0],
+      ["et-sn", component?.snnp || 0],
+      ["et-ga", component?.gambella || 0],
+      ["et-aa", component?.addis_ababa || 0],
+      ["et-so", component?.somali || 0],
+      ["et-dd", component?.dire_dawa || 0],
+      ["et-ti", component?.tigray || 0],
+      ["et-af", component?.afar || 0],
+      ["et-am", component?.amhara || 0],
+    ];
 
-      const topology = await fetch(
-        'https://code.highcharts.com/mapdata/countries/et/et-all.topo.json'
-      ).then(response => response.json());
-
-      // Prepare demo data. The data is joined to map using value of 'hc-key'
-      // property by default. See API docs for 'joinBy' for more info on linking
-      // data and map.
-      const data = [
-        ['et-be', component?.benshangul_gumuz || 0],
-        ['et-2837', 11],
-        ['et-ha', component?.harari || 0],
-        ['et-sn', component?.snnp || 0],
-        ['et-ga', component?.gambella || 0],
-        ['et-aa', component?.addis_ababa || 0],
-        ['et-so', component?.somali || 0],
-        ['et-dd', component?.dire_dawa || 0],
-        ['et-ti', component?.tigray || 0],
-        ['et-af', component?.afar || 0],
-        ['et-am', component?.amhara || 0]
-      ];
-
-      // Create the chart
-      Highcharts.mapChart(`${id}`, {
-        chart: {
-          map: topology
+    // Create the chart
+    Highcharts.mapChart(`${id}`, {
+      chart: {
+        map: topology,
+      },
+      title: {
+        text: component?.title,
+      },
+      subtitle: {
+        text: component?.description,  // Add the description here
+        align: 'center',
+      },
+      credits: {
+        enabled: false,
+      },
+      mapNavigation: {
+        enabled: true,
+        buttonOptions: {
+          verticalAlign: "bottom",
         },
-        title: {
-          text: component?.title
-        },
-        credits: {
-          enabled: false
-        },
-        mapNavigation: {
-          enabled: true,
-          buttonOptions: {
-            verticalAlign: 'bottom'
-          }
-        },
-        colorAxis: {
-          min: Math.min(...data.map(d => d[1])), // Dynamic min based on data
-          max: Math.max(...data.map(d => d[1])), // Dynamic max based on data
-          stops: [
-            [0, '#B7D8B1'],    // Starting color for minimum value
-            [1, '#162F12']     // Color for maximum value
-          ],
-          nullColor: '#B7D8B1' // Fallback color for areas with no data
-        },
-        series: [{
+      },
+      colorAxis: {
+        min: Math.min(...data.map((d) => d[1])), // Dynamic min based on data
+        max: Math.max(...data.map((d) => d[1])), // Dynamic max based on data
+        stops: [
+          [0, "#B7D8B1"], // Starting color for minimum value
+          [1, "#162F12"], // Color for maximum value
+        ],
+        nullColor: "#B7D8B1", // Fallback color for areas with no data
+      },
+      series: [
+        {
           data: data,
           name: component?.title,
           dataLabels: {
             enabled: true,
-            format: '{point.name}'
-          }
-        }]
-      });
-
-
-    })();
-
-}
-
+            format: "{point.name}",
+          },
+        },
+      ],
+    });
+  })();
+};
 
 const fetchData = async () => {
   let urlPath = window.location.pathname;
-  let pathID = urlPath.replace("/dashboard/dashboard_detail/", "").replace("/", "");
-  let url = `/dashboard/components/${pathID}`
+  let pathID = urlPath
+    .replace("/dashboard/dashboard_detail/", "")
+    .replace("/", "");
+  let url = `/dashboard/components/${pathID}`;
   try {
     const res = await axios.get(url);
 
-
     res.data.rows.forEach((row) => {
-
       let col = row.cols
         .map((component) => {
           return `
@@ -835,12 +874,10 @@ const fetchData = async () => {
           component
         );
       });
-
-
     });
   } catch (error) {
     console.log(error);
   }
 };
 
-fetchData();  
+fetchData();
