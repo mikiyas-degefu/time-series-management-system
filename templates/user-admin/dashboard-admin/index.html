@@ -247,6 +247,7 @@
                             data-is-multiple="{{col.component.is_multiple}}" 
                             data-is-single-year="{{col.component.is_single_year}}"
                             data-is-range="{{col.component.is_range}}" 
+                            data-is-custom="{{col.component.is_custom}}"
                             data-row-id="{{row.id}}"
                             data-has-title="{{col.component.has_title}}" 
                             data-has-indicator="{{col.component.has_indicator}}"
@@ -273,7 +274,7 @@
                             data-col-gambella = "{{col.gambella}}"
                             data-col-snnp = "{{col.snnp}}"
                             data-col-harari = "{{col.harari}}"
-                            data-col-custome-value = "{{col.custom_value}}"
+                            data-col-custom-value = "{{col.custom_value}}"
                             data-bs-toggle="modal"
                             data-bs-target="#modalAddDashboardRow"
                             class="dropdown-item">
@@ -649,7 +650,7 @@
                   
 
                   //custom
-                  $(`#${colId}`).data('data-col-custome-value', customValue);
+                  $(`#${colId}`).data('col-custom-value', customValue);
 
                   $(`#dragged_${colId}`).attr('data-rank', response.rank) //update col rank 
 
