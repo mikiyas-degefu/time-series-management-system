@@ -322,6 +322,8 @@ $(document).ready(() => {
         let colRank = $(this).data('colRank') || 0;
         let colCustomValue = $(this).data('colCustomValue') || null;
 
+        
+
         let addisAbaba = $(this).data('colAddisAbaba') || null;
         let tigray = $(this).data('colTigray') || null;
         let amhara = $(this).data('colAmhara') || null;
