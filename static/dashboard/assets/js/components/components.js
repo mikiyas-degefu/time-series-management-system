@@ -28,7 +28,7 @@ const bar_horizontal_stacked = (id, component) => {
   new ApexCharts(document.querySelector(`#${id}`), {
     chart: { height: 400, type: "bar", stacked: !0, stackType: "100%" },
     title: { text: newComponent.title, align: 'left' },
-subtitle: { text: newComponent.description, align: 'center' },
+
     plotOptions: { bar: { horizontal: !0 } },
     stroke: { width: 1, colors: ["#fff"] },
     series: data,
@@ -43,6 +43,10 @@ subtitle: { text: newComponent.description, align: 'center' },
     fill: { opacity: 1 },
     legend: { show: false },
   }).render();
+
+   $(`#${id}`).append(
+    `<div class="mt-3 ms-3">${newComponent.description}</div>`
+  )
 };
 
 const bar_horizontal = (id, component) => {
@@ -68,9 +72,17 @@ const bar_horizontal = (id, component) => {
     chart: {
       type: "bar",
       height: 400,
+      spacingBottom: 60, // Adds extra space below the chart for the subtitle
     },
-    title: { text: newComponent.title, align: 'left' },
-subtitle: { text: newComponent.description, align: 'center' },
+    title: { 
+      text: newComponent.title, 
+      align: 'left' 
+    },
+    subtitle: { 
+      text: newComponent.description, 
+      align: 'bottom', 
+      y: 30 // Adjusts vertical position to move the subtitle below the chart
+    },
     plotOptions: {
       bar: {
         horizontal: true,
@@ -100,9 +112,16 @@ subtitle: { text: newComponent.description, align: 'center' },
       categories: years,
     },
   };
+  
 
   var chart = new ApexCharts(document.querySelector(`#${id}`), options);
   chart.render();
+
+   $(`#${id}`).append(
+    `<div class="mt-3 ms-3">${newComponent.description}</div>`
+  )
+
+ 
 };
 
 const bar = (id, component) => {
@@ -136,7 +155,7 @@ const bar = (id, component) => {
     stroke: { show: !0, width: 2, colors: ["transparent"] },
     series: data,
     title: { text: newComponent.title, align: 'left' },
-subtitle: { text: newComponent.description, align: 'center' },
+
     xaxis: {
       categories: years,
     },
@@ -149,6 +168,10 @@ subtitle: { text: newComponent.description, align: 'center' },
       },
     },
   }).render();
+
+   $(`#${id}`).append(
+    `<div class="mt-3 ms-3">${newComponent.description}</div>`
+  )
 };
 
 const different_line_area = (id, component) => {
@@ -182,7 +205,7 @@ const different_line_area = (id, component) => {
   new ApexCharts(document.querySelector(`#${id}`), {
     chart: { height: 400, type: "line" },
     title: { text: newComponent.title, align: 'left' },
-subtitle: { text: newComponent.description, align: 'center' },
+
     stroke: { width: [2, 2], curve: "smooth" }, // Width for both line and area
     series: seriesData,
     xaxis: { categories: years },
@@ -198,6 +221,10 @@ subtitle: { text: newComponent.description, align: 'center' },
     },
     legend: { show: false },
   }).render();
+
+   $(`#${id}`).append(
+    `<div class="mt-3 ms-3">${newComponent.description}</div>`
+  )
 };
 
 const mixed_area_line_bar = (id, component) => {
@@ -231,7 +258,7 @@ const mixed_area_line_bar = (id, component) => {
   new ApexCharts(document.querySelector(`#${id}`), {
     chart: { height: 400, type: "line" },
    title: { text: newComponent.title, align: 'left' },
-subtitle: { text: newComponent.description, align: 'center' },
+
     stroke: { width: [2, 0, 2], curve: "smooth" }, // Line and area have width 2, bar has 0
     plotOptions: { bar: { columnWidth: "50%" } },
     series: seriesData,
@@ -248,6 +275,10 @@ subtitle: { text: newComponent.description, align: 'center' },
     },
     legend: { show: false },
   }).render();
+
+   $(`#${id}`).append(
+    `<div class="mt-3 ms-3">${newComponent.description}</div>`
+  )
 };
 
 const mixed_line_bar = (id, component) => {
@@ -281,7 +312,7 @@ const mixed_line_bar = (id, component) => {
   new ApexCharts(document.querySelector(`#${id}`), {
     chart: { height: 400, type: "line" },
    title: { text: newComponent.title, align: 'left' },
-subtitle: { text: newComponent.description, align: 'center' },
+
     stroke: { width: [2, 0], curve: "smooth" }, // Width 2 for line, 0 for bar
     plotOptions: { bar: { columnWidth: "50%" } },
     series: seriesData,
@@ -296,6 +327,10 @@ subtitle: { text: newComponent.description, align: 'center' },
     fill: { opacity: 0.85 },
     legend: { show: false },
   }).render();
+
+   $(`#${id}`).append(
+    `<div class="mt-3 ms-3">${newComponent.description}</div>`
+  )
 };
 
 const bar_stacked = (id, component) => {
@@ -328,7 +363,7 @@ const bar_stacked = (id, component) => {
   new ApexCharts(document.querySelector(`#${id}`), {
     chart: { height: 400, type: "bar", stacked: true },
    title: { text: newComponent.title, align: 'left' },
-subtitle: { text: newComponent.description, align: 'center' },
+
     plotOptions: { bar: { horizontal: false } }, // Vertical stacked bars
     stroke: { width: 1, colors: ["#fff"] },
     series: data,
@@ -343,6 +378,10 @@ subtitle: { text: newComponent.description, align: 'center' },
     fill: { opacity: 1 },
     legend: { show: false },
   }).render();
+
+   $(`#${id}`).append(
+    `<div class="mt-3 ms-3">${newComponent.description}</div>`
+  )
 };
 
 const basic_line = (id, component) => {
@@ -389,7 +428,7 @@ const basic_line = (id, component) => {
       curve: "straight",
     },
     title: { text: newComponent.title, align: 'left' },
-subtitle: { text: newComponent.description, align: 'center' },
+
     grid: {
       row: {
         colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
@@ -403,6 +442,10 @@ subtitle: { text: newComponent.description, align: 'center' },
 
   var chart = new ApexCharts(document.querySelector(`#${id}`), options);
   chart.render();
+
+   $(`#${id}`).append(
+    `<div class="mt-3 ms-3">${newComponent.description}</div>`
+  )
 };
 
 const pie_donut = (id, component) => {
@@ -426,7 +469,7 @@ const pie_donut = (id, component) => {
     series: seriesData,
     labels: labels,
    title: { text: newComponent.title, align: 'left' },
-subtitle: { text: newComponent.description, align: 'center' },
+
     plotOptions: {
       pie: {
         donut: {
@@ -463,6 +506,10 @@ subtitle: { text: newComponent.description, align: 'center' },
       show: false,
     },
   }).render();
+
+   $(`#${id}`).append(
+    `<div class="mt-3 ms-3">${newComponent.description}</div>`
+  )
 };
 
 const radial_bar_custom_angle = (id, component) => {
@@ -489,7 +536,7 @@ const radial_bar_custom_angle = (id, component) => {
     series: seriesData,
     labels: labels,
    title: { text: newComponent.title, align: 'left' },
-subtitle: { text: newComponent.description, align: 'center' },
+
     plotOptions: {
       radialBar: {
         startAngle: -90, // Customize the start angle for a half or quarter-circle
@@ -523,6 +570,10 @@ subtitle: { text: newComponent.description, align: 'center' },
       show: false,
     },
   }).render();
+
+   $(`#${id}`).append(
+    `<div class="mt-3 ms-3">${newComponent.description}</div>`
+  )
 };
 
 const radial_bar = (id, component) => {
@@ -546,7 +597,7 @@ const radial_bar = (id, component) => {
     series: seriesData,
     labels: labels,
    title: { text: newComponent.title, align: 'left' },
-subtitle: { text: newComponent.description, align: 'center' },
+   
     plotOptions: {
       radialBar: {
         dataLabels: {
@@ -571,6 +622,10 @@ subtitle: { text: newComponent.description, align: 'center' },
       show: false,
     },
   }).render();
+
+   $(`#${id}`).append(
+    `<div class="mt-3 ms-3">${newComponent.description}</div>`
+  )
 };
 
 const pie = (id, component) => {
@@ -594,7 +649,7 @@ const pie = (id, component) => {
     series: seriesData,
     labels: labels,
    title: { text: newComponent.title, align: 'left' },
-subtitle: { text: newComponent.description, align: 'center' },
+
     tooltip: {
       y: {
         formatter: function (e) {
@@ -606,6 +661,10 @@ subtitle: { text: newComponent.description, align: 'center' },
       show: false,
     },
   }).render();
+
+   $(`#${id}`).append(
+    `<div class="mt-3 ms-3">${newComponent.description}</div>`
+  )
 };
 
 const different_line = (id, component) => {
@@ -638,7 +697,7 @@ const different_line = (id, component) => {
   new ApexCharts(document.querySelector(`#${id}`), {
     chart: { height: 400, type: "line", zoom: { enabled: false } },
    title: { text: newComponent.title, align: 'left' },
-subtitle: { text: newComponent.description, align: 'center' },
+
     stroke: { curve: "smooth" },
     series: data,
     xaxis: { categories: years },
@@ -652,6 +711,10 @@ subtitle: { text: newComponent.description, align: 'center' },
     fill: { opacity: 0.5 },
     legend: { show: false },
   }).render();
+
+   $(`#${id}`).append(
+    `<div class="mt-3 ms-3">${newComponent.description}</div>`
+  )
 };
 
 const banner = (id, component) => {
@@ -677,8 +740,29 @@ const banner = (id, component) => {
 };
 
 //Not done
-const progress_card = () => {
-  // Function logic for progress_card
+const progress_card = (id , component) => {
+  
+
+  $(`#${id}`).html(`
+      <div class="card-body">
+        <h5 class="card-title">${component.title}</h5>
+        <p class="card-text">${component.description}</p>
+
+        <!-- Progress Bar with Dynamic Value -->
+        <div class="progress" style="height: 22px;">
+          <div 
+            class="progress-bar bg-success" 
+            role="progressbar" 
+            style="width: ${component.custom_value}%;"
+            aria-valuenow="${component.custom_value}" 
+            aria-valuemin="0" 
+            aria-valuemax="100">
+          </div>
+        </div>
+        <div class="text-end mt-2">${component.custom_value}%</div>
+      </div>
+    `
+  );
 };
 
 const rate_card = () => {
@@ -763,8 +847,8 @@ const list_with_category = (id, component) => {
     .join("");
   let table = `
         <div class="container mt-5">
-            <h2>Annual Performance Data</h2>
-            <table class="table table-bordered table-hover">
+            <h2>${component.title}</h2>
+            <table class="table table-bordered table-hover table-responsive">
                 <thead>
                     <tr>
                         <th>Indicator</th>
@@ -813,7 +897,8 @@ const country = (id, component) => {
       },
       subtitle: {
         text: component?.description,  // Add the description here
-        align: 'center',
+        align: 'bottom',
+         verticalAlign: 'bottom'
       },
       credits: {
         enabled: false,
