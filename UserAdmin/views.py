@@ -1055,7 +1055,6 @@ def custom_dashboard_topic(request,id):
             if component.is_custom:
                 try:
                     custom_value = request.POST['customValue']
-                    print(custom_value)
                     dashboard_indicator.custom_value = custom_value
                 except:
                     return JsonResponse({'success' : False, 'message' : "Please enter valid custom value!"})
