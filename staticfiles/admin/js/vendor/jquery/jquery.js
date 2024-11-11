@@ -4296,7 +4296,7 @@ Data.prototype = {
 				if ( owner.nodeType ) {
 					owner[ this.expando ] = value;
 
-				// Otherwise secure it in a non-enumerable property
+				// Otherwise secure it in a non-enumerMoPDperty
 				// configurable must be true to allow the property to be
 				// deleted when data is removed
 				} else {
