@@ -730,7 +730,7 @@ const banner = (id, component) => {
                     </div>
                      <div class="col-sm-6 text-center">
                     <div class="img-welcome-banner"><img
-                            src="${component?.icon}" style="height: 70px;" alt="img"
+                            src="${component?.icon}" alt="img"
                             class="img-fluid"></div>
                 </div>
                 </div>
@@ -779,7 +779,7 @@ const simple_card = (id, component) => {
                     <p class="text-muted mb-0">${component.title}</p>
                 </div>
                 <div class="col-4 text-end">
-                   <img src="${component.icon}" class="img-fluid" alt="--" style="height: 50px;"/>
+                   <img src="${component.icon}" class="img-fluid" alt="--"/>
                 </div>
             </div>
         </div>
@@ -798,7 +798,7 @@ const simple_card_custom_data = (id, component) => {
                     <p class="text-muted mb-0">${component.title}</p>
                 </div>
                 <div class="col-4 text-end">
-                   <img src="${component.icon}" class="img-fluid" alt="--" style="height: 50px;"/>
+                   <img src="${component.icon}" class="img-fluid" alt="--"/>
                 </div>
             </div>
         </div>
