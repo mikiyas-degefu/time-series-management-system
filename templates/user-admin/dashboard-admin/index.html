@@ -215,7 +215,7 @@
             </div>
             
             {% for col in row.cols.all%}
-            <div name="col_component" data-rank="{{col.rank}}" id="dragged_col_{{col.id}}" class="col-md-{% if col.width == '100%' %}12{% elif col.width == '50%' %}6{% elif col.width == '33%' %}4{% elif col.width == '25%' %}3{% else %}12{% endif %} col-md-4 row-col ui-sortable-handle">
+            <div name="col_component" data-rank="{{col.rank}}" id="dragged_col_{{col.id}}" class="col-md-{% if col.width == '100%' %}12{% elif col.width == '50%' %}6{% elif col.width == '33%' %}4{% elif col.width == '25%' %}3{% else %}12{% endif %} row-col ui-sortable-handle">
             
               <div class="card">
                 <div class="card-body">

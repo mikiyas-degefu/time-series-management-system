@@ -164,3 +164,25 @@ EMAIL_HOST_USER = 'mikiyasmebrate2656@gmail.com'
 EMAIL_HOST_PASSWORD = 'xtajckwklnucoblh'  # Replace with your actual Gmail password
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+
+# ####log
+# # settings.py
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'level': 'ERROR',
+#             'class': 'logging.FileHandler',
+#             'filename': 'logfile.log',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file'],
+#             'level': 'ERROR',
+#             'propagate': True,
+#         },
+#     },
+# }
