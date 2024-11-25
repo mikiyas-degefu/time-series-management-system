@@ -62,14 +62,16 @@
                 </tr>
               </thead>
               <tbody class="p-5">
-                {% if years %} {% for year in years %}
+                {% if years %} 
+                  {% for year in years %}
                 <tr>
                   <td>{{count | add:forloop.counter}}</td>
                   <td>{{year.year_EC}}</td>
                   <td>{{year.year_GC}}</td>
                   <td>{{year.created_at|date:"M d, Y" }}</td>
                 </tr>
-                {% endfor %} {% else %}
+                {% endfor %} 
+                 {% else %}
                 <tr>
                   <td class="text-center text-danger" colspan="9">
                     No Data Found
@@ -102,27 +104,29 @@
                     >Previous</a
                   >
                 </li>
-                {% endif %} {% if years.number|add:'-4' > 1 %}
+                {% endif %} 
+                {% if years.number|add:'-4' > 1 %}
                 <li class="page-item">
                   <a class="page-link" href="?page={{ years.number|add:'-5' }}"
                     >&hellip;</a
                   >
                 </li>
-                {% endif %} {% for i in years.paginator.page_range %} {% if
-                years.number == i %}
+                {% endif %}
+                 {% for i in years.paginator.page_range %} 
+                 {% if years.number == i %}
                 <li class="page-item active" aria-current="page">
                   <span class="page-link">
                     {{ i }}
                     <span class="sr-only">(current)</span>
                   </span>
                 </li>
-                {% elif i > years.number|add:'-5' and i < years.number|add:'5'
-                %}
+                {% elif i > years.number|add:'-5' and i < years.number|add:'5' %}
                 <li class="page-item">
                   <a class="page-link" href="?page={{ i }}">{{ i }}</a>
                 </li>
-                {% endif %} {% endfor %} {% if years.paginator.num_pages >
-                years.number|add:'4' %}
+                {% endif %}
+                 {% endfor %} 
+                 {% if years.paginator.num_pages > years.number|add:'4' %}
                 <li class="page-item">
                   <a class="page-link" href="?page={{ years.number|add:'5' }}"
                     >&hellip;</a

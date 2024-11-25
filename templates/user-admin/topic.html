@@ -102,7 +102,12 @@
               {% endif %}
             </td>
             <td>{{topic.created|date:"M d, Y" }}</td>
-            <td id="topicRank{{topic.id}}"> <button class="btn btn-primary">{% if topic.rank %} {{topic.rank}} {% else %} None {% endif %}</button></td>
+            <td id="topicRank{{topic.id}}"> <button class="btn btn-primary">
+              {% if topic.rank %}
+               {{topic.rank}} 
+               {% else %}
+                None 
+               {% endif %}</button></td>
             <td id="topicIcon{{topic.id}}">
               <i class="fab fa-{{topic.icon.name}} fa-2x text-success"></i></td>
             <td>
