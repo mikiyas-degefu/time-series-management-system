@@ -198,6 +198,8 @@ $(document).ready(() => {
         let isImageComponent = $(this).data('isImageComponent') == 'True' ? true : false
 
 
+
+
         //handle form type
         if (isRange === 'True') {
             $("#id_year").removeAttr('required').parent().hide();
@@ -318,6 +320,10 @@ $(document).ready(() => {
         let colDataRangeStart = $(this).data('colDataRangeStart') || null;
         let colDataRangeEnd = $(this).data('colDataRangeEnd') || null;
         let colRank = $(this).data('colRank') || 0;
+        let colCustomValue = $(this).data('colCustomValue') || null;
+
+        
+
         let addisAbaba = $(this).data('colAddisAbaba') || null;
         let tigray = $(this).data('colTigray') || null;
         let amhara = $(this).data('colAmhara') || null;
@@ -353,6 +359,8 @@ $(document).ready(() => {
         $("#id_data_range_start").val(colDataRangeStart);
         $("#id_data_range_end").val(colDataRangeEnd);
         $("#id_rank").val(colRank != 'None' ? Number(colRank) : 0)
+        $("#id_custom_value").val(colCustomValue);
+
 
         $("#id_addis_ababa").val(addisAbaba);
         $("#id_tigray").val(tigray);

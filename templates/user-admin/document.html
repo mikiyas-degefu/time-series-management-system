@@ -38,8 +38,9 @@
               </div>
             </div>
             <div class="container mt-4">
-              {% if topics %} {% for topic in topics %} {% if
-              topic.get_document_lists %}
+              {% if topics %} 
+              {% for topic in topics %}
+               {% if  topic.get_document_lists %}
               <div class="card mb-3">
                 <div class="card-header bg-success text-white">
                   (Topic) {{topic.title_ENG}}
@@ -95,7 +96,9 @@
                   {% endfor %}
                 </div>
               </div>
-              {% endif %} {% endfor %} {% endif %}
+              {% endif %}
+              {% endfor %} 
+              {% endif %}
             </div>
           </div>
         </div>
