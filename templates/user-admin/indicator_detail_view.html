@@ -216,18 +216,19 @@
                   <tr>
                     {% for i in month_data_value|slice:"::-1" %}
                     <th>
-                      {% if i.for_month__number == 1 %} ሐምሌ {% elif
-                      i.for_month__number == 2 %} ነሐሴ {% elif
-                      i.for_month__number == 3 %} መስከረም {% elif
-                      i.for_month__number == 4 %} ጥቅምት {% elif
-                      i.for_month__number == 5 %} ኅዳር {% elif
-                      i.for_month__number == 6 %} ጥር {% elif i.for_month__number
-                      == 7 %} ታኅሣሥ {% elif i.for_month__number == 8 %} የካቲት {%
-                      elif i.for_month__number == 9 %} መጋቢት {% elif
-                      i.for_month__number == 10 %} ሚያዝያ {% elif
-                      i.for_month__number == 11 %} ግንቦት {% elif
-                      i.for_month__number == 12 %} ሰኔ {% else %} Unknown {%
-                      endif %}
+                      {% if i.for_month__number == 1 %} ሐምሌ 
+                      {% elif i.for_month__number == 2 %} ነሐሴ
+                       {% elif i.for_month__number == 3 %} መስከረም 
+                       {% elif i.for_month__number == 4 %} ጥቅምት 
+                       {% elif i.for_month__number == 5 %} ኅዳር 
+                       {% elif i.for_month__number == 6 %} ጥር 
+                       {% elif i.for_month__number == 7 %} ታኅሣሥ 
+                       {% elif i.for_month__number == 8 %} የካቲት 
+                       {% elif i.for_month__number == 9 %} መጋቢት
+                       {% elif i.for_month__number == 10 %} ሚያዝያ 
+                       {% elif i.for_month__number == 11 %} ግንቦት 
+                       {% elif i.for_month__number == 12 %} ሰኔ
+                       {% else %} Unknown {% endif %}
                     </th>
                     {% endfor %}
                   </tr>
