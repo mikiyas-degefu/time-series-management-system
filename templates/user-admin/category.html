@@ -178,7 +178,8 @@
                       >Previous</a
                     >
                   </li>
-                  {% endif %} {% if categories.number|add:'-4' > 1 %}
+                  {% endif %} 
+                  {% if categories.number|add:'-4' > 1 %}
                   <li class="page-item">
                     <a
                       class="page-link"
@@ -186,21 +187,23 @@
                       >&hellip;</a
                     >
                   </li>
-                  {% endif %} {% for i in categories.paginator.page_range %} {%
-                  if categories.number == i %}
+                  {% endif %} 
+                  {% for i in categories.paginator.page_range %} 
+
+                  {% if categories.number == i %}
                   <li class="page-item active" aria-current="page">
                     <span class="page-link">
                       {{ i }}
                       <span class="sr-only">(current)</span>
                     </span>
                   </li>
-                  {% elif i > categories.number|add:'-5' and i <
-                  categories.number|add:'5' %}
+                  {% elif i > categories.number|add:'-5' and i < categories.number|add:'5' %}
                   <li class="page-item">
                     <a class="page-link" href="?page={{ i }}">{{ i }}</a>
                   </li>
-                  {% endif %} {% endfor %} {% if categories.paginator.num_pages
-                  > categories.number|add:'4' %}
+                  {% endif %} 
+                  {% endfor %} 
+                  {% if categories.paginator.num_pages > categories.number|add:'4' %}
                   <li class="page-item">
                     <a
                       class="page-link"
@@ -208,7 +211,8 @@
                       >&hellip;</a
                     >
                   </li>
-                  {% endif %} {% if categories.has_next %}
+                  {% endif %} 
+                  {% if categories.has_next %}
                   <li class="page-item">
                     <a
                       class="page-link"
