@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'DataPortal',
     'DashBoard',
     'mobile',
-    'mediaManager'
+    'mediaManager',
 ]
 
 MIDDLEWARE = [

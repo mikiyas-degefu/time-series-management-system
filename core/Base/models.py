@@ -3,8 +3,8 @@ from fontawesome_5.fields import IconField
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 import json
+from UserManagement.models import ResponsibleEntity
 
-# Create your models here.
 
 class Topic(models.Model):
     title_ENG = models.CharField(max_length=300, unique = True)
@@ -41,6 +41,7 @@ class Document(models.Model):
 class Category(models.Model):
     name_ENG = models.CharField(max_length=300, unique = True)
     name_AMH = models.CharField(max_length=300, unique = True)
+    code = models.CharField(max_length=10, unique=True)
     is_dashboard_visible = models.BooleanField(default = False)
     topic = models.ForeignKey(Topic, null=True, blank=True, on_delete=models.SET_NULL, related_name='categories')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -49,354 +50,141 @@ class Category(models.Model):
     def __str__(self):
         return self.name_ENG
 
+class Tag(models.Model):
+    title = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.title
+
 class Indicator(models.Model):
     KPI_CHARACTERISTIC_CHOICES = [
         ('inc', 'Increasing'),
         ('dec', 'Decreasing'),
         ('const', 'Constant'),
+        ('volatile', 'Volatile'),
     ]
 
-    title_ENG = models.CharField(max_length=300) 
-    title_AMH = models.CharField(max_length=300 , null=True, blank=True)
-    composite_key = models.CharField(max_length=300, unique = True)
-    parent = models.ForeignKey('self', related_name='children', on_delete=models.CASCADE, blank=True, null=True)
-    for_category = models.ManyToManyField(Category, related_name='indicators')
+    FREQUENCY = [
+        ('monthly', 'Monthly'),
+        ('quarterly', 'Quarterly'),
+        ('biannual', 'Biannual'),
+        ('yearly', 'Yearly'),
+    ]
+
+    DISAGGREGATION_DIMENSION_CHOICE = [
+        ('gender', 'Gender'),
+        ('age', 'Age'),
+        ('location', 'Location'),
+        ('income', 'Income Level'), 
+        ('education', 'Education Level'),  
+    ]
+
+    DATA_TYPE_CHOICE = [
+        ('number', 'Integer'),
+        ('decimal', 'Decimal'),
+        ('percentage', 'Percentage'),
+    ]
+
+    STATUS_CHOICE = [
+        ('active', 'Active'),
+        ('deprecated', 'Deprecated'),
+        ('under_development', 'Under Development'),
+        ('pending_review', 'Pending Review'), 
+    ]
+
+    COLLECTION_INSTRUMENT_CHOICE = [
+        ('dhs_survey', 'DHS Survey'),
+        ('admin_record', 'Administrative Record'),
+        ('census', 'Census'),
+        ('survey_other', 'Other Survey'),  
+    ]
+
+    title_ENG = models.CharField(max_length=300)
+    title_AMH = models.CharField(max_length=300, null=True, blank=True)
+    code = models.CharField(max_length=100, unique=True, blank=True)
+    for_category = models.ManyToManyField("Category", related_name='indicators')
+    description = models.TextField(null=True, blank=True)
     measurement_units = models.CharField(max_length=50, null=True, blank=True, default="")
-    kpi_characteristics = models.CharField(
-        max_length=10,
-        choices=KPI_CHARACTERISTIC_CHOICES,
-        default="inc"
-    )
-    is_dashboard_visible = models.BooleanField(default = False)
-    is_public = models.BooleanField(default = True)
-    is_deleted = models.BooleanField(default = False)
+    frequency = models.CharField(max_length=20, choices=FREQUENCY)
+    source = models.TextField()
+    methodology = models.TextField()
+    disaggregation_dimensions = models.CharField(max_length=30, choices=DISAGGREGATION_DIMENSION_CHOICE)
+    time_coverage_start_year = models.ForeignKey("DataPoint", on_delete=models.SET_NULL, null=True, related_name='indicator_start_year')
+    time_coverage_end_year = models.ForeignKey("DataPoint", on_delete=models.SET_NULL, null=True, related_name='indicator_end_year')
+    data_type = models.CharField(max_length=20, choices=DATA_TYPE_CHOICE)
+    responsible_entity = models.ForeignKey(ResponsibleEntity, null=True, blank=True, on_delete=models.SET_NULL)
+    tags = models.ManyToManyField("Tag", blank=True)
+    sdg_link = models.IntegerField(null=True, blank=True)
+    status = models.CharField(max_length=30, choices=STATUS_CHOICE, default="under_development")
+    version = models.IntegerField(default=1)
+    collection_Instrument = models.CharField(max_length=30, choices=COLLECTION_INSTRUMENT_CHOICE)
+    parent = models.ForeignKey('self', related_name='children', on_delete=models.CASCADE, blank=True, null=True)
+    kpi_characteristics = models.CharField(max_length=15, choices=KPI_CHARACTERISTIC_CHOICES, default="inc")
+    is_dashboard_visible = models.BooleanField(default=False)
+    is_public = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-   
-    def create_composite_key(self, *args, **kwargs):
-        self.composite_key = str(self.title_ENG.replace(" ","").replace("/","").replace("&","")) +  str(self.id)
-        super(Indicator, self).save(*args, **kwargs)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)  # Save first to generate self.pk
+
+        if is_new and not self.code:
+            if self.parent is None:
+                # Handle parent indicator
+                categories = list(self.for_category.all().order_by('code'))
+                if categories:
+                    prefix = "-".join([cat.code.upper() for cat in categories])
+                    existing_codes = Indicator.objects.filter(
+                        code__startswith=f"{prefix}-", parent__isnull=True
+                    ).values_list('code', flat=True)
+
+                    max_suffix = 0
+                    for code in existing_codes:
+                        try:
+                            suffix = int(code.split("-")[-1])
+                            if suffix > max_suffix:
+                                max_suffix = suffix
+                        except (IndexError, ValueError):
+                            continue
+
+                    new_suffix = max_suffix + 1
+                    self.code = f"{prefix}-{new_suffix:02d}"
+                    Indicator.objects.filter(pk=self.pk).update(code=self.code)
+            else:
+                # Handle child or sub-child indicator
+                parent_code = self.parent.code
+                siblings = Indicator.objects.filter(parent=self.parent).exclude(pk=self.pk)
+                child_numbers = []
+
+                for s in siblings:
+                    try:
+                        suffix = s.code.replace(f"{parent_code}.", "")
+                        parts = suffix.split(".")
+                        if parts and parts[0].isdigit():
+                            child_numbers.append(int(parts[0]))
+                    except (AttributeError, ValueError):
+                        continue
+
+                next_number = (max(child_numbers) if child_numbers else 0) + 1
+                self.code = f"{parent_code}.{next_number}"
+                Indicator.objects.filter(pk=self.pk).update(code=self.code)
+
+
+        def __str__(self):
+            return f"{self.title_ENG} ({self.code})"
     
-    def create_data_value(self):
-        #Annual Data
-        obj = AnnualData()
-        year = DataPoint.objects.order_by('-year_EC').first()
-        obj.for_datapoint = year
-        obj.performance = 0
-        obj.indicator = self
-        obj.save()
-
-        #Quarterly Data
-        obj = QuarterData()
-        year = DataPoint.objects.order_by('-year_EC').first()
-        quarter = Quarter.objects.order_by('-number').first()
-        obj.for_quarter = quarter
-        obj.for_datapoint = year
-        obj.performance = 0
-        obj.indicator = self
-        obj.save()
-    
-    
-
-    def get_previous_year_performance(self, year=None, quarter=None, month=None):
-        if year:
-            previous_year = str(int(year) - 1)
-            try:
-                current_year_plan = None
-                previous_year_plan = None
-
-                if month and year:
-                    try:
-                        current_year_plan = MonthData.objects.filter(
-                            for_datapoint__year_EC=year,
-                            for_month__month_AMH=month,
-                            indicator=self
-                        ).first()
-                        previous_year_plan = MonthData.objects.filter(
-                            for_datapoint__year_EC=previous_year,
-                            for_month__month_AMH=month,
-                            indicator=self
-                        ).first()
-                    except (ObjectDoesNotExist, MultipleObjectsReturned, Exception):
-                        return None
-
-                elif quarter and year:
-                    try:
-                        current_year_plan = QuarterData.objects.filter(
-                            for_datapoint__year_EC=year,
-                            for_quarter__title_ENG=quarter,
-                            indicator=self
-                        ).first()
-                        previous_year_plan = QuarterData.objects.filter(
-                            for_datapoint__year_EC=previous_year,
-                            for_quarter__title_ENG=quarter,
-                            indicator=self
-                        ).first()
-                    except (ObjectDoesNotExist, MultipleObjectsReturned, Exception):
-                        return None
-
-                elif year:
-                    try:
-                        current_year_plan = AnnualData.objects.filter(
-                            for_datapoint__year_EC=year,
-                            indicator=self
-                        ).first()
-                        previous_year_plan = AnnualData.objects.filter(
-                            for_datapoint__year_EC=previous_year,
-                            indicator=self
-                        ).first()
-                    except (ObjectDoesNotExist, MultipleObjectsReturned, Exception):
-                        return None
-
-                if (
-                    previous_year_plan and current_year_plan and
-                    previous_year_plan.performance is not None and
-                    current_year_plan.performance is not None and
-                    previous_year_plan.performance != 0
-                ):
-                    performance_change = current_year_plan.performance - previous_year_plan.performance
-                    performance_change_percent = (performance_change / previous_year_plan.performance) * 100
-
-                    if self.kpi_characteristics == 'inc':
-                        return {
-                            "change": round(performance_change, 1),
-                            "percent": round(performance_change_percent, 1)
-                        }
-                    elif self.kpi_characteristics == 'dec':
-                        return {
-                            "change": round(-performance_change, 1),
-                            "percent": round(-performance_change_percent, 1)
-                        }
-                    else:
-                        return {
-                            "change": round(performance_change, 1),
-                            "percent": round(performance_change_percent, 1)
-                        }
-                else:
-                    return None
-
-            except Exception:
-                return None
-
-        return None
-    
-    def get_indicator_value_5_years_ago(self, year=None, quarter=None, month=None):
-        if year:
-            previous_year = str(int(year) - 5)
-            try:
-                current_year_plan = None
-                previous_year_plan = None
-
-                if month and year:
-                    try:
-                        current_year_plan = MonthData.objects.filter(
-                            for_datapoint__year_EC=year,
-                            for_month__month_AMH=month,
-                            indicator=self
-                        ).first()
-                        previous_year_plan = MonthData.objects.filter(
-                            for_datapoint__year_EC=previous_year,
-                            for_month__month_AMH=month,
-                            indicator=self
-                        ).first()
-                    except (ObjectDoesNotExist, MultipleObjectsReturned, Exception):
-                        return None
-
-                elif quarter and year:
-                    try:
-                        current_year_plan = QuarterData.objects.filter(
-                            for_datapoint__year_EC=year,
-                            for_quarter__title_ENG=quarter,
-                            indicator=self
-                        ).first()
-                        previous_year_plan = QuarterData.objects.filter(
-                            for_datapoint__year_EC=previous_year,
-                            for_quarter__title_ENG=quarter,
-                            indicator=self
-                        ).first()
-                    except (ObjectDoesNotExist, MultipleObjectsReturned, Exception):
-                        return None
-
-                elif year:
-                    try:
-                        current_year_plan = AnnualData.objects.filter(
-                            for_datapoint__year_EC=year,
-                            indicator=self
-                        ).first()
-                        previous_year_plan = AnnualData.objects.filter(
-                            for_datapoint__year_EC=previous_year,
-                            indicator=self
-                        ).first()
-                    except (ObjectDoesNotExist, MultipleObjectsReturned, Exception):
-                        return None
-
-                
-                if (
-                    previous_year_plan and current_year_plan and
-                    previous_year_plan.performance is not None and
-                    current_year_plan.performance is not None and
-                    previous_year_plan.performance != 0
-                ):
-                    performance_change = current_year_plan.performance - previous_year_plan.performance
-                    performance_change_percent = (performance_change / previous_year_plan.performance) * 100
-
-                    if self.kpi_characteristics == 'inc':
-                        return {
-                            "change": round(performance_change, 1),
-                            "percent": round(performance_change_percent, 1)
-                        }
-                    elif self.kpi_characteristics == 'dec':
-                        return {
-                            "change": round(-performance_change, 1),
-                            "percent": round(-performance_change_percent, 1)
-                        }
-                    else:
-                        return {
-                            "change": round(performance_change, 1),
-                            "percent": round(performance_change_percent, 1)
-                        }
-                else:
-                    return None
-
-            except Exception:
-                return None
-
-        return None
-    
-    def get_indicator_value_10_years_ago(self, year=None, quarter=None, month=None):
-        if year:
-            previous_year = str(int(year) - 10)
-            try:
-                current_year_plan = None
-                previous_year_plan = None
-
-                if month and year:
-                    try:
-                        current_year_plan = MonthData.objects.filter(
-                            for_datapoint__year_EC=year,
-                            for_month__month_AMH=month,
-                            indicator=self
-                        ).first()
-                        previous_year_plan = MonthData.objects.filter(
-                            for_datapoint__year_EC=previous_year,
-                            for_month__month_AMH=month,
-                            indicator=self
-                        ).first()
-                    except (ObjectDoesNotExist, MultipleObjectsReturned, Exception):
-                        return None
-
-                elif quarter and year:
-                    try:
-                        current_year_plan = QuarterData.objects.filter(
-                            for_datapoint__year_EC=year,
-                            for_quarter__title_ENG=quarter,
-                            indicator=self
-                        ).first()
-                        previous_year_plan = QuarterData.objects.filter(
-                            for_datapoint__year_EC=previous_year,
-                            for_quarter__title_ENG=quarter,
-                            indicator=self
-                        ).first()
-                    except (ObjectDoesNotExist, MultipleObjectsReturned, Exception):
-                        return None
-
-                elif year:
-                    try:
-                        current_year_plan = AnnualData.objects.filter(
-                            for_datapoint__year_EC=year,
-                            indicator=self
-                        ).first()
-                        previous_year_plan = AnnualData.objects.filter(
-                            for_datapoint__year_EC=previous_year,
-                            indicator=self
-                        ).first()
-                    except (ObjectDoesNotExist, MultipleObjectsReturned, Exception):
-                        return None
-
-                
-                if (
-                    previous_year_plan and current_year_plan and
-                    previous_year_plan.performance is not None and
-                    current_year_plan.performance is not None and
-                    previous_year_plan.performance != 0
-                ):
-                    performance_change = current_year_plan.performance - previous_year_plan.performance
-                    performance_change_percent = (performance_change / previous_year_plan.performance) * 100
-
-                    if self.kpi_characteristics == 'inc':
-                        return {
-                            "change": round(performance_change, 1),
-                            "percent": round(performance_change_percent, 1)
-                        }
-                    elif self.kpi_characteristics == 'dec':
-                        return {
-                            "change": round(-performance_change, 1),
-                            "percent": round(-performance_change_percent, 1)
-                        }
-                    else:
-                        return {
-                            "change": round(performance_change, 1),
-                            "percent": round(performance_change_percent, 1)
-                        }
-                else:
-                    return None
-
-            except Exception:
-                return None
-
-        return None
-   
-  
-   
-    
-
-
-
-
-    def __str__(self):
-        return self.title_ENG 
-
-
-@receiver(post_save, sender=Indicator)
-def call_my_function(sender, instance, created, **kwargs):
-    if created: 
-        instance.create_data_value()
-        instance.create_composite_key()
-
-
-    
-   
 class DataPoint(models.Model):
     year_EC = models.CharField(max_length=50, null=True, blank=True, unique=True)
     year_GC = models.CharField(max_length=50, null=True, blank=True, unique = True)
-    is_interval = models.BooleanField(default=False)
-    year_start_EC = models.CharField(max_length=50, null=True, blank=True)
-    year_start_GC = models.CharField(max_length=50, null=True, blank=True)
-    year_end_EC = models.CharField(max_length=50, null=True, blank=True)
-    year_end_GC = models.CharField(max_length=50, null=True, blank=True)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
-    
-    
     class Meta:
         ordering = ['year_EC'] #Oldest First
-        
 
     def save(self, *args, **kwargs):
         self.year_GC = f'{str(int(self.year_EC )+ 7)}/{str(int(self.year_EC)+ 8)}'
         super(DataPoint, self).save(*args, **kwargs)
-
-
-    def __str__(self):
-        if self.is_interval:
-            return self.year_start_EC + " - " + self.year_end_EC + "E.C"
-        else:
-            return self.year_EC+" "+"E.C"
-        
-class Indicator_Point(models.Model):
-    is_actual = models.BooleanField()
-    for_datapoint = models.ForeignKey("DataPoint",on_delete=models.SET_NULL, null = True)
-    for_indicator = models.ForeignKey(Indicator,on_delete=models.SET_NULL, null = True)
-   
     
 class Quarter(models.Model):
     title_ENG = models.CharField(max_length=50)
@@ -422,8 +210,7 @@ class Month(models.Model):
         ordering = ['number']
 
     def __str__(self):
-        return self.month_AMH + " : " + self.month_ENG + " ==> " + str(self.number)
-    
+        return self.month_AMH + " : " + self.month_ENG + " ==> " + str(self.number)   
 
 class MonthData(models.Model):
     indicator = models.ForeignKey(Indicator, on_delete=models.SET_NULL, blank=True ,null=True , related_name='month_data')
@@ -576,13 +363,6 @@ class MonthData(models.Model):
                 return None
         return None
     
-
-    
-
-
-    
-
-
 class QuarterData(models.Model):
     indicator = models.ForeignKey(Indicator, on_delete=models.SET_NULL, blank=True ,null=True , related_name='quarter_data')
     for_quarter = models.ForeignKey(Quarter, on_delete=models.SET_NULL, blank=True ,null=True)
@@ -732,15 +512,6 @@ class QuarterData(models.Model):
                 return None
         return None
     
-
-    
-
-    
-    
-
-    
-    
-
 class AnnualData(models.Model):
     indicator = models.ForeignKey(Indicator, on_delete=models.SET_NULL, related_name='annual_data' ,blank=True ,null=True)
     for_datapoint = models.ForeignKey(DataPoint, on_delete=models.SET_NULL, blank=True, null=True)
@@ -895,20 +666,7 @@ class AnnualData(models.Model):
             except AnnualData.DoesNotExist:
                 return None
         return None
-    
-
-    
-class Source(models.Model):
-    title_ENG = models.CharField(max_length=50)
-    title_AMH = models.CharField(max_length=50)
-    updated =  models.DateTimeField(auto_now=True)
-    created = models.DateTimeField(auto_now_add=True)
-    is_deleted = models.BooleanField(default = False)
-    
-    def __str__(self):
-        return self.title_ENG
-
-
+     
 class ProjectInitiatives(models.Model):
     title_ENG = models.CharField(max_length=50)
     title_AMH = models.CharField(max_length=50)
@@ -921,7 +679,6 @@ class ProjectInitiatives(models.Model):
 
     def __str__(self):
         return self.title_ENG
-
 
 class SubProject(models.Model):
     title_ENG = models.CharField(max_length=50)
