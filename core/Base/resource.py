@@ -3,17 +3,7 @@ import datetime
 from import_export.formats.base_formats import XLS
 import tablib
 from import_export.widgets import ForeignKeyWidget, ManyToManyWidget
-from .models import (
-    Topic,
-    Category,
-    Indicator,
-    AnnualData,
-    DataPoint,
-    QuarterData,
-    MonthData,
-    Month,
-    Quarter,
-)
+from .models import *
 
 #############Import export Model Resources################
 
@@ -45,6 +35,9 @@ class CategoryResource(resources.ModelResource):
         exclude = ( 'id', 'created_at', 'is_deleted','is_dashboard_visible',)
         import_id_fields = ('name_ENG', 'name_AMH')
 
+class TagResource(resources.ModelResource):
+    class Meta:
+        model = Tag
 
 class IndicatorResource(resources.ModelResource):    
     for_category = fields.Field(

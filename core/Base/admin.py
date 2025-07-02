@@ -10,13 +10,10 @@ class TopicAdmin(ImportExportModelAdmin):
     resource_classes = [TopicResource]
 admin.site.register(Topic,TopicAdmin)
 
-
-
 class DocumentAdmin(ImportExportModelAdmin):
     list_display = ('title_ENG', 'title_AMH', 'topic', 'file')
 
 admin.site.register(Document, DocumentAdmin)
-
 
 class CategoryAdmin(ImportExportModelAdmin):
     resource_classes = [CategoryResource]
@@ -26,6 +23,12 @@ class CategoryAdmin(ImportExportModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 
 
+class TagAdmin(ImportExportModelAdmin):
+    resource_classes = [TagResource]
+    list_display = ('title',)
+    search_fields = ('title',)
+
+admin.site.register(Tag, TagAdmin)
 
 class IndicatorAdmin(ImportExportModelAdmin):
     resource_classes = [IndicatorResource]
