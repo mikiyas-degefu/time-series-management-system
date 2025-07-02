@@ -110,7 +110,7 @@ class AnnualDataResource(resources.ModelResource):
         report_skipped = True
         use_bulk = True
         exclude = ( 'id', 'created_at')
-        import_id_fields = ('indicator', 'for_datapoint', 'performance', 'target')
+        import_id_fields = ('indicator', 'for_datapoint')
 
 
 class QuarterDataResource(resources.ModelResource):    
@@ -144,7 +144,7 @@ class QuarterDataResource(resources.ModelResource):
         report_skipped = True
         use_bulk = True
         exclude = ( 'id', 'created_at')
-        import_id_fields = ('indicator', 'for_datapoint', 'for_quarter' ,'performance', 'target')
+        import_id_fields = ('indicator', 'for_datapoint', 'for_quarter' )
 
 
 
@@ -179,25 +179,29 @@ class MonthDataResource(resources.ModelResource):
         report_skipped = True
         use_bulk = True
         exclude = ( 'id', 'created_at')
-        import_id_fields = ('indicator', 'for_datapoint', 'for_month' ,'performance', 'target')
+        import_id_fields = ('indicator', 'for_datapoint', 'for_month' )
 
 
 #############Handle uploaded excel files################
 
 def handle_uploaded_Topic_file(file):
     try:
-        resource  = TopicResource()
+        resource = TopicResource()
         dataset = tablib.Dataset()
 
         imported_data = dataset.load(file.read())
-        result = resource.import_data(imported_data, dry_run=True, collect_failed_rows = True)
+        result = resource.import_data(imported_data, dry_run=True, collect_failed_rows=True)
         
         if not result.has_errors():
             return True, imported_data, result
         else:
             return False, imported_data, result
     except Exception as e:
-         return False, imported_data, result
+        # Ensure variables are initialized in case of an exception
+        imported_data = None
+        result = None
+        return False, imported_data, result
+
     
 
 def handle_uploaded_Indicator_file(file):
@@ -228,7 +232,9 @@ def handle_uploaded_Category_file(file):
         else:
             return False, imported_data, result
     except Exception as e:
-         return False, imported_data, result
+        imported_data = None
+        result = None
+        return False, imported_data, result
 
     
 def handle_uploaded_Annual_file(file):

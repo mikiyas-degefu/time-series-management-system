@@ -153,11 +153,29 @@ rel="stylesheet"
 
         <li class="nav-item">
           <a href="{% url 'custom-dashboard-index' %}" class="nav-link ">
-           <i class="bi bi-credit-card-2-back-fill"></i> 
+           <i class="nav-icon bi bi-credit-card-2-back-fill"></i> 
           
-            <p class="fw-bold">Customize Dashboard</p>
+            <p >Customize Dashboard</p>
           </a>
         </li>
+
+        <li class="nav-item">
+          <a href="{% url 'dashboard_index' %}" class="nav-link ">
+          <i class="nav-icon bi bi-award-fill"></i>
+          
+            <p >Custom Dashboard Lists</p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{% url 'projects' %}" class="nav-link ">
+          <i class="nav-icon bi bi-folder-fill"></i>
+          
+            <p >Projects and Initiatives</p>
+          </a>
+        </li>
+
+        
 
 
           </ul>

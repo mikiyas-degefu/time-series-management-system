@@ -42,13 +42,13 @@ def category_with_indicator(request, id):
     
     if 'search' in request.GET:
         search = request.GET['search']
-        indicator = Indicator.objects.filter(Q(title_ENG__icontains=search) | Q(title_AMH__icontains=search)).select_related().values('for_category__id')
-        categories = Category.objects.filter(Q(name_ENG__icontains=search) | Q(name_AMH__icontains=search) | Q(id__in=indicator)).select_related()
+        indicator = Indicator.objects.filter(Q(is_dashboard = True), Q(title_ENG__icontains=search) | Q(title_AMH__icontains=search)).select_related().values('for_category__id')
+        categories = Category.objects.filter( Q(is_dashboard_visible = True), Q(name_ENG__icontains=search) | Q(name_AMH__icontains=search) | Q(id__in=indicator)).select_related()
         serializer = CategorySerializers(categories, many=True)
         return Response(serializer.data)
     
     if request.method == 'GET':
-        categories = Category.objects.filter(topic =  topic).select_related()
+        categories = Category.objects.filter(topic =  topic, is_dashboard_visible = True).select_related()
         serializer = CategorySerializers(categories, many=True)
         return Response(serializer.data)
     

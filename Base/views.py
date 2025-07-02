@@ -1,4 +1,8 @@
 from django.shortcuts import render , HttpResponse
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from django.db.models import Q
+from rest_framework import status
 from .models import (
     Topic,
     Category,
@@ -134,3 +138,15 @@ def indicator_detail_view (request , id):
 
 
 
+@api_view(['GET'])
+def search_category_indicator(request):
+    queryset = []
+    if 'search' in request.GET:
+            q = request.GET['search']
+            dashboard_topic = Topic.objects.filter(is_dashboard = True)
+            queryset = Category.objects.filter().prefetch_related('indicator__set').filter(Q(indicators__title_ENG__contains=q, indicators__for_category__topic__in = dashboard_topic ) | Q(indicators__for_category__name_ENG__contains=q, indicators__for_category__topic__in = dashboard_topic) ).values(
+                'name_ENG',
+                'indicators__title_ENG',
+            )
+    return Response({"result" : "SUCCUSS", "message" : "SUCCUSS", "data" : list(queryset)}, status=status.HTTP_200_OK)
+    

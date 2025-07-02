@@ -60,7 +60,14 @@
     <nav class="pc-sidebar">
       <div class="navbar-wrapper">
         <div class="text-center">
-          <h3 class="bg-primary text-light p-3">{{dashboard.title | capfirst}}</h3>
+          <a href="{% url "dashboard_detail" dashboard.id %}"> 
+          <h3 class="bg-primary text-light p-3">{{dashboard.title | capfirst}}
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                  <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM8 12.5c-3.314 0-6-3.582-6-4.5s2.686-4.5 6-4.5 6 3.582 6 4.5-2.686 4.5-6 4.5z"/>
+                  <path d="M8 5a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+              </svg> 
+          </h3>
+        </a>
         </div>
         <div class="navbar-content">
 
@@ -72,6 +79,10 @@
                 <use xlink:href="#custom-presentation-chart"></use>
               </svg>
             </li>
+
+
+           
+
 
             <li class="pc-item pc-hasmenu active pc-trigger">
 

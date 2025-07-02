@@ -63,4 +63,16 @@ urlpatterns = [
     path('export_indicator/', export_indicator, name='export_indicator'),
 
 
+    ##Projects
+    path('projects/' , projects , name='projects'),
+    path('project_detail/<int:id>' , project_detail , name='project_detail'),
+    path('edit_project/', edit_project, name='edit_project'), 
+    path('delete_project/<int:id>', delete_project, name='delete_project'),  
+
+    ##Sub Projects
+    path('sub_projects/<int:id>' , sub_projects , name='sub_projects'),
+    path('sub_project_detail/<int:id>' , sub_project_detail , name='sub_project_detail'),
+    # path('edit_project/', edit_project, name='edit_project'), 
+    path('delete_sub_project/<int:id>', delete_sub_project, name='delete_sub_project'),    
+
 ]

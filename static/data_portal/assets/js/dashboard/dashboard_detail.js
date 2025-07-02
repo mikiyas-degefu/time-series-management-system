@@ -312,7 +312,7 @@ $(document).ready(function () {
                 let getIndicatorValue = filterIndicator.find((item) => item.for_datapoint__year_EC == year.year_EC)
                 if (getIndicatorValue){
                     return `
-                    <td> ${getIndicatorValue.performance} </td>
+                    <td>  ${parseFloat(getIndicatorValue.performance).toFixed(0)} </td>
                     `
                 }else{
                     return `
@@ -347,7 +347,7 @@ $(document).ready(function () {
                         if (getIndicatorValue){
                             return `
                             
-                            <td> ${getIndicatorValue.performance} </td>
+                            <td>  ${parseFloat(getIndicatorValue.performance).toFixed(0)} </td>
                             `
                         }else{
                             return `
@@ -378,7 +378,7 @@ $(document).ready(function () {
                     let getIndicatorValue = filterChildIndicator.find((item) => item.for_datapoint__year_EC == year.year_EC)
                     if (getIndicatorValue){
                         return `
-                        <td>  ${getIndicatorValue.performance} </td>
+                        <td>   ${parseFloat(getIndicatorValue.performance).toFixed(0)} </td>
                         `
                     }else{
                         return `

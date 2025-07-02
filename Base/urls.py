@@ -1,5 +1,6 @@
 from django.urls import path
 from .api.view import *
+from .api.video_api import *
 from .views import *
 
 from UserManagement.views import login_view , logout_view , reset_password ,   user_change_password
@@ -44,6 +45,10 @@ urlpatterns = [
 
 
     path('recent_data_for_topic/<str:id>', recent_data_for_topic),
+
+    path('api/video_api' , video_api),
+
+    path('api/search-indicator' , search_category_indicator),
 
 
 

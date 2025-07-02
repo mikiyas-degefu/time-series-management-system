@@ -3,7 +3,9 @@ from Base.models import(
     Topic,
     Category,
     Indicator,
-    Document
+    Document,
+    ProjectInitiatives,
+    SubProject
 )
 
 class TopicForm(forms.ModelForm):
@@ -55,3 +57,29 @@ class DocumentForm(forms.ModelForm):
                 'class' : 'form-control'
             })
         }
+
+
+class ProjectInitiativesForm(forms.ModelForm):
+    class Meta:
+        model = ProjectInitiatives
+        fields = ['title_ENG', 'title_AMH', 'description' , 'image' , 'image_icons'  ] # Specify the fields you want in the form
+        widgets = {
+            'title_ENG': forms.TextInput(attrs={'class': 'form-control'}),
+            'title_AMH': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'image_icons': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
+    
+
+class SubProjectForm(forms.ModelForm):
+    class Meta:
+        model = SubProject
+        fields = ['title_ENG', 'title_AMH', 'description' , 'is_regional']  # Specify the fields you want in the form
+        widgets = {
+            'title_ENG': forms.TextInput(attrs={'class': 'form-control'}),
+            'title_AMH': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'is_regional': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+    

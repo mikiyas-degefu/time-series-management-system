@@ -39,11 +39,16 @@ class IndicatorSerializers(serializers.ModelSerializer):
 
 
 class CategorySerializers(serializers.ModelSerializer):
-    indicators = IndicatorSerializers(many=True, read_only=True)
+    indicators = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
         fields = '__all__'
+    
+    def get_indicators(self, obj):
+        indicators =  Indicator.objects.filter(for_category=obj, is_dashboard_visible = True)
+        serializer = IndicatorSerializers(indicators, many=True, read_only=True)
+        return serializer.data
 
 
 

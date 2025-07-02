@@ -188,6 +188,7 @@
                   type="number"
                   name=""
                   id=""
+                  step="0.1"
                 />
               </div>
               <div class="modal-footer">
@@ -350,6 +351,9 @@
         let value = $("#IndicatorFormValue").val();
         let quarter_id = $("#form_quarter_id").val();
         let month_id = $("#form_month_id").val();
+
+
+        console.log(indicator_id, year_id, value, quarter_id)
 
         $.ajax({
           type: "POST",

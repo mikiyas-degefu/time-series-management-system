@@ -1,8 +1,9 @@
-from django.shortcuts import render , redirect, HttpResponse
+from django.shortcuts import render , redirect, HttpResponse , get_object_or_404
 from django.db.models import Q
 import json
 from django.http import JsonResponse
 from rest_framework.response import Response
+from django.core.serializers import serialize
 from rest_framework.decorators import api_view
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from UserManagement.forms import CustomUserForm
@@ -28,7 +29,9 @@ from .forms import(
     TopicForm,
     CategoryForm,
     IndicatorForm,
-    DocumentForm
+    DocumentForm,
+    ProjectInitiativesForm,
+    SubProjectForm
 )
 
 from Base.resource import(
@@ -47,7 +50,9 @@ from Base.models import (
     MonthData,
     Month,
     Quarter,
-    Document
+    Document,
+    ProjectInitiatives,
+    SubProject,
 )
 import random
 
@@ -63,6 +68,8 @@ from DashBoard.forms import(
 
 @login_required(login_url='login')
 def index(request):
+    AnnualData.objects.filter(for_datapoint__year_EC = '2016' ,performance = 0).delete()
+
     context = {
         'total_topic': Topic.objects.all().count(),
         'total_dashboard_topic': Topic.objects.filter(is_dashboard=True).count(),
@@ -77,6 +84,7 @@ def index(request):
 
 @login_required(login_url='login')
 def indicator_detail_view (request , id):
+   
     form = IndicatorForm(request.POST or None)
     if request.method == "GET":
         indicator = None
@@ -161,7 +169,7 @@ def indicator_detail_view (request , id):
     
             if quarter_id == "":
                 try:
-                    value = AnnualData.objects.get(indicator__id = indicator_id, for_datapoint__year_EC = year_id)
+                    value = AnnualData.objects.filter(indicator__id = indicator_id, for_datapoint__year_EC = year_id).first()
                     value.performance = new_value
                     value.save()
                 except:
@@ -192,35 +200,69 @@ def indicator_detail_view (request , id):
 ##Data View
 @login_required(login_url='login')
 def data_view(request):
+    
     form = ImportFileIndicatorAddValueForm(request.POST or None, request.FILES or None)
-    last_indicator_id = Indicator.objects.last().id
-    global imported_data_global
-    global type_of_data
+    try:
+        last_indicator_id = Indicator.objects.last().id
+    except:
+        last_indicator_id = 0
+
 
     if request.method == 'POST':
         if 'fileDataValue' in request.POST:
             if form.is_valid():
                 type_of_data = form.cleaned_data['type_of_data']
                 if type_of_data == 'yearly':
-                    type_of_data = 'yearly'
+                    request.session['data_import_type'] = 'yearly'
                     success, imported_data,result = handle_uploaded_Annual_file(file = request.FILES['file'])
                 elif type_of_data == 'quarterly':
-                    type_of_data = 'quarterly'
+                    request.session['data_import_type'] = 'quarterly'
                     success, imported_data, result = handle_uploaded_Quarter_file(file = request.FILES['file'])
                 elif type_of_data == 'monthly':
-                    type_of_data = 'monthly'
+                    request.session['data_import_type'] = 'monthly'
                     success, imported_data, result = handle_uploaded_Month_file(file = request.FILES['file'])
-                imported_data_global = imported_data
-                context = {'result': result}
-                return render(request, 'user-admin/import_preview.html', context=context)
+
+        
+                if success:
+                    # Convert Dataset to JSON-serializable format
+                    serialized_data = imported_data.dict  # Converts Dataset rows into a list of dictionaries
+        
+                    # Store serialized data in the session
+                    request.session['data_view_imported_data'] = serialized_data
+        
+                    # Provide a preview of the import
+                    context = {'result': result}
+                    return render(request, 'user-admin/import_preview.html', context=context)
+                else:
+                    messages.error(request, '😞 An error occurred while processing the file.')
             else:
-                messages.error(request, '😞 Hello User , An error occurred while Importing Data')
+                messages.error(request, '😞 An error occurred while importing the data.')
         elif 'confirm_data_form' in request.POST:
-            success, message = confirm_file(imported_data_global, type_of_data)
-            if success:
-                messages.success(request, message)
+            # Retrieve serialized data from the session
+            serialized_data = request.session.get('data_view_imported_data', None)
+            type_of_data = request.session.get('data_import_type', None)
+        
+            if serialized_data and type_of_data:
+                # Convert serialized data back to a Dataset object
+                from tablib import Dataset  # Adjust based on your Dataset class
+        
+                imported_data = Dataset()
+                headers = serialized_data[0].keys() if serialized_data else []  # Extract headers from the first row
+                imported_data.headers = headers  # Set headers
+                for row in serialized_data:
+                    imported_data.append(list(row.values()))  # Add rows back to the Dataset
+        
+                # Process the original Dataset
+                success, message = confirm_file(imported_data, type_of_data)
+                if success:
+                    # Clear session data after successful processing
+                    del request.session['data_view_imported_data']
+                    del request.session['data_import_type']
+                    messages.success(request, message)
+                else:
+                    messages.error(request, message)
             else:
-                messages.error(request, message)
+                messages.error(request, '😞 No imported data found to confirm.')
 
     context = {
         'form' : form,
@@ -344,7 +386,6 @@ def topic(request):
     count = 30
 
     formFile = ImportFileForm() #responsive to read imported file for import export 
-    global imported_data_global #global variable to store imported data
    
     if 'q' in request.GET:
         q = request.GET['q']
@@ -378,19 +419,54 @@ def topic(request):
             formFile = ImportFileForm(request.POST, request.FILES)
             if formFile.is_valid():
                 file = request.FILES['file']
+        
+                # Parse the uploaded file into a Dataset object
                 success, imported_data, result = handle_uploaded_Topic_file(file)
-                imported_data_global = imported_data
-                context = {'result': result}
-                return render(request, 'user-admin/import_preview.html', context=context)
+        
+                if success:
+                    # Convert Dataset to JSON-serializable format
+                    serialized_data = imported_data.dict  # Converts Dataset rows into a list of dictionaries
+        
+                    # Store serialized data in the session
+                    request.session['topic_imported_data'] = serialized_data
+        
+                    # Provide a preview of the import
+                    context = {'result': result}
+                    return render(request, 'user-admin/import_preview.html', context=context)
+                else:
+                    messages.error(request, '😞 An error occurred while processing the file.')
             else:
-                messages.error(request, '😞 Hello User , An error occurred while Importing Topic')
+                messages.error(request, '😞 An error occurred while importing the topic.')
         elif 'confirm_data_form' in request.POST:
-            success, message = confirm_file(imported_data_global, 'topic')
-            if success:
-                messages.success(request, message)
+            # Retrieve serialized data from the session
+            serialized_data = request.session.get('topic_imported_data', None)
+        
+            if serialized_data:
+                # Convert serialized data back to a Dataset object
+                from tablib import Dataset  # Adjust based on your Dataset class
+        
+                imported_data = Dataset()
+                headers = serialized_data[0].keys() if serialized_data else []  # Extract headers from the first row
+                imported_data.headers = headers  # Set headers
+                for row in serialized_data:
+                    imported_data.append(list(row.values()))  # Add rows back to the Dataset
+        
+                # Process the original Dataset
+                success, message = confirm_file(imported_data, 'topic')
+                if success:
+                    # Clear session data after successful processing
+                    del request.session['topic_imported_data']
+                    messages.success(request, message)
+                else:
+                    messages.error(request, message)
             else:
-                messages.error(request, message)
+                messages.error(request, '😞 No imported data found to confirm.')
 
+            
+
+
+
+          
     
 
     
@@ -441,7 +517,6 @@ def categories(request):
     count = 20
 
     formFile = ImportFileForm() #responsive to read imported file for import export 
-    global imported_data_global #global variable to store imported data
 
     if 'q' in request.GET:
         q = request.GET['q']
@@ -476,18 +551,48 @@ def categories(request):
             formFile = ImportFileForm(request.POST, request.FILES)
             if formFile.is_valid():
                 file = request.FILES['file']
+        
+                # Parse the uploaded file into a Dataset object
                 success, imported_data, result = handle_uploaded_Category_file(file)
-                imported_data_global = imported_data
-                context = {'result': result}
-                return render(request, 'user-admin/import_preview.html', context=context)
+        
+                if success:
+                    # Convert Dataset to JSON-serializable format
+                    serialized_data = imported_data.dict  # Converts Dataset rows into a list of dictionaries
+        
+                    # Store serialized data in the session
+                    request.session['category_imported_data'] = serialized_data
+        
+                    # Provide a preview of the imports
+                    context = {'result': result}
+                    return render(request, 'user-admin/import_preview.html', context=context)
+                else:
+                    messages.error(request, '😞 An error occurred while processing the file.')
             else:
-                messages.error(request, '😞 Hello User , An error occurred while Importing Category')
+                messages.error(request, '😞 An error occurred while importing the category.')
         elif 'confirm_data_form' in request.POST:
-            success, message = confirm_file(imported_data_global, 'category')
-            if success:
-                messages.success(request, message)
+            # Retrieve serialized data from the session
+            serialized_data = request.session.get('category_imported_data', None)
+        
+            if serialized_data:
+                # Convert serialized data back to a Dataset object
+                from tablib import Dataset  # Adjust based on your Dataset class
+        
+                imported_data = Dataset()
+                headers = serialized_data[0].keys() if serialized_data else []  # Extract headers from the first row
+                imported_data.headers = headers  # Set headers
+                for row in serialized_data:
+                    imported_data.append(list(row.values()))  # Add rows back to the Dataset
+        
+                # Process the original Dataset
+                success, message = confirm_file(imported_data, 'category')
+                if success:
+                    # Clear session data after successful processing
+                    del request.session['category_imported_data']
+                    messages.success(request, message)
+                else:
+                    messages.error(request, message)
             else:
-                messages.error(request, message)
+                messages.error(request, '😞 No imported data found to confirm.')
 
     
     context = {
@@ -601,13 +706,15 @@ def delete_indicator(request, id):
 #All indicators
 @login_required(login_url='login')
 def all_indicators(request):
-    last_indicator_id = Indicator.objects.last().id
+    try:
+        last_indicator_id = Indicator.objects.last().id
+    except:
+        last_indicator_id = 0
     all_indicators = Indicator.objects.filter(is_deleted=False)
     count = 30
     form = IndicatorForm(request.POST or None)
 
     formFile = ImportFileForm() #responsive to read imported file for import export 
-    global imported_data_global #global variable to store imported data
 
     if 'q' in request.GET:
         q = request.GET['q']
@@ -637,18 +744,48 @@ def all_indicators(request):
                 formFile = ImportFileForm(request.POST, request.FILES)
                 if formFile.is_valid():
                     file = request.FILES['file']
+            
+                    # Parse the uploaded file into a Dataset object
                     success, imported_data, result = handle_uploaded_Indicator_file(file)
-                    imported_data_global = imported_data
-                    context = {'result': result}
-                    return render(request, 'user-admin/import_preview.html', context=context)
+            
+                    if success:
+                        # Convert Dataset to JSON-serializable format
+                        serialized_data = imported_data.dict  # Converts Dataset rows into a list of dictionaries
+            
+                        # Store serialized data in the session
+                        request.session['indicator_imported_data'] = serialized_data
+            
+                        # Provide a preview of the import
+                        context = {'result': result}
+                        return render(request, 'user-admin/import_preview.html', context=context)
+                    else:
+                        messages.error(request, '😞 An error occurred while processing the file.')
                 else:
-                    messages.error(request, '😞 Hello User , An error occurred while Importing Indicator')
+                    messages.error(request, '😞 An error occurred while importing the indicator.')
             elif 'confirm_data_form' in request.POST:
-                success, message = confirm_file(imported_data_global, 'indicator')
-                if success:
-                    messages.success(request, message)
+                # Retrieve serialized data from the session
+                serialized_data = request.session.get('indicator_imported_data', None)
+            
+                if serialized_data:
+                    # Convert serialized data back to a Dataset object
+                    from tablib import Dataset  # Adjust based on your Dataset class
+            
+                    imported_data = Dataset()
+                    headers = serialized_data[0].keys() if serialized_data else []  # Extract headers from the first row
+                    imported_data.headers = headers  # Set headers
+                    for row in serialized_data:
+                        imported_data.append(list(row.values()))  # Add rows back to the Dataset
+            
+                    # Process the original Dataset
+                    success, message = confirm_file(imported_data, 'indicator')
+                    if success:
+                        # Clear session data after successful processing
+                        del request.session['indicator_imported_data']
+                        messages.success(request, message)
+                    else:
+                        messages.error(request, message)
                 else:
-                    messages.error(request, message)
+                    messages.error(request, '😞 No imported data found to confirm.')
                 
 
 
@@ -1229,6 +1366,163 @@ def custom_dashboard_topic(request,id):
 
 
 
+@login_required(login_url='login')
+def projects(request):
+    if request.method == 'POST':
+        # Handle form submission for adding a new project
+        form = ProjectInitiativesForm(request.POST)
+        if form.is_valid():
+            form.save()  # Save the new project
+            return redirect('projects')  # Redirect to the list of projects after saving
+    else:
+        form = ProjectInitiativesForm()
+    projects = ProjectInitiatives.objects.all()
+    form = ProjectInitiativesForm()
+    context = {
+        "projects" : projects,
+        "form" : form
+    }
+    return render(request , 'user-admin/projects.html' , context)
+
+
+@login_required(login_url='login')
+def sub_projects(request , id):
+    parent_project = ProjectInitiatives.objects.get(id=id)
+    if request.method == 'POST':
+        # Handle form submission for adding a new project
+        form = SubProjectForm(request.POST)
+        if form.is_valid():
+            sub_project = form.save(commit=False)
+            sub_project.project = parent_project
+            sub_project.save()  # Save the new project
+            return redirect('sub_projects' , id=id)  # Redirect to the list of projects after saving
+    else:
+        form = SubProjectForm()
+    projects = SubProject.objects.filter(project__id=id)
+    form = SubProjectForm()
+    context = {
+        "projects" : projects,
+        "form" : form
+    }
+    return render(request , 'user-admin/sub_projects.html' , context)
+
+
+@login_required(login_url='login')
+def project_detail(request, id):
+    project = get_object_or_404(ProjectInitiatives, id=id)
+
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)  # Parse JSON from request
+            print("Incoming Data:", data)  # Log the data to check
+
+            project.content = json.dumps(data.get("data", []))  # Update content
+            project.save()  # Save the changes
+            return JsonResponse({"message": "Project updated successfully"}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+
+    # Handling GET request
+    if hasattr(project, "content"):
+        if isinstance(project.content, str):
+            try:
+                projects_json = json.loads(project.content)
+            except json.JSONDecodeError:
+                projects_json = {"error": "Invalid JSON format in content field"}
+        else:
+            projects_json = project.content  
+    else:
+        projects_json = json.loads(serialize("json", [project]))[0]["fields"]
+
+    context = {
+        "projects": json.dumps(projects_json),
+        "project" : project
+    }
+    return render(request, "user-admin/project_detail.html", context)
+
+
+@login_required(login_url='login')
+def sub_project_detail(request, id):
+    project = get_object_or_404(SubProject, id=id)
+
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)  # Parse JSON from request
+            project.content = json.dumps(data.get("data", []))  # Update content
+            project.save()  # Save the changes
+            return JsonResponse({"message": "Project updated successfully"}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+
+    # Handling GET request
+    if hasattr(project, "content"):
+        if isinstance(project.content, str):
+            try:
+                projects_json = json.loads(project.content)
+            except json.JSONDecodeError:
+                projects_json = {"error": "Invalid JSON format in content field"}
+        else:
+            projects_json = project.content  
+    else:
+        projects_json = json.loads(serialize("json", [project]))[0]["fields"]
+
+    context = {
+        "projects": json.dumps(projects_json),
+        "project" : project
+    }
+    return render(request, "user-admin/sub_project_detail.html", context)
+
+@login_required(login_url='login')
+@api_view(['POST'])
+def edit_project(request):    
+    id = request.POST.get('id') 
+    title_ENG = request.POST.get('title_ENG')
+    title_AMH = request.POST.get('title_AMH')
+    description = request.POST.get('description')
+    try:
+        project = ProjectInitiatives.objects.get(id = id)
+        project.title_ENG = title_ENG
+        project.title_AMH = title_AMH
+        project.description = description
+        project.save()
+        response = {'success' : True}
+    except:
+        response = {'success' : False}
+    return Response(response) 
+
+# @login_required(login_url='login')
+# @api_view(['POST'])
+# def edit_sub_project(request):    
+#     id = request.POST.get('id') 
+#     title_ENG = request.POST.get('title_ENG')
+#     title_AMH = request.POST.get('title_AMH')
+#     description = request.POST.get('description')
+#     try:
+#         project = ProjectInitiatives.objects.get(id = id)
+#         project.title_ENG = title_ENG
+#         project.title_AMH = title_AMH
+#         project.description = description
+#         project.save()
+#         response = {'success' : True}
+#     except:
+#         response = {'success' : False}
+#     return Response(response)  
+  
+
+@login_required(login_url='login')
+def delete_project(request, id):
+    project = ProjectInitiatives.objects.get(id=id)    
+    project.delete()
+    messages.success(request, '😀 Hello User, Project Successfully Deleted')
+    return redirect('projects')
+
+@login_required(login_url='login')
+def delete_sub_project(request, id):
+    project = SubProject.objects.get(id=id)  
+    parent_id = project.project.id  
+    project.delete()
+    messages.success(request, '😀 Hello User, Project Successfully Deleted')
+    return redirect('sub_projects' , id=parent_id)
 
 ################EXPORT DATA####################
 @login_required(login_url='login')
@@ -1260,4 +1554,11 @@ def export_indicator(request):
     response = HttpResponse(dataset.xlsx, content_type='application/vnd.ms-excel')
     response['Content-Disposition'] = 'attachment; filename="indicator.xlsx"'
     return response
+
+
+
+
+
+
+
 

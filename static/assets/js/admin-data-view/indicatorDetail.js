@@ -6,61 +6,71 @@ $(document).ready(function () {
     const indicatorId = [pathID]
 
 
-    const contractTable = (data) =>{
+    const contractTable = (data) => {
         AnnualTable(data)
         QuarterTable(data)
         MonthTable(data)
-        
+
     }
 
-    const AnnualTable = (data) =>{
+    const AnnualTable = (data) => {
+
         //table header
         $('[name="tableHead"]').html(
             `
           <tr style="background-color: #40864b;" >
-            <th style="width:500px;"  class="text-light" scope="col" >Yearly</th>
+            <th style="width:800px;"  class="text-light" scope="col" >Yearly</th>
             <th style="width:400px;" scope="col" ></th>
               ` +
-              data.year.map((year) =>{ return ` <th scope="col" style="width:100px;"></th>`})
-              + 
-              `
+            data.year.map((year) => { return ` <th scope="col" style="width:110px;"></th>` })
+            +
+            `
           </tr>
 
         <tr style="background-color: #9fdfa9;" >
                <th scope="col" >Name</th>
                <th scope="col" >ስም</th>
                ` +
-               data.year.map((year) =>{ return ` <th scope="col">${year.year_EC} E.C </th>`})
-               + 
-               `
+            data.year.map((year) => { return `<th style="font-size:15px;" scope="col">${year.year_EC} E.C </th>` })
+            +
+            `
+         </tr>
+
+          <tr style="background-color: #9fdfa9;" >
+               <th scope="col" ></th>
+               <th scope="col" ></th>
+               ` +
+            data.year.map((year) => { return `<th style="font-size:10px;" scope="col">${year.year_GC} G.C </th>` })
+            +
+            `
          </tr>
             `
         )
 
 
-         let tableData = indicatorId.map((indicator_id) =>{
+        let tableData = indicatorId.map((indicator_id) => {
             let filterIndicator = data.annual_data_value.filter((item) => item.indicator__id === Number(indicator_id))
-            
+
             //parent indicator
-            let row = data.year.map((year) =>{
+            let row = data.year.map((year) => {
                 let getIndicatorValue = filterIndicator.find((item) => item.for_datapoint__year_EC == year.year_EC)
-                if (getIndicatorValue){
+                if (getIndicatorValue) {
                     return `
                     <td>
                         <button 
                             id="${indicator_id}-${year.year_EC}"
                             data-indicator-id="${indicator_id}" 
-                            data-value="${getIndicatorValue.performance}" 
+                            data-value="${getIndicatorValue && getIndicatorValue.performance != null ? Number(getIndicatorValue.performance.toFixed(1)) : "-"} 
                             data-year="${year.year_EC}"
                             data-bs-toggle="modal" 
                             name="btnIndicator" 
                             data-bs-target="#indicatorEditValue" 
                             class="btn btn-block btn-outline-secondary border-0 fw-bold text-dark">
-                            ${getIndicatorValue.performance}
+                            ${getIndicatorValue && getIndicatorValue.performance != null ? Number(getIndicatorValue.performance.toFixed(1)) : "-"}
                         </button>
                     </td>
                     `
-                }else{
+                } else {
                     return `
                     <td>
                         <button 
@@ -78,53 +88,44 @@ $(document).ready(function () {
                 }
             })
 
-            //child indicator
-            let filterChildIndicator = data.annual_data_value.filter(item => item.indicator__parent_id === Number(indicator_id))
-            let uniqueChildId = []
-            filterChildIndicator.map((item) =>{
-                if (!uniqueChildId.includes(item.indicator__id)){
-                    uniqueChildId.push(item.indicator__id)
-                }
-            })
+            //child indicator             
+            let childDataIndicator = data.indicator_lists.filter(child => child.parent_id == indicator_id)
 
-            let childDataFn = (parent, space="&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp") =>{
+
+            let childDataFn = (parent, space = "&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp") => {
+                space += String("&nbsp;&nbsp;&nbsp;&nbsp")
 
                 //child of child indicator
-                let filterChildOfIndicator = data.annual_data_value.filter(item => item.indicator__parent_id === Number(parent))
-                let uniqueChildOfChildId = []
-                filterChildOfIndicator.map((item) =>{
-                    if (!uniqueChildOfChildId.includes(item.indicator__id)){
-                        uniqueChildOfChildId.push(item.indicator__id)
-                    }
-                })
+                let childOfChildDataIndicator = data.indicator_lists.filter(child => child.parent_id == Number(parent))
 
-                return uniqueChildOfChildId.map((child_id) =>{
-                    let filterChildOfChildIndicator = data.annual_data_value.filter((item) => item.indicator__id === Number(child_id))
-                    let childRow = data.year.map((year) =>{
+
+                return childOfChildDataIndicator.map((childOfChild) => {
+                    let filterChildOfChildIndicator = data.annual_data_value.filter((item) => item.indicator__id === Number(childOfChild.id))
+                    let childRow = data.year.map((year) => {
                         let getIndicatorValue = filterChildOfChildIndicator.find((item) => item.for_datapoint__year_EC == year.year_EC)
-                        if (getIndicatorValue){
+                        if (getIndicatorValue) {
                             return `
                             
                             <td>
                                 <button
-                                    id="${child_id}-${year.year_EC}" 
-                                    data-indicator-id="${child_id}" 
-                                    data-value="${getIndicatorValue.performance}" 
+                                    id="${childOfChild.id}-${year.year_EC}" 
+                                    data-indicator-id="${childOfChild.id}" 
+                                    data-value="${getIndicatorValue && getIndicatorValue.performance != null ? Number(getIndicatorValue.performance.toFixed(1)) : "-"} 
                                     data-year="${year.year_EC}"
                                     data-bs-toggle="modal" 
                                     name="btnIndicator" 
                                     data-bs-target="#indicatorEditValue" 
                                     class="btn btn-block btn-outline-secondary border-0 fw-bold text-dark">
-                                    ${getIndicatorValue.performance}
+                                    ${getIndicatorValue && getIndicatorValue.performance != null ? Number(getIndicatorValue.performance.toFixed(1)) : "-"}
                                 </button>
                             </td>
                             `
-                        }else{
+                        } else {
                             return `
                             <td>
                                 <button 
-                                    id="${child_id}-${year.year_EC}" 
-                                    data-indicator-id="${child_id}" 
+                                    id="${childOfChild.id}-${year.year_EC}" 
+                                    data-indicator-id="${childOfChild.id}" 
                                     data-year="${year.year_EC}"
                                     data-value="" 
                                     data-bs-toggle="modal" 
@@ -136,19 +137,19 @@ $(document).ready(function () {
                             </td>`
                         }
                     })
-    
-                    return  `
+
+                    return `
                     <tr>
                         <td>
                            <div class="row">
-                                <div class="col-9">&nbsp;&nbsp;&nbsp;&nbsp ${space}  ${filterChildOfIndicator[0].indicator__title_ENG}</div>
+                                <div class="col-9">&nbsp;&nbsp;&nbsp;&nbsp ${space}  ${childOfChild.title_ENG}</div>
                                 <div class="col-1">
                                     <a 
-                                        href="/user-admin/data_view_indicator_update/${filterChildOfIndicator[0].indicator__id}" 
+                                        href="/user-admin/data_view_indicator_update/${childOfChild.id}" 
                                         name="btnAddIndicator" 
                                         data-indicator-id="${indicatorId}"
-                                        data-indicator-name-eng="${filterChildOfIndicator[0].indicator__title_ENG}"
-                                        data-indicator-name-amg="${filterChildOfIndicator[0].indicator__title_AMH}"
+                                        data-indicator-name-eng="${childOfChild.title_ENG}"
+                                        data-indicator-name-amg="${childOfChild.title_AMH}"
                                         class="btn btn-sm btn-outline-primary border-0  pt-1 pb-1" 
                                         data-bs-placement="bottom" 
                                         title="Add new Sub-Indicator"><i class="fas fa-pen"></i></a> 
@@ -157,7 +158,7 @@ $(document).ready(function () {
                                      <button 
                                          type="button" 
                                          name="btnAddIndicator" 
-                                         data-indicator-id="${child_id}" 
+                                         data-indicator-id="${childOfChild.id}" 
                                          data-bs-toggle="modal" 
                                          data-bs-target="#modalAddNewIndicator" 
                                          class="btn btn-outline-primary border-0  pt-1 pb-1" 
@@ -168,8 +169,8 @@ $(document).ready(function () {
                                      <button 
                                          type="button" 
                                          name="btnDeleteIndicator" 
-                                         data-indicator-id="${child_id}"
-                                         data-indicator-name="${filterChildOfIndicator[0].indicator__title_ENG}" 
+                                         data-indicator-id="${childOfChild.id}"
+                                         data-indicator-name="${childOfChild.title_ENG}" 
                                          data-bs-toggle="modal" 
                                          data-bs-target="#modalRemoveIndicator" 
                                          class="btn btn-outline-danger border-0  pt-1 pb-1" 
@@ -178,41 +179,41 @@ $(document).ready(function () {
                                    </div>
                                 </div>
                          </td>
-                       <td class="">${space}  ${filterChildOfIndicator[0].indicator__title_AMH}</td> 
+                       <td class="">${space}  ${childOfChild.title_AMH}</td> 
                        ${childRow}
                     </tr>
-                ${space += String("&nbsp;&nbsp;&nbsp;&nbsp")}
-                ${childDataFn(filterChildOfChildIndicator[0].indicator__id, space)}
+                ${childDataFn(childOfChild.id, space)}
                 `
                 })
             }
 
-            let childData = uniqueChildId.map((child_id) =>{
-                let filterChildIndicator = data.annual_data_value.filter((item) => item.indicator__id === Number(child_id))
-                let childRow = data.year.map((year) =>{
+            let childData = childDataIndicator.map((child) => {
+                let filterChildIndicator = data.annual_data_value.filter((item) => item.indicator__id === Number(child.id))
+
+                let childRow = data.year.map((year) => {
                     let getIndicatorValue = filterChildIndicator.find((item) => item.for_datapoint__year_EC == year.year_EC)
-                    if (getIndicatorValue){
+                    if (getIndicatorValue) {
                         return `
                         <td>
                             <button
-                                id="${child_id}-${year.year_EC}"  
-                                data-indicator-id="${child_id}" 
-                                data-value="${getIndicatorValue.performance}" 
+                                id="${child.id}-${year.year_EC}"  
+                                data-indicator-id="${child.id}" 
+                                data-value="${getIndicatorValue && getIndicatorValue.performance != null ? Number(getIndicatorValue.performance.toFixed(1)) : "-"} 
                                 data-year="${year.year_EC}"
                                 data-bs-toggle="modal" 
                                 name="btnIndicator" 
                                 data-bs-target="#indicatorEditValue" 
                                 class="btn btn-block btn-outline-secondary border-0 fw-bold text-dark">
-                                ${getIndicatorValue.performance}
+                                ${getIndicatorValue && getIndicatorValue.performance != null ? Number(getIndicatorValue.performance.toFixed(1)) : "-"}
                             </button>
                         </td>
                         `
-                    }else{
+                    } else {
                         return `
                         <td> 
                             <button
-                                id="${child_id}-${year.year_EC}"  
-                                data-indicator-id="${child_id}" 
+                                id="${child.id}-${year.year_EC}"  
+                                data-indicator-id="${child.id}" 
                                 data-year="${year.year_EC}"
                                 data-value="" 
                                 data-bs-toggle="modal" 
@@ -225,7 +226,7 @@ $(document).ready(function () {
                     }
                 })
 
-                return  `
+                return `
                 <tr>
                     <td class="">
                         <div class="row">
@@ -242,7 +243,7 @@ $(document).ready(function () {
                               <button 
                                   type="button" 
                                   name="btnAddIndicator" 
-                                  data-indicator-id="${child_id}"
+                                  data-indicator-id="${child.id}"
                                   data-bs-toggle="modal" 
                                   data-bs-target="#modalAddNewIndicator" 
                                   class="btn btn-outline-primary border-0  pt-1 pb-1" 
@@ -253,7 +254,7 @@ $(document).ready(function () {
                               <button 
                                   type="button" 
                                   name="btnDeleteIndicator" 
-                                  data-indicator-id="${child_id}"
+                                  data-indicator-id="${child.id}"
                                   data-indicator-name="${filterChildIndicator[0].indicator__title_ENG}"
                                   data-bs-toggle="modal" 
                                   data-bs-target="#modalRemoveIndicator" 
@@ -266,17 +267,17 @@ $(document).ready(function () {
                <td class="">&nbsp;&nbsp;&nbsp;&nbsp ${filterChildIndicator[0].indicator__title_AMH}</td> 
                ${childRow}
             </tr>
-            ${childDataFn(filterChildIndicator[0].indicator__id)}
+            ${childDataFn(child.id)}
             `
             })
 
-            
 
-            return  `
+
+            return `
             <tr>
                 <td class="fw-bold">
                      <div class="row">
-                      <div class="col-9">${filterIndicator[0].indicator__title_ENG}</div>
+                      <div class="col-9">${filterIndicator[0]?.indicator__title_ENG || 'None'}</div>
                       <div class="col-1">
                          <a 
                              href="/user-admin/data_view_indicator_update/${filterIndicator[0].indicator__id}" 
@@ -315,30 +316,30 @@ $(document).ready(function () {
             </tr>
             ${childData}
             `
-           
+
         })
 
         $('[name="tableBody"]').html(tableData)
     }
 
-    const QuarterTable = (data) =>{
+    const QuarterTable = (data) => {
         let headerListHtml = ``
 
-        let filterChildHeader = (parent, space="") =>{
+        let filterChildHeader = (parent, space = "") => {
             space += String("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp")
             let children = data.indicator_lists.filter(item => item.parent_id == parent.id)
 
-            for(let child of children){
-                headerListHtml+=`
+            for (let child of children) {
+                headerListHtml += `
                 <th scope="col" class="vertical-text text-start align-middle">${space} ${child.title_ENG} </br> ${space} ${child.title_AMH}
                 `
                 filterChildHeader(child, space)
             }
         }
 
-        let parentHeader = ()=>{
-            for(let parent of data.indicator_lists.filter(item => item.parent_id == null)){
-                headerListHtml+=`
+        let parentHeader = () => {
+            for (let parent of data.indicator_lists.filter(item => item.parent_id == null)) {
+                headerListHtml += `
                 <th scope="col" class="vertical-text text-start align-middle">${parent.title_ENG} </br> ${parent.title_AMH}
                 `
                 filterChildHeader(parent)
@@ -353,11 +354,11 @@ $(document).ready(function () {
             <th style="width:50px;"  class="text-light" scope="col" >Quarterly</th>
             <th style="width:10px;" scope="col" ></th>
               ` +
-              data.indicator_lists.map((indicator) =>{ 
+            data.indicator_lists.map((indicator) => {
                 return ` <th scope="col" style="width:70px;"></th>`
             })
-              + 
-              `
+            +
+            `
           </tr>
 
           <tr style="background-color: #9fdfa9;" >
@@ -365,7 +366,7 @@ $(document).ready(function () {
           <th scope="col" class="vertical-text text-start align-middle">(Quarter)</th>
             ` +
             headerListHtml
-            + 
+            +
             `
         </tr>
             `
@@ -373,55 +374,55 @@ $(document).ready(function () {
 
         let tableBody = ''
 
-        for(let year of data.year){
+        for (let year of data.year) {
             let hasYear = false
             let indicatorValue = ''
-            for(let quarter of data.quarter){
+            for (let quarter of data.quarter) {
 
-                let childBody = (parent, space="") =>{
+                let childBody = (parent, space = "") => {
                     space += String("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp")
                     let children = data.indicator_lists.filter(item => item.parent_id == parent.id)
 
-                    for(let child of children){
+                    for (let child of children) {
                         let value = data.quarter_data_value.find((item) => item.for_datapoint__year_EC == year.year_EC && item.for_quarter__number == quarter.number && item.indicator__id == child.id)
-                        indicatorValue+= `
+                        indicatorValue += `
                         <td> 
                             <button
                                 id="${child.id}-${year.year_EC}-${quarter.number}" 
                                 data-indicator-id="${child.id}" 
                                 data-quarter-id="${quarter.number}" 
-                                data-value="${value ? value.performance : "-"}" 
+                                data-value="${value && value.performance != null ? Number(value.performance.toFixed(1)) : "-"}" 
                                 data-year="${year.year_EC}"
                                 data-bs-toggle="modal" 
                                 name="btnIndicator" 
                                 data-bs-target="#indicatorEditValue" 
                                 class="btn btn-block btn-outline-secondary border-0 fw-bold text-dark">
-                                ${value ? value.performance : "-"}
+                                ${value && value.performance != null ? Number(value.performance.toFixed(1)) : "-"}
                             </button>
                         </td>`
                         childBody(child, space)
                     }
                 }
 
-                let parentBody = () =>{
-                    for(let indicator of data.indicator_lists.filter((item) => item.parent_id == null)){
+                let parentBody = () => {
+                    for (let indicator of data.indicator_lists.filter((item) => item.parent_id == null)) {
                         let value = data.quarter_data_value.find((item) => item.for_datapoint__year_EC == year.year_EC && item.for_quarter__number == quarter.number && item.indicator__id == indicator.id)
-                        indicatorValue+= 
-                        `<td> 
+                        indicatorValue +=
+                            `<td> 
                             <button
                                 id="${indicator.id}-${year.year_EC}-${quarter.number}" 
                                 data-indicator-id="${indicator.id}" 
                                 data-quarter-id="${quarter.number}" 
-                                data-value="${value ? value.performance : "-"}" 
+                                data-value="${value && value.performance != null ? Number(value.performance.toFixed(1)) : "-"}" 
                                 data-year="${year.year_EC}"
                                 data-bs-toggle="modal" 
                                 name="btnIndicator" 
                                 data-bs-target="#indicatorEditValue" 
                                 class="btn btn-block btn-outline-secondary border-0 fw-bold text-dark">
-                                ${value ? value.performance : "-"}
+                                ${value && value.performance != null ? Number(value.performance.toFixed(1)) : "-"}
                             </button>
                         
-                        </td>` 
+                        </td>`
                         childBody(indicator)
                     }
                 }
@@ -429,16 +430,16 @@ $(document).ready(function () {
                 parentBody()
 
 
-                
-                tableBody+=`
+
+                tableBody += `
                 <tr>
-                   <th class="text-success" style="${hasYear ? 'font-size: 0;' : ''}" >${ year.year_EC + "E.C </br> " + year.year_GC + "G.C"}</th>
+                   <th class="text-success" style="${hasYear ? 'font-size: 0;' : ''}" >${year.year_EC + "E.C </br> " + year.year_GC + "G.C"}</th>
                    <th class="text-success">${quarter.title_ENG}</th>
                    ${indicatorValue}
                 </tr>
                `
-               hasYear = true  
-               indicatorValue = '' 
+                hasYear = true
+                indicatorValue = ''
             }
         }
 
@@ -452,24 +453,24 @@ $(document).ready(function () {
         });
     }
 
-    const MonthTable = (data) =>{
+    const MonthTable = (data) => {
         let headerListHtml = ``
 
-        let filterChildHeader = (parent, space="") =>{
+        let filterChildHeader = (parent, space = "") => {
             space += String("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp")
             let children = data.indicator_lists.filter(item => item.parent_id == parent.id)
 
-            for(let child of children){
-                headerListHtml+=`
+            for (let child of children) {
+                headerListHtml += `
                 <th scope="col" class="vertical-text text-start align-middle">${space} ${child.title_ENG} </br> ${space} ${child.title_AMH}
                 `
                 filterChildHeader(child, space)
             }
         }
 
-        let parentHeader = ()=>{
-            for(let parent of data.indicator_lists.filter(item => item.parent_id == null)){
-                headerListHtml+=`
+        let parentHeader = () => {
+            for (let parent of data.indicator_lists.filter(item => item.parent_id == null)) {
+                headerListHtml += `
                 <th scope="col" class="vertical-text text-start align-middle">${parent.title_ENG} </br> ${parent.title_AMH}
                 `
                 filterChildHeader(parent)
@@ -484,11 +485,11 @@ $(document).ready(function () {
             <th style="width:100px;"  class="text-light" scope="col" >Monthly</th>
             <th style="width:100px;" scope="col" ></th>
               ` +
-              data.indicator_lists.map((indicator) =>{ 
+            data.indicator_lists.map((indicator) => {
                 return ` <th scope="col" style="width:70px;"></th>`
             })
-              + 
-              `
+            +
+            `
           </tr>
 
           <tr style="background-color: #9fdfa9;" >
@@ -496,7 +497,7 @@ $(document).ready(function () {
           <th scope="col" class="vertical-text text-start align-middle">(Month)</th>
             ` +
             headerListHtml
-            + 
+            +
             `
         </tr>
             `
@@ -504,55 +505,55 @@ $(document).ready(function () {
 
         let tableBody = ''
 
-        for(let year of data.year){
+        for (let year of data.year) {
             let hasYear = false
             let indicatorValue = ''
-            for(let month of data.month){
+            for (let month of data.month) {
 
-                let childBody = (parent, space="") =>{
+                let childBody = (parent, space = "") => {
                     space += String("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp")
                     let children = data.indicator_lists.filter(item => item.parent_id == parent.id)
 
-                    for(let child of children){
+                    for (let child of children) {
                         let value = data.month_data_value.find((item) => item.for_datapoint__year_EC == year.year_EC && item.for_month__number == month.number && item.indicator__id == child.id)
-                        indicatorValue+= `
+                        indicatorValue += `
                         <td> 
                             <button
                                 id="${child.id}-${year.year_EC}-month-${month.number}" 
                                 data-indicator-id="${child.id}" 
                                 data-month-id="${month.number}" 
-                                data-value="${value ? value.performance : "-"}" 
+                                data-value="${value && value.performance != null ? Number(value.performance.toFixed(1)) : "-"}" 
                                 data-year="${year.year_EC}"
                                 data-bs-toggle="modal" 
                                 name="btnIndicator" 
                                 data-bs-target="#indicatorEditValue" 
                                 class="btn btn-block btn-outline-secondary border-0 fw-bold text-dark">
-                                ${value ? value.performance : "-"}
+                                ${value && value.performance != null ? Number(value.performance.toFixed(1)) : "-"}
                             </button>
                         </td>`
                         childBody(child, space)
                     }
                 }
 
-                let parentBody = () =>{
-                    for(let indicator of data.indicator_lists.filter((item) => item.parent_id == null)){
+                let parentBody = () => {
+                    for (let indicator of data.indicator_lists.filter((item) => item.parent_id == null)) {
                         let value = data.month_data_value.find((item) => item.for_datapoint__year_EC == year.year_EC && item.for_month__number == month.number && item.indicator__id == indicator.id)
-                        indicatorValue+= 
-                        `<td> 
+                        indicatorValue +=
+                            `<td> 
                             <button
                                 id="${indicator.id}-${year.year_EC}-month-${month.number}" 
                                 data-indicator-id="${indicator.id}" 
                                 data-month-id="${month.number}" 
-                                data-value="${value ? value.performance : "-"}" 
+                                data-value="${value && value.performance != null ? Number(value.performance.toFixed(1)) : "-"}" 
                                 data-year="${year.year_EC}"
                                 data-bs-toggle="modal" 
                                 name="btnIndicator" 
                                 data-bs-target="#indicatorEditValue" 
                                 class="btn btn-block btn-outline-secondary border-0 fw-bold text-dark">
-                                ${value ? value.performance : "-"}
+                                ${value && value.performance != null ? Number(value.performance.toFixed(1)) : "-"}
                             </button>
                         
-                        </td>` 
+                        </td>`
                         childBody(indicator)
                     }
                 }
@@ -560,16 +561,16 @@ $(document).ready(function () {
                 parentBody()
 
 
-                
-                tableBody+=`
+
+                tableBody += `
                 <tr>
                    <th class="text-success" style="${hasYear ? 'font-size: 0;' : ''}" >${year.year_EC + "E.C </br> " + year.year_GC + "G.C"}</th>
                    <th class="text-success">${month.month_AMH} </br> ${month.month_ENG}</th>
                    ${indicatorValue}
                 </tr>
                `
-               hasYear = true  
-               indicatorValue = '' 
+                hasYear = true
+                indicatorValue = ''
             }
         }
 
@@ -583,7 +584,7 @@ $(document).ready(function () {
         });
     }
 
-    const fetchTableData = async() =>{
+    const fetchTableData = async () => {
         let [loading, response] = await useFetch(URL)
         contractTable(response)
     }
@@ -592,7 +593,7 @@ $(document).ready(function () {
 
 
     //handle value button clicked for yearly
-    $("[name='tableBody']").on("click","button[name='btnIndicator']",function(){
+    $("[name='tableBody']").on("click", "button[name='btnIndicator']", function () {
         const buttonData = $(this).data()
         $("#IndicatorFormValue").val(buttonData.value)
         $("#form_indicator_id").val(buttonData.indicatorId)
@@ -603,7 +604,7 @@ $(document).ready(function () {
 
 
     //handle value button clicked for quarterly
-    $("[name='tableBodyQuarter']").on("click","button[name='btnIndicator']",function(){
+    $("[name='tableBodyQuarter']").on("click", "button[name='btnIndicator']", function () {
         const buttonData = $(this).data()
         $("#IndicatorFormValue").val(buttonData.value)
         $("#form_indicator_id").val(buttonData.indicatorId)
@@ -613,8 +614,8 @@ $(document).ready(function () {
     })
 
 
-     //handle value button clicked for month
-     $("[name='tableBodyMonth']").on("click","button[name='btnIndicator']",function(){
+    //handle value button clicked for month
+    $("[name='tableBodyMonth']").on("click", "button[name='btnIndicator']", function () {
         const buttonData = $(this).data()
         $("#IndicatorFormValue").val(buttonData.value)
         $("#form_indicator_id").val(buttonData.indicatorId)
@@ -624,15 +625,15 @@ $(document).ready(function () {
     })
 
     //handle add indicator button clicked
-    $("[name='tableBody']").on("click","button[name='btnAddIndicator']",function(){
+    $("[name='tableBody']").on("click", "button[name='btnAddIndicator']", function () {
         const buttonData = $(this).data()
         $("#form_indicator_add_id").val(buttonData.indicatorId)
     })
 
-   
+
 
     fetchTableData()
 
-    
+
 
 })

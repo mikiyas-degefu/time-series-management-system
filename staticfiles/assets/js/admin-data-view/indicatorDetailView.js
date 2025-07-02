@@ -1,4 +1,6 @@
 $(document).ready(function () {
+
+    console.log('heeee!!')
     let urlPath = window.location.pathname;
     let pathID = urlPath.replace("/user-admin/indicator_detail_view/", "").replace("/", "");
     let URL = `/filter_indicator_detail_annual_value/${pathID}`
@@ -17,8 +19,8 @@ $(document).ready(function () {
         $('[name="tableHead"]').html(
             `
           <tr style="background-color: #40864b;" >
-            <th style="width:500px;"  class="text-light" scope="col" >Yearly</th>
-            <th style="width:400px;" scope="col" ></th>
+            <th style="width:700px;"  class="text-light" scope="col" >Yearly</th>
+            <th style="width:700px;" scope="col" ></th>
               ` +
               data.year.map((year) =>{ return ` <th scope="col" style="width:100px;"></th>`})
               + 
@@ -391,7 +393,7 @@ $(document).ready(function () {
     })
 
 
-    //handle value button clicked for quarterly
+    //handle va lue button clicked for quarterly
     $("[name='tableBodyQuarter']").on("click","button[name='btnIndicator']",function(){
         const buttonData = $(this).data()
         $("#IndicatorFormValue").val(buttonData.value)

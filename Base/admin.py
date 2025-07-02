@@ -13,10 +13,15 @@ from .resource import(
 
 from import_export.admin import ImportExportModelAdmin
 
+
+admin.site.register(Video)
 class TopicAdmin(ImportExportModelAdmin):
     list_display = ('title_ENG', 'title_AMH', 'created', 'is_dashboard', 'is_deleted', 'rank')
 
 admin.site.register(Topic, TopicAdmin)
+
+admin.site.register(ProjectInitiatives)
+admin.site.register(SubProject)
 
 
 class DocumentAdmin(ImportExportModelAdmin):
@@ -54,21 +59,36 @@ admin.site.register(DataPoint,  DataPointAdmin)
 
 class AnnualDataAdmin(ImportExportModelAdmin):
     resource_classes = [AnnualDataResource]
-    list_display = ('performance','target' )
+    list_display = ('for_datapoint' , 'performance','target' , )
+    list_filter = ('indicator' , 'for_datapoint')
+    search_fields = ('indicator' , 'for_datapoint')
+
+    autocomplete_fields = ['indicator']
 
 admin.site.register(AnnualData,  AnnualDataAdmin)
 
 
+
+
+
 class QuarterDataAdmin(ImportExportModelAdmin):
     resource_classes = [QuarterDataResource]
-    list_display = ('performance','target' )
+    list_display = ('for_datapoint' , 'for_quarter' , 'performance','target' , )
+    list_filter = ('indicator' , 'for_datapoint')
+    search_fields = ('indicator' , 'for_datapoint')
+
+    autocomplete_fields = ['indicator']
 
 admin.site.register(QuarterData,  QuarterDataAdmin)
 
 
 class MonthDataAdmin(ImportExportModelAdmin):
     resource_classes = [MonthDataResource]
-    list_display = ('performance','target' )
+    list_display = ('for_datapoint' , 'performance','target' , )
+    list_filter = ('indicator' , 'for_datapoint')
+    search_fields = ('indicator' , 'for_datapoint')
+
+    autocomplete_fields = ['indicator']
 
 admin.site.register(MonthData,  MonthDataAdmin)
 
