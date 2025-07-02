@@ -1,27 +1,15 @@
 from django.contrib import admin
 from .models import *
-from .resource import(
-    TopicResource,
-    CategoryResource,
-    IndicatorResource,
-    AnnualDataResource,
-    DataPointResource,
-    QuarterDataResource,
-    MonthDataResource
-)
-
-
+from .resource import *
 from import_export.admin import ImportExportModelAdmin
 
 
-admin.site.register(Video)
+
 class TopicAdmin(ImportExportModelAdmin):
-    list_display = ('title_ENG', 'title_AMH', 'created', 'is_dashboard', 'is_deleted', 'rank')
+    list_display = ('title_ENG', 'title_AMH', 'created', 'is_dashboard', 'rank')
+    resource_classes = [TopicResource]
+admin.site.register(Topic,TopicAdmin)
 
-admin.site.register(Topic, TopicAdmin)
-
-admin.site.register(ProjectInitiatives)
-admin.site.register(SubProject)
 
 
 class DocumentAdmin(ImportExportModelAdmin):
@@ -95,5 +83,7 @@ admin.site.register(MonthData,  MonthDataAdmin)
 
 admin.site.register(Quarter)
 admin.site.register(Month)
-
+admin.site.register(Video)
+admin.site.register(ProjectInitiatives)
+admin.site.register(SubProject)
 

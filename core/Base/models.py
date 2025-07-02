@@ -18,7 +18,6 @@ class Topic(models.Model):
     background_image = models.FileField(upload_to="media/background_image" , null=True, blank=True)
     updated =  models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
-    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title_ENG
