@@ -170,9 +170,8 @@ class Indicator(models.Model):
                 self.code = f"{parent_code}.{next_number}"
                 Indicator.objects.filter(pk=self.pk).update(code=self.code)
 
-
-        def __str__(self):
-            return f"{self.title_ENG} ({self.code})"
+    def __str__(self):
+        return f"{self.title_ENG} ({self.code})"
     
 class DataPoint(models.Model):
     year_EC = models.CharField(max_length=50, null=True, blank=True, unique=True)
