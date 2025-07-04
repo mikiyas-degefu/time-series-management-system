@@ -382,14 +382,14 @@ def data_view_indicator_update(request, id):
 @login_required(login_url='login')
 def topic(request):
     form = TopicForm(request.POST or None, request.FILES or None)
-    topics = Topic.objects.filter(is_deleted=False)
+    topics = Topic.objects.all()
     count = 30
 
     formFile = ImportFileForm() #responsive to read imported file for import export 
    
     if 'q' in request.GET:
         q = request.GET['q']
-        topics = Topic.objects.filter(is_deleted=False).filter( Q(title_ENG__contains=q) | Q(title_AMH__contains=q) | Q(created__contains=q))
+        topics = Topic.objects.all().filter( Q(title_ENG__contains=q) | Q(title_AMH__contains=q) | Q(created__contains=q))
     
     paginator = Paginator(topics, 30) 
     page_number = request.GET.get('page')
@@ -710,7 +710,7 @@ def all_indicators(request):
         last_indicator_id = Indicator.objects.last().id
     except:
         last_indicator_id = 0
-    all_indicators = Indicator.objects.filter(is_deleted=False)
+    all_indicators = Indicator.objects.all()
     count = 30
     form = IndicatorForm(request.POST or None)
 
@@ -718,7 +718,7 @@ def all_indicators(request):
 
     if 'q' in request.GET:
         q = request.GET['q']
-        all_indicators = Indicator.objects.filter(is_deleted=False).filter( Q(title_ENG__contains=q) | Q(title_AMH__contains=q))
+        all_indicators = Indicator.objects.all().filter( Q(title_ENG__contains=q) | Q(title_AMH__contains=q))
 
     paginator = Paginator(all_indicators,30)
     page_number = request.GET.get('page')

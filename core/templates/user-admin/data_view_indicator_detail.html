@@ -148,6 +148,71 @@
       </div>
       <!--Title End-->
 
+
+
+
+      <div class="container mt-5">
+        <div class="card shadow rounded-4 border-0">
+          <div class="card-body p-5">
+
+            <h4 class="text-center fw-bold mb-4 text-primary">
+              {{ indicator.title_ENG }}
+            </h4>
+            {% if indicator.title_AMH %}
+              <h5 class="text-center text-secondary mb-3">
+                {{ indicator.title_AMH }}
+              </h5>
+            {% endif %}
+            <p class="text-center text-muted mb-4">
+              <span class="badge bg-light text-dark px-3 py-2 shadow-sm">{{ indicator.code }}</span>
+            </p>
+
+            <p class="lead mb-4"><strong>Description:</strong> {{ indicator.description|default:"No description available." }}</p>
+
+            <hr class="my-4">
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <div class="bg-light p-3 rounded-3">
+                  <p class="mb-2"><strong>Measurement Unit:</strong> {{ indicator.measurement_units }}</p>
+                  <p class="mb-2"><strong>Frequency:</strong> {{ indicator.frequency }}</p>
+                  <p class="mb-2"><strong>Data Type:</strong> {{ indicator.data_type }}</p>
+                  <p class="mb-0"><strong>Dashboard Visible:</strong> {{ indicator.is_dashboard_visible|yesno:"Yes,No" }}</p>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <div class="bg-light p-3 rounded-3">
+                  <p class="mb-2"><strong>Source:</strong> {{ indicator.source }}</p>
+                  <p class="mb-2"><strong>Methodology:</strong> {{ indicator.methodology }}</p>
+                  <p class="mb-2"><strong>KPI Characteristic:</strong> {{ indicator.kpi_characteristics }}</p>
+                  <p class="mb-0"><strong>Status:</strong> {{ indicator.status }}</p>
+                </div>
+              </div>
+            </div>
+
+            {% if indicator.for_category.all %}
+              <hr class="my-4">
+              <div>
+                <p class="mb-2"><strong>Categories:</strong></p>
+                {% for cat in indicator.for_category.all %}
+                  <span class="badge bg-secondary me-1 mb-1">{{ cat }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="card-footer text-end text-muted bg-white border-top-0">
+            <small>Last updated: {{ indicator.updated_at|date:"Y-m-d H:i" }}</small>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
       <!--Indicator Edit Value-->
       <!-- Modal -->
       <div
