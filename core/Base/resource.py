@@ -1,10 +1,8 @@
 from import_export import resources, fields
-import datetime
 from import_export.formats.base_formats import XLS
 import tablib
 from import_export.widgets import ForeignKeyWidget, ManyToManyWidget
 from .models import *
-
 #############Import export Model Resources################
 
 
@@ -39,28 +37,29 @@ class TagResource(resources.ModelResource):
     class Meta:
         model = Tag
 
+
 class IndicatorResource(resources.ModelResource):    
     for_category = fields.Field(
         column_name='for_category',
         attribute='for_category',
-        widget=ManyToManyWidget(Category, field='name_ENG', separator='|'),
-        saves_null_values = True,
+        widget=ManyToManyWidget(Category, field='name_ENG', separator=','),
+        saves_null_values=True,
     )
-
     
     parent = fields.Field(
         column_name='parent',
         attribute='parent',
-        widget=ForeignKeyWidget(Indicator, field='id'),
-        saves_null_values = True,
+        widget=ForeignKeyWidget(Indicator, field='code'),  # Use code for better matching
+        saves_null_values=True,
     )
-
 
     class Meta:
         model = Indicator
         report_skipped = True
         skip_unchanged = True
-        exclude = ( 'created_at', 'is_deleted', 'composite_key','op_type')
+        exclude = ('code',)  # Code is auto-generated
+        import_id_fields = ('title_ENG',)  # Or another unique field if applicable
+
 
 
 

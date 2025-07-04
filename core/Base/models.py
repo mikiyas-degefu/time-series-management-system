@@ -100,16 +100,16 @@ class Indicator(models.Model):
 
     title_ENG = models.CharField(max_length=300)
     title_AMH = models.CharField(max_length=300, null=True, blank=True)
-    code = models.CharField(max_length=100, unique=True, blank=True)
+    code = models.CharField(max_length=100, unique=True, blank=True, null=True)
     for_category = models.ManyToManyField("Category", related_name='indicators')
     description = models.TextField(null=True, blank=True)
     measurement_units = models.CharField(max_length=50, null=True, blank=True, default="")
     frequency = models.CharField(max_length=20, choices=FREQUENCY)
-    source = models.TextField()
-    methodology = models.TextField()
-    disaggregation_dimensions = models.CharField(max_length=30, choices=DISAGGREGATION_DIMENSION_CHOICE)
-    time_coverage_start_year = models.ForeignKey("DataPoint", on_delete=models.SET_NULL, null=True, related_name='indicator_start_year')
-    time_coverage_end_year = models.ForeignKey("DataPoint", on_delete=models.SET_NULL, null=True, related_name='indicator_end_year')
+    source = models.TextField(null=True, blank=True)
+    methodology = models.TextField(null=True, blank=True)
+    disaggregation_dimensions = models.CharField(max_length=30, choices=DISAGGREGATION_DIMENSION_CHOICE, null=True, blank=True)
+    time_coverage_start_year = models.ForeignKey("DataPoint", on_delete=models.SET_NULL, null=True, blank=True, related_name='indicator_start_year')
+    time_coverage_end_year = models.ForeignKey("DataPoint", on_delete=models.SET_NULL, null=True, blank=True, related_name='indicator_end_year')
     data_type = models.CharField(max_length=20, choices=DATA_TYPE_CHOICE)
     responsible_entity = models.ForeignKey(ResponsibleEntity, null=True, blank=True, on_delete=models.SET_NULL)
     tags = models.ManyToManyField("Tag", blank=True)
@@ -125,49 +125,47 @@ class Indicator(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        is_new = self.pk is None
-        super().save(*args, **kwargs)  # Save first to generate self.pk
+        if not self.code:
+            self.generate_code()
+        super().save(*args, **kwargs)
 
-        if is_new and not self.code:
-            if self.parent is None:
-                # Handle parent indicator
-                categories = list(self.for_category.all().order_by('code'))
-                if categories:
-                    prefix = "-".join([cat.code.upper() for cat in categories])
-                    existing_codes = Indicator.objects.filter(
-                        code__startswith=f"{prefix}-", parent__isnull=True
-                    ).values_list('code', flat=True)
+    def generate_code(self):
 
-                    max_suffix = 0
-                    for code in existing_codes:
-                        try:
-                            suffix = int(code.split("-")[-1])
-                            if suffix > max_suffix:
-                                max_suffix = suffix
-                        except (IndexError, ValueError):
-                            continue
+        if self.parent is None:
+            categories = list(self.for_category.all().order_by('code'))
+            if categories:
+                prefix = "-".join([cat.code.upper() for cat in categories])
+                existing_codes = Indicator.objects.filter(
+                    code__startswith=f"{prefix}-", parent__isnull=True
+                ).values_list('code', flat=True)
 
-                    new_suffix = max_suffix + 1
-                    self.code = f"{prefix}-{new_suffix:02d}"
-                    Indicator.objects.filter(pk=self.pk).update(code=self.code)
-            else:
-                # Handle child or sub-child indicator
-                parent_code = self.parent.code
-                siblings = Indicator.objects.filter(parent=self.parent).exclude(pk=self.pk)
-                child_numbers = []
-
-                for s in siblings:
+                max_suffix = 0
+                for code in existing_codes:
                     try:
-                        suffix = s.code.replace(f"{parent_code}.", "")
-                        parts = suffix.split(".")
-                        if parts and parts[0].isdigit():
-                            child_numbers.append(int(parts[0]))
-                    except (AttributeError, ValueError):
+                        suffix = int(code.split("-")[-1])
+                        if suffix > max_suffix:
+                            max_suffix = suffix
+                    except (IndexError, ValueError):
                         continue
 
-                next_number = (max(child_numbers) if child_numbers else 0) + 1
-                self.code = f"{parent_code}.{next_number}"
-                Indicator.objects.filter(pk=self.pk).update(code=self.code)
+                new_suffix = max_suffix + 1
+                self.code = f"{prefix}-{new_suffix:02d}"
+        else:
+            parent_code = self.parent.code
+            siblings = Indicator.objects.filter(parent=self.parent).exclude(pk=self.pk)
+            child_numbers = []
+
+            for s in siblings:
+                try:
+                    suffix = s.code.replace(f"{parent_code}.", "")
+                    parts = suffix.split(".")
+                    if parts and parts[0].isdigit():
+                        child_numbers.append(int(parts[0]))
+                except (AttributeError, ValueError):
+                    continue
+
+            next_number = (max(child_numbers) if child_numbers else 0) + 1
+            self.code = f"{parent_code}.{next_number}"
 
     def __str__(self):
         return f"{self.title_ENG} ({self.code})"
