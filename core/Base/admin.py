@@ -32,9 +32,9 @@ admin.site.register(Tag, TagAdmin)
 
 class IndicatorAdmin(ImportExportModelAdmin):
     resource_classes = [IndicatorResource]
-    list_display = ('title_ENG', 'title_AMH', 'kpi_characteristics', 'is_dashboard_visible', 'is_public')
+    list_display = ('code','title_ENG', 'title_AMH','measurement_units','kpi_characteristics','frequency', 'status' ,'is_dashboard_visible', 'is_public')
     filter_horizontal = ('for_category', )
-    search_fields = ['title_ENG', 'title_AMH']
+    search_fields = ['code','title_ENG', 'title_AMH']
 
 admin.site.register(Indicator, IndicatorAdmin)
 
@@ -49,12 +49,19 @@ admin.site.register(DataPoint,  DataPointAdmin)
 
 
 class AnnualDataAdmin(ImportExportModelAdmin):
-    resource_classes = [AnnualDataResource]
-    list_display = ('for_datapoint' , 'performance','target' , )
+    resource_classes = [AnnualDataWideResource]
+    list_display = ('indicator_title', 'for_datapoint', 'performance', 'target')
     list_filter = ('indicator' , 'for_datapoint')
     search_fields = ('indicator' , 'for_datapoint')
 
     autocomplete_fields = ['indicator']
+    list_editable = ('performance','for_datapoint')
+
+    def indicator_title(self, obj):
+        return obj.indicator.title_ENG
+    
+    def year(self, obj):
+        return obj.for_datapoint.year_EC
 
 admin.site.register(AnnualData,  AnnualDataAdmin)
 

@@ -63,11 +63,11 @@ class Indicator(models.Model):
         ('volatile', 'Volatile'),
     ]
 
-    FREQUENCY = [
-        ('monthly', 'Monthly'),
-        ('quarterly', 'Quarterly'),
+    FREQUENCY_CHOICES = [
+        ('month', 'month'),
+        ('quarter', 'quarter'),
         ('biannual', 'Biannual'),
-        ('yearly', 'Yearly'),
+        ('annual', 'annual'),
     ]
 
     DISAGGREGATION_DIMENSION_CHOICE = [
@@ -76,6 +76,10 @@ class Indicator(models.Model):
         ('location', 'Location'),
         ('income', 'Income Level'), 
         ('education', 'Education Level'),  
+        ('National', 'National'),
+        ('Regional', 'Regional'),
+        ('Rural', 'Rural'),
+        ('Urban', 'Urban'),
     ]
 
     DATA_TYPE_CHOICE = [
@@ -92,8 +96,8 @@ class Indicator(models.Model):
     ]
 
     COLLECTION_INSTRUMENT_CHOICE = [
-        ('dhs_survey', 'DHS Survey'),
-        ('admin_record', 'Administrative Record'),
+        ('Survey', 'Survey'),
+        ('Admin', 'Administrative Record'),
         ('census', 'Census'),
         ('survey_other', 'Other Survey'),  
     ]
@@ -104,33 +108,41 @@ class Indicator(models.Model):
     for_category = models.ManyToManyField("Category", related_name='indicators')
     description = models.TextField(null=True, blank=True)
     measurement_units = models.CharField(max_length=50, null=True, blank=True, default="")
-    frequency = models.CharField(max_length=20, choices=FREQUENCY)
+    frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES, null=True, blank=True)
     source = models.TextField(null=True, blank=True)
     methodology = models.TextField(null=True, blank=True)
     disaggregation_dimensions = models.CharField(max_length=30, choices=DISAGGREGATION_DIMENSION_CHOICE, null=True, blank=True)
     time_coverage_start_year = models.ForeignKey("DataPoint", on_delete=models.SET_NULL, null=True, blank=True, related_name='indicator_start_year')
     time_coverage_end_year = models.ForeignKey("DataPoint", on_delete=models.SET_NULL, null=True, blank=True, related_name='indicator_end_year')
-    data_type = models.CharField(max_length=20, choices=DATA_TYPE_CHOICE)
+    data_type = models.CharField(max_length=20, choices=DATA_TYPE_CHOICE, null=True, blank=True)
     responsible_entity = models.ForeignKey(ResponsibleEntity, null=True, blank=True, on_delete=models.SET_NULL)
     tags = models.ManyToManyField("Tag", blank=True)
     sdg_link = models.IntegerField(null=True, blank=True)
     status = models.CharField(max_length=30, choices=STATUS_CHOICE, default="under_development")
     version = models.IntegerField(default=1)
-    collection_Instrument = models.CharField(max_length=30, choices=COLLECTION_INSTRUMENT_CHOICE)
+    collection_Instrument = models.CharField(max_length=30, choices=COLLECTION_INSTRUMENT_CHOICE, null=True, blank=True)
     parent = models.ForeignKey('self', related_name='children', on_delete=models.CASCADE, blank=True, null=True)
     kpi_characteristics = models.CharField(max_length=15, choices=KPI_CHARACTERISTIC_CHOICES, default="inc")
     is_dashboard_visible = models.BooleanField(default=False)
     is_public = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
+        if not self.pk:
+            # Save once to get a primary key (required by generate_code)
+            super().save(*args, **kwargs)
+
         if not self.code:
             self.generate_code()
-        super().save(*args, **kwargs)
+            # Save again with the generated code
+            super().save(update_fields=['code'])
+        else:
+            # Normal save if code already exists
+            super().save(*args, **kwargs)
+    
 
     def generate_code(self):
-
         if self.parent is None:
             categories = list(self.for_category.all().order_by('code'))
             if categories:
@@ -178,6 +190,8 @@ class DataPoint(models.Model):
     class Meta:
         ordering = ['year_EC'] #Oldest First
 
+    def __str__(self):
+        return self.year_EC
     def save(self, *args, **kwargs):
         self.year_GC = f'{str(int(self.year_EC )+ 7)}/{str(int(self.year_EC)+ 8)}'
         super(DataPoint, self).save(*args, **kwargs)
@@ -532,7 +546,7 @@ class AnnualData(models.Model):
             return str(self.performance)
     
     class Meta:
-        ordering = ['-for_datapoint__year_EC'] #Oldest First
+        ordering = ['-indicator__code']
     
     def get_previous_year_performance(self):
         # Calculate and return the change in performance compared to the previous year
