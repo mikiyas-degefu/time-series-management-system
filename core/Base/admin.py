@@ -32,11 +32,17 @@ admin.site.register(Tag, TagAdmin)
 
 class IndicatorAdmin(ImportExportModelAdmin):
     resource_classes = [IndicatorResource]
-    list_display = ('code','title_ENG', 'title_AMH','measurement_units','kpi_characteristics','frequency', 'status' ,'is_dashboard_visible', 'is_public')
-    filter_horizontal = ('for_category', )
+    list_display = (
+        'code','title_ENG', 'title_AMH','measurement_units',
+        'kpi_characteristics','frequency', 'status',
+        'is_dashboard_visible', 'is_public'
+    )
+    filter_horizontal = ('for_category',) 
+    list_filter = ('for_category',)  
     search_fields = ['code','title_ENG', 'title_AMH']
-
+    
 admin.site.register(Indicator, IndicatorAdmin)
+
 
 
 

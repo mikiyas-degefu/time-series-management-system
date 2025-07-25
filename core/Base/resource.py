@@ -38,7 +38,6 @@ class TagResource(resources.ModelResource):
     class Meta:
         model = Tag
 
-
 class IndicatorResource(resources.ModelResource):
     for_category = fields.Field(
         column_name='for_category',
@@ -50,7 +49,7 @@ class IndicatorResource(resources.ModelResource):
     parent = fields.Field(
         column_name='parent',
         attribute='parent',
-        widget=ForeignKeyWidget(Indicator, field='code'),
+        widget=ForeignKeyWidget(Indicator, field='id'),
         saves_null_values=True,
     )
 
@@ -73,7 +72,6 @@ class IndicatorResource(resources.ModelResource):
             instance.generate_code()
             instance.save()
 
-
 class DataPointResource(resources.ModelResource):
 
     class Meta:
@@ -82,7 +80,6 @@ class DataPointResource(resources.ModelResource):
         report_skipped = True
         exclude = ( 'id','created_at', 'updated_at')
         import_id_fields = ('year_EC', 'year_GC')
-
 
 class AnnualDataResource(resources.ModelResource):    
     indicator = fields.Field(
@@ -108,7 +105,6 @@ class AnnualDataResource(resources.ModelResource):
         use_bulk = True
         exclude = ( 'id', 'created_at')
         import_id_fields = ('indicator', 'for_datapoint')
-
 
 class AnnualDataWideResource(resources.ModelResource):
     indicator = fields.Field(
@@ -146,7 +142,14 @@ class AnnualDataWideResource(resources.ModelResource):
             return AnnualData.objects.get(indicator=indicator, for_datapoint=datapoint)
         except (Indicator.DoesNotExist, DataPoint.DoesNotExist, AnnualData.DoesNotExist):
             return None
-
+        
+    def before_import_row(self, row, **kwargs):
+        if row.get('for_datapoint') is None:
+               pass
+        year = row.get("for_datapoint")
+        if year:
+            datapoint, created = DataPoint.objects.get_or_create(year_EC=year)
+            row["for_datapoint"] = datapoint.year_EC
 
     def import_data(self, dataset, dry_run=False, raise_errors=False, use_transactions=None, **kwargs):
         from tablib import Dataset
@@ -170,7 +173,7 @@ class AnnualDataWideResource(resources.ModelResource):
                     continue
 
                 try:
-                    datapoint = DataPoint.objects.get(year_EC=year)
+                    datapoint, created = DataPoint.objects.get_or_create(year_EC=year)
                 except DataPoint.DoesNotExist:
                     continue
 
@@ -240,7 +243,6 @@ class QuarterDataResource(resources.ModelResource):
         use_bulk = True
         exclude = ( 'id', 'created_at')
         import_id_fields = ('indicator', 'for_datapoint', 'for_quarter' )
-
 
 class MonthDataResource(resources.ModelResource):    
     indicator = fields.Field(

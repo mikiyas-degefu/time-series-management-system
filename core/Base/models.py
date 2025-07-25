@@ -128,6 +128,9 @@ class Indicator(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ['code'] 
+
     def save(self, *args, **kwargs):
         if not self.pk:
             # Save once to get a primary key (required by generate_code)
