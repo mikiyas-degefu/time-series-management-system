@@ -131,19 +131,6 @@ class Indicator(models.Model):
     class Meta:
         ordering = ['code'] 
 
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            # Save once to get a primary key (required by generate_code)
-            super().save(*args, **kwargs)
-
-        if not self.code:
-            self.generate_code()
-            # Save again with the generated code
-            super().save(update_fields=['code'])
-        else:
-            # Normal save if code already exists
-            super().save(*args, **kwargs)
-    
 
     def generate_code(self):
         if self.parent is None:

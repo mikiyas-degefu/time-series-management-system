@@ -62,15 +62,16 @@ class IndicatorResource(resources.ModelResource):
 
     class Meta:
         model = Indicator
-        report_skipped = True
-        skip_unchanged = True
-        import_id_fields = ('title_ENG',)
+        import_id_fields = ('id',)             
+        skip_unchanged = False                 
+        report_skipped = True  
+        use_bulk = False               
     
     def after_import_row(self, row, row_result, **kwargs):
         instance = row_result.instance
         if instance:
             instance.generate_code()
-            instance.save()
+            instance.save(update_fields=['code'])
 
 class DataPointResource(resources.ModelResource):
 
