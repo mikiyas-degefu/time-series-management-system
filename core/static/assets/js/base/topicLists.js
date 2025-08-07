@@ -207,8 +207,7 @@ $(document).ready(function () {
             `;
 
             htmlContent += indicatorChartHtml;
-        }
-        
+        } 
     });
     }
     else {
