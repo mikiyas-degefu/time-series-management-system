@@ -39,67 +39,67 @@
                 </button>
               </div>
             </div>
-           <div class="container mt-4">
-            {% if topics %}
-              <!-- Dropdown Filter -->
-              <div class="mb-4">
-                <label for="topicFilter" class="form-label fw-bold">Filter by Topic:</label>
-                <select class="form-select" id="topicFilter">
-                  <option value="all">All Topics</option>
+            <div class="container mt-4">
+              {% if topics %}
+                <!-- Dropdown Filter -->
+                <div class="mb-4">
+                  <label for="topicFilter" class="form-label fw-bold">Filter by Topic:</label>
+                  <select class="form-select" id="topicFilter">
+                    <option value="all">All Topics</option>
+                    {% for topic in topics %}
+                      {% if topic.get_document_lists %}
+                        <option value="topic-{{ topic.id }}">{{ topic.title_ENG }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <!-- All documents in one list -->
+                <div class="row row-cols-1 row-cols-md-4 g-4" id="documentList">
                   {% for topic in topics %}
-                    {% if topic.get_document_lists %}
-                      <option value="topic-{{ topic.id }}">{{ topic.title_ENG }}</option>
-                    {% endif %}
-                  {% endfor %}
-                </select>
-              </div>
+                    {% for document in topic.get_document_lists %}
+                        <div class="col document-item" data-topic="topic-{{ topic.id }}">
+                          <div class="card h-100">
+                            <!-- Canvas with data attribute for the PDF URL -->
+                            <canvas
+                              id="pdf-canvas-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"
+                              data-pdf-url="{{ document.file.url }}"
+                              style="height: 200px; width: 100%; border: 1px solid #ccc;"
+                            ></canvas>
 
-              <!-- All documents in one list -->
-              <div class="row row-cols-1 row-cols-md-4 g-4" id="documentList">
-                {% for topic in topics %}
-                  {% for document in topic.get_document_lists %}
-                      <div class="col document-item" data-topic="topic-{{ topic.id }}">
-                        <div class="card h-100">
-                          <!-- Canvas with data attribute for the PDF URL -->
-                          <canvas
-                            id="pdf-canvas-{{ forloop.parentloop.counter }}-{{ forloop.counter }}"
-                            data-pdf-url="{{ document.file.url }}"
-                            style="height: 200px; width: 100%; border: 1px solid #ccc;"
-                          ></canvas>
-
-                          <div class="card-body">
-                            <h6 class="card-title">{{ document.title_ENG }}</h6>
-                            <p class="card-text">{{ document.title_AMH }}</p>
-                            <hr />
-                            <div class="d-flex justify-content-between align-items-center">
-                              <a href="{{ document.file.url }}" target="_blank" class="btn btn-outline-success" title="View">
-                                <i class="fa fa-eye"></i>
-                              </a>
-                              <a href="{{ document.file.url }}" download class="btn btn-outline-success" title="Download">
-                                <i class="fa fa-download"></i>
-                              </a>
-                              <a href="{% url 'document_edit' document.id %}" class="btn btn-outline-info" title="Edit">
-                                <i class="fa fa-edit"></i>
-                              </a>
-                              <button
-                                class="btn btn-outline-danger btn-delete"
-                                data-bs-toggle="modal"
-                                data-bs-target="#deleteDocumentModal"
-                                data-id="{{ document.id }}"
-                                data-name="{{ document.title_ENG }}"
-                                title="Delete"
-                              >
-                                <i class="fa fa-trash"></i>
-                              </button>
+                            <div class="card-body">
+                              <h6 class="card-title">{{ document.title_ENG }}</h6>
+                              <p class="card-text">{{ document.title_AMH }}</p>
+                              <hr />
+                              <div class="d-flex justify-content-between align-items-center">
+                                <a href="{{ document.file.url }}" target="_blank" class="btn btn-outline-success" title="View">
+                                  <i class="fa fa-eye"></i>
+                                </a>
+                                <a href="{{ document.file.url }}" download class="btn btn-outline-success" title="Download">
+                                  <i class="fa fa-download"></i>
+                                </a>
+                                <a href="{% url 'document_edit' document.id %}" class="btn btn-outline-info" title="Edit">
+                                  <i class="fa fa-edit"></i>
+                                </a>
+                                <button
+                                  class="btn btn-outline-danger btn-delete"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#deleteDocumentModal"
+                                  data-id="{{ document.id }}"
+                                  data-name="{{ document.title_ENG }}"
+                                  title="Delete"
+                                >
+                                  <i class="fa fa-trash"></i>
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                    {% endfor %}
                   {% endfor %}
-                {% endfor %}
-              </div>
-            {% endif %}
-          </div>
+                </div>
+              {% endif %}
+            </div>
 
           </div>
         </div>
