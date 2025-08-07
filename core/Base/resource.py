@@ -4,6 +4,7 @@ import tablib
 from import_export.widgets import ForeignKeyWidget, ManyToManyWidget
 from import_export.results import RowResult, Result
 from .models import *
+from tablib import Dataset
 #############Import export Model Resources################
 
 
@@ -111,12 +112,12 @@ class AnnualDataWideResource(resources.ModelResource):
     indicator = fields.Field(
         column_name='indicator',
         attribute='indicator',
-        widget=ForeignKeyWidget(Indicator, 'code')  # Use the 'code' field instead of ID
+        widget=ForeignKeyWidget(Indicator, 'code')  
     )
     for_datapoint = fields.Field(
         column_name='for_datapoint',
         attribute='for_datapoint',
-        widget=ForeignKeyWidget(DataPoint, 'year_EC')  # Adjust if needed
+        widget=ForeignKeyWidget(DataPoint, 'year_EC') 
     )
     performance = fields.Field(
         column_name='performance',
@@ -127,7 +128,6 @@ class AnnualDataWideResource(resources.ModelResource):
         model = AnnualData
         skip_unchanged = True
         report_skipped = True
-        use_bulk = True
         import_id_fields = ('indicator', 'for_datapoint',)
         fields = ('indicator', 'for_datapoint', 'performance')
 
@@ -153,7 +153,6 @@ class AnnualDataWideResource(resources.ModelResource):
             row["for_datapoint"] = datapoint.year_EC
 
     def import_data(self, dataset, dry_run=False, raise_errors=False, use_transactions=None, **kwargs):
-        from tablib import Dataset
         result_dataset = Dataset(headers=['indicator', 'for_datapoint', 'performance'])
 
         new_count = 0
@@ -216,10 +215,9 @@ class QuarterDataResource(resources.ModelResource):
     indicator = fields.Field(
         column_name='indicator',
         attribute='indicator',
-        widget=ForeignKeyWidget(Indicator, field='composite_key'),
+        widget=ForeignKeyWidget(Indicator, 'code'),
         saves_null_values = True,
     ) 
-
 
     for_quarter = fields.Field(
         column_name='for_quarter',
@@ -228,12 +226,15 @@ class QuarterDataResource(resources.ModelResource):
         saves_null_values = True,
     )
     
-
     for_datapoint = fields.Field(
         column_name='for_datapoint',
         attribute='for_datapoint',
-        widget=ForeignKeyWidget(DataPoint, field='year_EC'),
-        saves_null_values = True,
+        widget=ForeignKeyWidget(DataPoint, 'year_EC') 
+    )
+
+    performance = fields.Field(
+        column_name='performance',
+        attribute='performance'
     )
 
 
@@ -241,18 +242,127 @@ class QuarterDataResource(resources.ModelResource):
         model = QuarterData
         skip_unchanged = True
         report_skipped = True
-        use_bulk = True
-        exclude = ( 'id', 'created_at')
-        import_id_fields = ('indicator', 'for_datapoint', 'for_quarter' )
+        import_id_fields = ('indicator', 'for_datapoint', 'for_quarter')
+        fields = ('indicator', 'for_datapoint', 'for_quarter', 'performance')
+
+    
+
+    def get_instance(self, instance_loader, row):
+        indicator_code = row.get('indicator')
+        quarter_num = row.get('for_quarter')
+        year_ec = row.get('for_datapoint')
+
+
+        try:
+            indicator = Indicator.objects.get(code = indicator_code)
+            dataPoint = DataPoint.objects.get(year_EC=year_ec)
+            quarter = Quarter.objects.get(number=quarter_num)
+            return QuarterData.objects.get(indicator=indicator, for_datapoint=dataPoint, for_quarter=quarter)
+        except (Indicator.DoesNotExist, DataPoint.DoesNotExist, AnnualData.DoesNotExist, QuarterData.DoesNotExist):
+            return None
+    
+    def before_import_row(self, row, **kwargs):
+        if row.get('for_datapoint') is None or row.get('for_quarter') is None:
+            pass
+
+        try:
+            year = int(row.get("for_datapoint"))
+            quarter = int(row.get("for_quarter"))
+        except (TypeError, ValueError):
+            return
+        
+        
+
+        if 1 <= quarter <= 4:
+            datapoint, created = DataPoint.objects.get_or_create(year_EC=year)
+            row["for_datapoint"] = datapoint.year_EC
+            row["quarter"] = quarter
+
+    def import_data(self, dataset, dry_run = False, raise_errors = False, use_transactions = None, collect_failed_rows = False, rollback_on_validation_errors = False, **kwargs):
+        result_dataset = Dataset(headers=['indicator', 'for_datapoint', 'for_quarter',  'performance'])
+        
+        new_count = 0
+        updated_count = 0
+
+        for row_number, row in enumerate(dataset.dict, start=1):
+            year_raw = row.get('for_datapoint')
+            quarter_raw = row.get('for_quarter')
+            
+        
+
+            try:
+                quarter = int(quarter_raw)
+            except (ValueError, TypeError):
+                continue
+
+            if not (1 <= quarter <= 4):
+                continue
+
+            quarter_instance = Quarter.objects.get(number = quarter)
+
+            try:
+                year_int = int(year_raw)
+                datapoint, _ = DataPoint.objects.get_or_create(year_EC=year_int)
+            except (ValueError, TypeError):
+                continue
+            except DataPoint.MultipleObjectsReturned:
+                continue
+
+            
+    
+            for indicator_code, value in row.items():
+                if indicator_code in ['for_datapoint', 'for_quarter'] or value in [None, '']:
+                    continue
+
+                try:
+                    indicator = Indicator.objects.get(code=indicator_code)
+                except Indicator.DoesNotExist:
+                    continue
+
+            
+                try:
+                    performance = float(value)
+                except (ValueError, TypeError):
+                    continue
+
+                result_dataset.append([indicator_code, year_raw, quarter, performance])
+
+                if not dry_run:
+                    obj, created = QuarterData.objects.update_or_create(
+                        indicator=indicator,
+                        for_datapoint=datapoint,
+                        for_quarter=quarter_instance,
+                        defaults={'performance': performance}
+                    )
+
+                    if created:
+                        new_count += 1
+                    else:
+                        updated_count += 1
+
+        if dry_run:
+            return super().import_data(result_dataset, dry_run=True, raise_errors=raise_errors, **kwargs)
+
+        result = Result()
+        result.rows = []
+        result.totals = {
+            'new': new_count,
+            'update': updated_count,
+            'skip': 0,
+            'failed': 0,
+            'delete': 0,
+        }
+        result.diff_headers = ['indicator',  'for_datapoint', 'for_quarter', 'performance']
+
+        return result
+
 
 class MonthDataResource(resources.ModelResource):    
     indicator = fields.Field(
         column_name='indicator',
         attribute='indicator',
-        widget=ForeignKeyWidget(Indicator, field='composite_key'),
-        saves_null_values = True,
-    ) 
-
+        widget=ForeignKeyWidget(Indicator, 'code'),
+    )
 
     for_month = fields.Field(
         column_name='for_month',
@@ -265,8 +375,12 @@ class MonthDataResource(resources.ModelResource):
     for_datapoint = fields.Field(
         column_name='for_datapoint',
         attribute='for_datapoint',
-        widget=ForeignKeyWidget(DataPoint, field='year_EC'),
-        saves_null_values = True,
+        widget=ForeignKeyWidget(DataPoint, 'year_EC') 
+    )
+
+    performance = fields.Field(
+        column_name='performance',
+        attribute='performance'
     )
 
 
@@ -274,9 +388,112 @@ class MonthDataResource(resources.ModelResource):
         model = MonthData
         skip_unchanged = True
         report_skipped = True
-        use_bulk = True
-        exclude = ( 'id', 'created_at')
-        import_id_fields = ('indicator', 'for_datapoint', 'for_month' )
+        import_id_fields = ('indicator', 'for_datapoint', 'for_month')
+        fields = ('indicator', 'for_datapoint', 'for_month', 'performance')
+    
+
+    def get_instance(self, instance_loader, row):
+        indicator_code = row.get('indicator')
+        month_num = row.get('for_month')
+        year_ec = row.get('for_datapoint')
+
+
+        try:
+            indicator = Indicator.objects.get(code = indicator_code)
+            dataPoint = DataPoint.objects.get(year_EC=year_ec)
+            month = Month.objects.get(number=month_num)
+            return MonthData.objects.get(indicator=indicator, for_datapoint=dataPoint, for_month=month)
+        except (Indicator.DoesNotExist, DataPoint.DoesNotExist, AnnualData.DoesNotExist, MonthData.DoesNotExist):
+            return None
+    
+    def before_import_row(self, row, **kwargs):
+        if row.get('for_datapoint') is None or row.get('for_month') is None:
+            pass
+
+        try:
+            year = int(row.get("for_datapoint"))
+            month = int(row.get("for_month"))
+        except (TypeError, ValueError):
+            return
+        
+        if 1 <= month <= 12:
+            datapoint, created = DataPoint.objects.get_or_create(year_EC=year)
+            row["for_datapoint"] = datapoint.year_EC
+            row["month"] = month
+    
+    def import_data(self, dataset, dry_run = False, raise_errors = False, use_transactions = None, collect_failed_rows = False, rollback_on_validation_errors = False, **kwargs):
+        result_dataset = Dataset(headers=['indicator', 'for_datapoint', 'for_month',  'performance'])
+        
+        new_count = 0
+        updated_count = 0
+
+        for row_number, row in enumerate(dataset.dict, start=1):
+            year_raw = row.get('for_datapoint')
+            month_raw = row.get('for_month')
+
+            try:
+                month = int(month_raw)
+            except (ValueError, TypeError):
+                continue
+
+            if not (1 <= month <= 12):
+                continue
+
+            month_instance = Month.objects.get(number = month)
+
+            try:
+                year_int = int(year_raw)
+                datapoint, _ = DataPoint.objects.get_or_create(year_EC=year_int)
+            except (ValueError, TypeError):
+                continue
+            except DataPoint.MultipleObjectsReturned:
+                continue
+                
+            for indicator_code, value in row.items():
+                if indicator_code in ['for_datapoint', 'for_month'] or value in [None, '']:
+                    continue
+
+                try:
+                    indicator = Indicator.objects.get(code=indicator_code)
+                except Indicator.DoesNotExist:
+                    continue
+
+            
+                try:
+                    performance = round(float(value), 2)
+                except (ValueError, TypeError):
+                    continue
+
+                result_dataset.append([indicator_code, year_raw, month, performance])
+
+                if not dry_run:
+                    obj, created = MonthData.objects.update_or_create(
+                        indicator=indicator,
+                        for_datapoint=datapoint,
+                        for_month=month_instance,
+                        defaults={'performance': performance}
+                    )
+
+                    if created:
+                        new_count += 1
+                    else:
+                        updated_count += 1
+
+        if dry_run:
+            return super().import_data(result_dataset, dry_run=True, raise_errors=raise_errors, **kwargs)
+
+        result = Result()
+        result.rows = []
+        result.totals = {
+            'new': new_count,
+            'update': updated_count,
+            'skip': 0,
+            'failed': 0,
+            'delete': 0,
+        }
+        result.diff_headers = ['indicator',  'for_datapoint', 'for_month', 'performance']
+
+        return result
 
 
 #############Handle uploaded excel files################

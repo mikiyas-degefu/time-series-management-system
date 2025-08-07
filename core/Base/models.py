@@ -203,6 +203,7 @@ class Month(models.Model):
     month_ENG = models.CharField(max_length=50)
     month_AMH = models.CharField(max_length=50)
     number = models.IntegerField()
+    is_fiscal = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     
